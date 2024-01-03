@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import Main from "./Mainpage";
 import Footer from "./components/Footer";
 import Choose from "./Choosepage";
+import Mypage from "./Mypage";
 
 function App() {
   return (
