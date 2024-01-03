@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const HeaderContainer = styled.div`
   background-color: white;
@@ -21,9 +22,16 @@ const Navigationbar = styled.div`
   margin-left: 267px;
 `;
 
-const NavItem = styled.div`
+const NavItem = styled(Link)`
   cursor: pointer;
   font-size: 14px;
+  text-decoration: none;
+  color: black;
+
+  &:hover {
+    text-decoration: none;
+    color: black;
+  }
 `;
 
 function App() {
@@ -31,11 +39,11 @@ function App() {
     <HeaderContainer>
       <Logo>teamA.</Logo>
       <Navigationbar>
-        <NavItem>마이페이지</NavItem>
-        <NavItem>로그인</NavItem>
-        <NavItem>이력서</NavItem>
-        <NavItem>면접</NavItem>
-        <NavItem>깃허브</NavItem>
+        <NavItem to="/mypage">마이페이지</NavItem>
+        <NavItem to="/login">로그인</NavItem>
+        <NavItem to="/resume">이력서</NavItem>
+        <NavItem to="/choose">면접</NavItem>
+        <NavItem to="/github">깃허브</NavItem>
       </Navigationbar>
     </HeaderContainer>
   );

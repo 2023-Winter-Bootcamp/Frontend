@@ -87,7 +87,19 @@ function Main() {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {}, [showModal]);
+  useEffect(() => {
+    const closeModal = (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        setShowModal(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeModal);
+
+    return () => {
+      document.removeEventListener("mousedown", closeModal);
+    };
+  }, []);
 
   return (
     <Container>
