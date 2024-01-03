@@ -7,7 +7,7 @@ function App() {
     <Layout>
       <Main />
     </Layout>
-  );
+  )
 }
 
 export default App;
