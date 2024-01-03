@@ -1,13 +1,22 @@
 import React from "react";
-import Header from "./components/Header";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import Main from "./Mainpage";
+import Footer from "./components/Footer";
+import Choose from "./Choosepage";
 import Mypage from "./Mypage";
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <Mypage/>
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/choose" element={<Choose />} />
+        </Routes>
+        <Footer />
+      </Layout>
+    </Router>
   );
 }
 
