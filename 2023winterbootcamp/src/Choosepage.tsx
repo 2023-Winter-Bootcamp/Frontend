@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Container1 = styled.div`
   display: flex;
@@ -83,8 +84,11 @@ function Choose() {
     );
   };
 
+  const navigate = useNavigate();
+
   const handleStartClick = () => {
     setStartClicked(true);
+    navigate("/interview");
   };
 
   const handleResumeSelect = (index: number) => {

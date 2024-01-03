@@ -4,6 +4,7 @@ import Layout from "./components/Layout";
 import Main from "./Mainpage";
 import Footer from "./components/Footer";
 import Choose from "./Choosepage";
+import Interview from "./Interviewpage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/choose" element={<Choose />} />
+          <Route path="/interview" element={<Interview />} />
         </Routes>
         <Footer />
       </Layout>
