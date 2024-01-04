@@ -28,7 +28,7 @@ const ProfileBox = styled.div`
 const ProfileInfo = styled.div`
   width: 400px;
   height: 195px;
-  margin-top: 35px;
+  margin-top: 10px;
   margin-left: 20px;
 `;
 
@@ -198,11 +198,17 @@ function Resultpage() {
                 <Text2>직군/직무</Text2>
                 <Text2>번호</Text2>
                 <Text2>이메일</Text2>
+                <Text2>면접 종류</Text2>
+                <Text2>포지션</Text2>
+                <Text2>면접 방식</Text2>
               </TextBox2>
               <TextBox3>
                 <Text3>프론트엔드 개발자 및 디자이너</Text3>
                 <Text3>010-XXXX-XXXX</Text3>
                 <Text3>nakyung.ahn.03@gmail.com</Text3>
+                <Text3>프로젝트, CS질문, 인성면접</Text3>
+                <Text3>Frontend</Text3>
+                <Text3>화상 면접</Text3>
               </TextBox3>
             </TextBox1>
           </ProfileInfo>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Up = styled.div`
   margin-top: 40px;
@@ -111,6 +112,12 @@ function Interviewpage() {
     }
   };
 
+  const navigate = useNavigate();
+
+  const handleNextButtonClick = () => {
+    navigate("/result");
+  };
+
   return (
     <>
       <Up>
@@ -146,7 +153,7 @@ function Interviewpage() {
             ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
             aliquip ex ea commodo consequat. Duis
           </Par2>
-          <Next>
+          <Next onClick={handleNextButtonClick}>
             <StyledNextImage
               src="https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
               alt="next"
