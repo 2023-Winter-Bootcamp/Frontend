@@ -40,7 +40,7 @@ function App() {
     <FooterContainer>
       <TextBox>
         <MainText>teamA.</MainText>
-        <SubText margin_bottom={40}>문의 - 제안 email@naver.com</SubText>
+        <SubText margin_bottom={40}>문의 - 제안 teama@gmail.com</SubText>
         <SubText margin_bottom={5}>2023-Winter-Techeer-SW-Bootcamp</SubText>
         <SubText margin_bottom={0}>
           Copyright 2023.teamA. All rights Reserved
