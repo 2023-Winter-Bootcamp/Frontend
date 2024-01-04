@@ -107,11 +107,11 @@ const QnAWrapper = styled.div`
 `;
 
 const QuestionBox = styled.div`
-  width: 100%;
+  width: 60%;
   height: 200px;
   box-sizing: border-box;
   padding: 25px 34px 15px;
-  margin-bottom: 10px;
+  margin: 0 25% 10px 15%;
   background: #fff;
 `;
 
@@ -132,9 +132,10 @@ const QnASmallText = styled.div`
 `;
 
 const AnswerBox = styled.div`
-  width: 100%;
+  width: 60%;
   height: 350px;
   box-sizing: border-box;
+  margin: 0 15% 0 25%;
   padding: 30px 34px 0px;
   background: #fff;
   position: relative;
