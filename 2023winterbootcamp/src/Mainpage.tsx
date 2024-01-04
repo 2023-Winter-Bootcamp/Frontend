@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Modal from "./components/Modal";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -86,6 +87,11 @@ const ButtonImage = styled.img`
 function Main() {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const handleAIInterviewClick = () => {
+    navigate("/choose");
+  };
 
   useEffect(() => {
     const closeModal = (e: MouseEvent) => {
@@ -120,7 +126,7 @@ function Main() {
             내 깃허브
           </ButtonContent>
         </Button>
-        <Button>AI 면접</Button>
+        <Button onClick={handleAIInterviewClick}>AI 면접</Button>
         <Button onClick={() => setShowModal(true)}>
           <ButtonContent>
             <ButtonImage
