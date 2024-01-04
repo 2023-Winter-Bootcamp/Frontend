@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Modal from "./components/Modal";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -22,13 +23,13 @@ const Container = styled.div`
 const Text1 = styled.div`
   font-weight: bold;
   font-size: 40px;
-  margin-top: 110px;
+  margin-top: 100px;
 `;
 
 const Text2 = styled.div`
   color: #3a3a3a;
   font-size: 16px;
-  margin-top: 28px;
+  margin-top: 20px;
 `;
 
 const Text3 = styled.div`
@@ -109,37 +110,86 @@ function Main() {
   }, []);
 
   return (
-    <Container>
-      <Text1>깃허브를 이용한 AI면접</Text1>
-      <Text2>깃허브 기반 AI면접. teamA입니다.</Text2>
-      <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
-      <Image
-        src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-        alt="GitHub Logo"
-      />
-      <ButtonWrapper>
-        <Button>
-          <ButtonContent>
-            <ButtonImage
-              src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-              alt="GitHub Logo"
-            />
-            내 깃허브
-          </ButtonContent>
-        </Button>
-        <Button onClick={handleAIInterviewClick}>AI 면접</Button>
-        <Button onClick={() => setShowModal(true)}>
-          <ButtonContent>
-            <ButtonImage
-              src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-              alt="Document Icon"
-            />
-            이력서 업로드
-          </ButtonContent>
-        </Button>
-      </ButtonWrapper>
-      {showModal && <Modal ref={modalRef}></Modal>}
-    </Container>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: -100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 4 }}
+      ></motion.div>
+      <Container>
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <Text1>깃허브를 이용한 AI면접</Text1>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2, delay: 1 }}
+        >
+          <Text2>깃허브 기반 AI면접. teamA입니다.</Text2>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2, delay: 1.2 }}
+        >
+          <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2.5, delay: 3 }}
+        >
+          <Image
+            src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+            alt="GitHub Logo"
+          />
+        </motion.div>
+        <ButtonWrapper>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button>
+              <ButtonContent>
+                <ButtonImage
+                  src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                  alt="GitHub Logo"
+                />
+                내 깃허브
+              </ButtonContent>
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button onClick={() => setShowModal(true)}>
+              <ButtonContent>
+                <ButtonImage
+                  src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                  alt="Document Icon"
+                />
+                이력서 업로드
+              </ButtonContent>
+            </Button>
+          </motion.div>
+        </ButtonWrapper>
+        {showModal && <Modal ref={modalRef}></Modal>}
+      </Container>
+    </>
   );
 }
 
