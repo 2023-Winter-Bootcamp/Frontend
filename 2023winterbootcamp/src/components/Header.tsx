@@ -9,17 +9,20 @@ const HeaderContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
   font-weight: bold;
   font-size: 28px;
   margin-bottom: 30px;
   margin-left: 267px;
+  text-decoration: none;
+  color: black;
 `;
 
 const Navigationbar = styled.div`
   display: flex;
   gap: 20px;
   margin-left: 267px;
+  margin-top: 30px;
 `;
 
 const NavItem = styled(Link)`
@@ -37,7 +40,7 @@ const NavItem = styled(Link)`
 function App() {
   return (
     <HeaderContainer>
-      <Logo>teamA.</Logo>
+      <Logo to="/">teamA.</Logo>
       <Navigationbar>
         <NavItem to="/mypage">마이페이지</NavItem>
         <NavItem to="/login">로그인</NavItem>
