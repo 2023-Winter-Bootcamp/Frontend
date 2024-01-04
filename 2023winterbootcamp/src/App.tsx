@@ -6,7 +6,6 @@ import Mypage from "./Mypage";
 import Choose from "./Choosepage";
 import Interview from "./Interviewpage";
 import Footer from "./components/Footer";
-import Mypage from "./Mypage";
 import Resultpage from "./Resultpage";
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/choose" element={<Choose />} />
           <Route path="/interview" element={<Interview />} />
-          <Route path="/" element={<Resultpage/>} />
+          <Route path="/result" element={<Resultpage />} />
         </Routes>
         <Footer />
       </Layout>
