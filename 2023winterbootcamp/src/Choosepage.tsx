@@ -13,7 +13,6 @@ const TextWrapper1 = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  margin-left: 840px;
 `;
 
 const Text1 = styled.div`
@@ -21,6 +20,7 @@ const Text1 = styled.div`
   font-weight: bold;
   margin-top: 40px;
   margin-bottom: 40px;
+  margin-left: 420px;
 `;
 
 const ButtonsContainer = styled.div`
@@ -158,7 +158,6 @@ function Choose() {
     width: 100%;
     display: flex;
     justify-content: flex-start;
-    margin-left: 840px;
   `;
 
   const Text2 = styled.div`
@@ -166,6 +165,7 @@ function Choose() {
     font-weight: bold;
     margin-top: 40px;
     margin-bottom: 10px;
+    margin-left: 420px;
   `;
 
   const RepoContainer = styled.div`

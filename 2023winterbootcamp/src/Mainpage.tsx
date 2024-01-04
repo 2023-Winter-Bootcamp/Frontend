@@ -16,6 +16,7 @@ const Container = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
+  padding: 20px;
 `;
 
 const Text1 = styled.div`
