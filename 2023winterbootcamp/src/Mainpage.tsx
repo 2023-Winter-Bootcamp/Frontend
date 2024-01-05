@@ -90,7 +90,7 @@ const Container1 = styled.div`
   width: 100%;
   height: 900px;
   padding: 20px;
-  background: linear-gradient(white 80%,gray);
+  background: white;
 `
 
 const ImageContainer = styled.div`
@@ -136,7 +136,7 @@ const ImageBoxImage = styled.div<ImageProps>`
 
 const Container2 = styled.div`
   width: 100%;
-  height: 680px;
+  height: 100vh;
   color: white;
   font-size: 40px;
   font-weight: 700;
@@ -144,6 +144,12 @@ const Container2 = styled.div`
   background: black;
   box-sizing: border-box;
   padding-top: 300px;
+`
+
+const MiddleContainer = styled.div`
+  width : 100%;
+  height : 100vh;
+  background: linear-gradient(#fff,#000);
 `
 
 function Main() {
@@ -174,10 +180,10 @@ function Main() {
   const control1 = useAnimationControls()
   const control2 = useAnimationControls()
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if(latest >= 160){
+    if(latest >= 200){
       control1.start({opacity: 1, y: 0})
     }
-    if(latest >= 960){
+    if(latest >= 2700){
       control2.start({opacity: 1})
     }
   })
@@ -294,6 +300,7 @@ function Main() {
           </motion.div>
         </ImageContainer>
       </Container1>
+      <MiddleContainer/>
       <Container2>
         <motion.div
           initial={{opacity: 0}}
