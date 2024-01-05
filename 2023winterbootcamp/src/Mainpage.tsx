@@ -14,7 +14,7 @@ import {
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
   width: 100%;
-  height: 110vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -217,8 +217,22 @@ const ImageContainer = styled.div`
 `;
 
 const ImageBox = styled.div`
-  width: 400px;
-  height: 550px;
+  width: 380px;
+  height: 540px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ImageBox2 = styled.div`
+  width: 486px;
+  height: 345px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ImageBox3 = styled.div`
+  width: 330px;
+  height: 510px;
   display: flex;
   flex-direction: column;
 `;
@@ -229,9 +243,34 @@ const ImageBoxText = styled.div`
   box-sizing: border-box;
   padding: 10px 28px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+`;
+
+const ImageBoxText2 = styled.div`
+  width: 100%;
+  height: 90px;
+  box-sizing: border-box;
+  padding: 10px 28px;
+  font-size: 20px;
+  font-weight: 700;
   text-align: center;
   line-height: 1.7;
+  margin-bottom: 100px;
+  margin-top: 10px;
+`;
+
+const ImageBoxText3 = styled.div`
+  width: 100%;
+  height: 90px;
+  box-sizing: border-box;
+  padding: 10px 28px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.7;
+  margin-top: 10px;
 `;
 
 interface ImageProps {
@@ -239,8 +278,28 @@ interface ImageProps {
 }
 
 const ImageBoxImage = styled.div<ImageProps>`
-  width: 100%;
-  height: 450px;
+  width: 374px;
+  height: 430px;
+  background-image: url(${(props) => props.imageurl});
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+`;
+
+const ImageBoxImage2 = styled.div<ImageProps>`
+  width: 486px;
+  height: 345px;
+  background-image: url(${(props) => props.imageurl});
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+`;
+
+const ImageBoxImage3 = styled.div<ImageProps>`
+  width: 342px;
+  height: 462px;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
@@ -444,10 +503,10 @@ function Main() {
           >
             <ImageBox>
               <ImageBoxText>
-                면접 종류, 포지션, 면접 방식, 이력서, 레포지토리 선택 등 다양한
-                옵션
+                면접 종류, 포지션, 면접 방식, 이력서, <br />
+                레포지토리 선택 등 다양한 옵션
               </ImageBoxText>
-              <ImageBoxImage imageurl="https://i.postimg.cc/LXZGcBXT/Screenshot-from-2024-01-05-03-13-48.png" />
+              <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
             </ImageBox>
           </motion.div>
           <motion.div
@@ -455,20 +514,20 @@ function Main() {
             animate={control1}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            <ImageBox>
-              <ImageBoxText>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText>
-              <ImageBoxImage imageurl="https://i.postimg.cc/RZyRkrnk/Screenshot-from-2024-01-05-03-14-22.png" />
-            </ImageBox>
+            <ImageBox2>
+              <ImageBoxText2>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText2>
+              <ImageBoxImage2 imageurl="https://ifh.cc/g/LG1kHy.png" />
+            </ImageBox2>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={control1}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            <ImageBox>
-              <ImageBoxText>면접 결과 확인, 보관</ImageBoxText>
-              <ImageBoxImage imageurl="https://i.postimg.cc/nrGSxdtv/Screenshot-from-2024-01-05-03-14-48.png" />
-            </ImageBox>
+            <ImageBox3>
+              <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
+              <ImageBoxImage3 imageurl="https://ifh.cc/g/vgbofK.jpg" />
+            </ImageBox3>
           </motion.div>
         </ImageContainer>
       </Container1>
