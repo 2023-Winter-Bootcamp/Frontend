@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Modal from "./components/Modal";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent, useAnimationControls } from "framer-motion";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -145,6 +145,7 @@ const Container2 = styled.div`
   box-sizing: border-box;
   padding-top: 300px;
 `
+
 function Main() {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -167,6 +168,20 @@ function Main() {
       document.removeEventListener("mousedown", closeModal);
     };
   }, []);
+  
+  //스크롤 이벤트
+  const { scrollY } = useScroll()
+  const control1 = useAnimationControls()
+  const control2 = useAnimationControls()
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if(latest >= 160){
+      control1.start({opacity: 1, y: 0})
+    }
+    if(latest >= 960){
+      control2.start({opacity: 1})
+    }
+  })
+  //스크롤 이벤트
 
   return (
     <>
@@ -250,22 +265,42 @@ function Main() {
       </Container>
       <Container1>
         <ImageContainer>
-          <ImageBox>
-            <ImageBoxText>면접 종류, 포지션, 면접 방식, 이력서, 레포지토리 선택 등 다양한 옵션</ImageBoxText>
-            <ImageBoxImage imageurl="https://i.postimg.cc/LXZGcBXT/Screenshot-from-2024-01-05-03-13-48.png"/>
-          </ImageBox>
-          <ImageBox>
-            <ImageBoxText>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText>
-            <ImageBoxImage imageurl="https://i.postimg.cc/RZyRkrnk/Screenshot-from-2024-01-05-03-14-22.png"/>
-          </ImageBox>
-          <ImageBox>
-            <ImageBoxText>면접 결과 확인, 보관</ImageBoxText>
-            <ImageBoxImage imageurl="https://i.postimg.cc/nrGSxdtv/Screenshot-from-2024-01-05-03-14-48.png"/>
-          </ImageBox>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1}}>
+            <ImageBox>
+              <ImageBoxText>면접 종류, 포지션, 면접 방식, 이력서, 레포지토리 선택 등 다양한 옵션</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/LXZGcBXT/Screenshot-from-2024-01-05-03-13-48.png"/>
+            </ImageBox>
+          </motion.div>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1}}>
+            <ImageBox>
+              <ImageBoxText>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/RZyRkrnk/Screenshot-from-2024-01-05-03-14-22.png"/>
+            </ImageBox>
+          </motion.div>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1}}>
+            <ImageBox>
+              <ImageBoxText>면접 결과 확인, 보관</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/nrGSxdtv/Screenshot-from-2024-01-05-03-14-48.png"/>
+            </ImageBox>
+          </motion.div>
         </ImageContainer>
       </Container1>
       <Container2>
-        teamA.와 함께 개발자 커리어 준비를 시작해보세요
+        <motion.div
+          initial={{opacity: 0}}
+          animate={control2}
+          transition={{duration: 1}}>
+          teamA.와 함께 개발자 커리어 준비를 시작해보세요
+        </motion.div>
       </Container2>
     </>
   );
