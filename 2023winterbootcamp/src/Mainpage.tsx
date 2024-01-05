@@ -180,10 +180,10 @@ function Main() {
   const control1 = useAnimationControls()
   const control2 = useAnimationControls()
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if(latest >= 200){
+    if(latest >= 450){
       control1.start({opacity: 1, y: 0})
     }
-    if(latest >= 2700){
+    if(latest >= 2400){
       control2.start({opacity: 1})
     }
   })
@@ -283,7 +283,7 @@ function Main() {
           <motion.div
             initial={{opacity: 0, y:30}}
             animate={control1}
-            transition={{duration: 1}}>
+            transition={{duration: 1, delay: 0.25}}>
             <ImageBox>
               <ImageBoxText>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText>
               <ImageBoxImage imageurl="https://i.postimg.cc/RZyRkrnk/Screenshot-from-2024-01-05-03-14-22.png"/>
@@ -292,7 +292,7 @@ function Main() {
           <motion.div
             initial={{opacity: 0, y:30}}
             animate={control1}
-            transition={{duration: 1}}>
+            transition={{duration: 1, delay: 0.5}}>
             <ImageBox>
               <ImageBoxText>면접 결과 확인, 보관</ImageBoxText>
               <ImageBoxImage imageurl="https://i.postimg.cc/nrGSxdtv/Screenshot-from-2024-01-05-03-14-48.png"/>
