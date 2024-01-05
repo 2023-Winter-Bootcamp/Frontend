@@ -119,11 +119,19 @@ const Text5 = styled.div`
   color: white;
 `;
 
-const Page2 = styled.div`
+const Page2Container = styled(motion.div)`
+  overflow: hidden;
+  width: 100%;
+  height: 650px;
+  background-color: white;
+`;
+
+const Page2 = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 100%;
   height: 650px;
+  background-color: white;
 `;
 
 const TextComponents = styled.div`
@@ -311,23 +319,33 @@ function Main() {
           </ScrollContent>
         </ScrollWrapper>
       </Container>
-      <Page2>
-        <TextComponents2>
-          <TextComponents>
-            <Rectangle />
-            <Textb>
-              <Text6>GitHub 계정과</Text6>
-              <Text7>이력서만 제출하세요</Text7>
-            </Textb>
-          </TextComponents>
-          <Text8>
-            이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을 지닌
-            AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트 경험, 협업 능력
-            등을 정확하게 평가하여 나만의 면접을 제공합니다
-          </Text8>
-        </TextComponents2>
-        <Image2 />
-      </Page2>
+      <Page2Container
+        initial={{ opacity: 2, y: 50 }}
+        animate={{ opacity: 1, y: -100 }}
+        transition={{ duration: 1 }}
+      >
+        <Page2
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          <TextComponents2>
+            <TextComponents>
+              <Rectangle />
+              <Textb>
+                <Text6>GitHub 계정과</Text6>
+                <Text7>이력서만 제출하세요</Text7>
+              </Textb>
+            </TextComponents>
+            <Text8>
+              이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을 지닌
+              AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트 경험, 협업 능력
+              등을 정확하게 평가하여 나만의 면접을 제공합니다
+            </Text8>
+          </TextComponents2>
+          <Image2 />
+        </Page2>
+      </Page2Container>
     </>
   );
 }
