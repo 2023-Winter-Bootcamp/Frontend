@@ -3,16 +3,15 @@ import styled from "styled-components";
 import Modal from "./components/Modal";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, animate, useScroll, useMotionValueEvent } from "framer-motion";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
   width: 100%;
-  height: 700px;
+  height: 110vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -119,11 +118,13 @@ const Text5 = styled.div`
   color: white;
 `;
 
-const Page2Container = styled(motion.div)`
+const Page2Container = styled.div`
   overflow: hidden;
   width: 100%;
-  height: 650px;
+  height: 100vh;
   background-color: white;
+  position: absolute;
+  top: 100vh;
 `;
 
 const Page2 = styled(motion.div)`
@@ -198,7 +199,19 @@ function Main() {
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [scrollPosition, setScrollPosition] = useState(0);
-
+  const { scrollY } = useScroll();
+  const [isUp, setIsUp] = useState(false);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest >= 320 && !isUp) {
+      setIsUp(true);
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "30vh" }, { duration: 1 });
+    } else if (latest < 320 && isUp) {
+      setIsUp(false);
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "120vh" }, { duration: 1 });
+    }
+  });
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY;
@@ -231,11 +244,6 @@ function Main() {
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: -100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 4 }}
-      ></motion.div>
       <Container>
         <ScrollWrapper>
           <ScrollContent style={{ top: `-${scrollPosition * 2}px` }}>
@@ -310,7 +318,6 @@ function Main() {
               </motion.div>
             </ButtonWrapper>
             {showModal && <Modal ref={modalRef}></Modal>}
-
             <TextField>
               <Text4>깃허브 연동</Text4>
               <Text4>개발자 필수 면접 플랫폼</Text4>
@@ -319,15 +326,11 @@ function Main() {
           </ScrollContent>
         </ScrollWrapper>
       </Container>
-      <Page2Container
-        initial={{ opacity: 2, y: 50 }}
-        animate={{ opacity: 1, y: -100 }}
-        transition={{ duration: 1 }}
-      >
+      <Page2Container id="page2container">
         <Page2
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1, delay: 2 }}
         >
           <TextComponents2>
             <TextComponents>
