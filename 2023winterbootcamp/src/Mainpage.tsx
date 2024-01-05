@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Modal from "./components/Modal";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, animate, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent, useAnimationControls, animate } from "framer-motion";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -194,6 +194,72 @@ const TextComponents2 = styled.div`
   align-items: flex-start;
 `;
 
+const Container1 = styled.div`
+  width: 100%;
+  height: 900px;
+  padding: 20px;
+  background: white;
+`
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: 650px;
+  box-sizing: border-box;
+  padding: 60px;
+  display: flex;
+  justify-content: space-evenly;
+`
+
+const ImageBox = styled.div`
+  width: 400px;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  
+`
+
+const ImageBoxText = styled.div`
+  width: 100%;
+  height: 90px;
+  box-sizing: border-box;
+  padding: 10px 28px;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.7;
+`
+interface ImageProps {
+  imageurl : string;
+}
+
+const ImageBoxImage = styled.div<ImageProps>`
+  width: 100%;
+  height: 450px;
+  background-image: url(${(props) => props.imageurl});
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+`
+
+const Container2 = styled.div`
+  width: 100%;
+  height: 100vh;
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  background: black;
+  box-sizing: border-box;
+  padding-top: 300px;
+`
+
+const MiddleContainer = styled.div`
+  width : 100%;
+  height : 100vh;
+  background: linear-gradient(#fff,#000);
+`
+
 function Main() {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -241,6 +307,20 @@ function Main() {
       document.removeEventListener("mousedown", closeModal);
     };
   }, []);
+  
+  //스크롤 이벤트
+  const { scrollY } = useScroll()
+  const control1 = useAnimationControls()
+  const control2 = useAnimationControls()
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if(latest >= 450){
+      control1.start({opacity: 1, y: 0})
+    }
+    if(latest >= 2400){
+      control2.start({opacity: 1})
+    }
+  })
+  //스크롤 이벤트
 
   return (
     <>
@@ -349,6 +429,92 @@ function Main() {
           <Image2 />
         </Page2>
       </Page2Container>
+          <Image
+            src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+            alt="GitHub Logo"
+          />
+        </motion.div>
+        <ButtonWrapper>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button>
+              <ButtonContent>
+                <ButtonImage
+                  src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                  alt="GitHub Logo"
+                />
+                내 깃허브
+              </ButtonContent>
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            <Button onClick={() => setShowModal(true)}>
+              <ButtonContent>
+                <ButtonImage
+                  src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                  alt="Document Icon"
+                />
+                이력서 업로드
+              </ButtonContent>
+            </Button>
+          </motion.div>
+        </ButtonWrapper>
+        {showModal && <Modal ref={modalRef}></Modal>}
+      </Container>
+      <Container1>
+        <ImageContainer>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1}}>
+            <ImageBox>
+              <ImageBoxText>면접 종류, 포지션, 면접 방식, 이력서, 레포지토리 선택 등 다양한 옵션</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/LXZGcBXT/Screenshot-from-2024-01-05-03-13-48.png"/>
+            </ImageBox>
+          </motion.div>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1, delay: 0.25}}>
+            <ImageBox>
+              <ImageBoxText>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/RZyRkrnk/Screenshot-from-2024-01-05-03-14-22.png"/>
+            </ImageBox>
+          </motion.div>
+          <motion.div
+            initial={{opacity: 0, y:30}}
+            animate={control1}
+            transition={{duration: 1, delay: 0.5}}>
+            <ImageBox>
+              <ImageBoxText>면접 결과 확인, 보관</ImageBoxText>
+              <ImageBoxImage imageurl="https://i.postimg.cc/nrGSxdtv/Screenshot-from-2024-01-05-03-14-48.png"/>
+            </ImageBox>
+          </motion.div>
+        </ImageContainer>
+      </Container1>
+      <MiddleContainer/>
+      <Container2>
+        <motion.div
+          initial={{opacity: 0}}
+          animate={control2}
+          transition={{duration: 1}}>
+          teamA.와 함께 개발자 커리어 준비를 시작해보세요
+        </motion.div>
+      </Container2>         
     </>
   );
 }
