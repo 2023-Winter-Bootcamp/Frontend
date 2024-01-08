@@ -2,19 +2,50 @@ import React from "react";
 import styled from "styled-components";
 
 const FooterContainer = styled.div`
-  width: 100%;
-  height: 380px;
-  padding: 20px;
-  background: #1a1a1a;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 380px;
+    padding: 20px;
+    background: #1A1A1A;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 100%;
+    height: 380px;
+    padding: 20px;
+    background: #1A1A1A;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 100%;
+    height: 380px;
+    padding: 20px;
+    background: #1A1A1A;
+  }
 `;
-
 const TextBox = styled.div`
-  width: 252px;
-  height: 144px;
-  text-align: left;
-  margin-left: 267px;
-  margin-top: 80px;
-  display: inline-block;
+  @media screen and (max-width: 768px) {
+    width: 252px;
+    height: 144px;
+    text-align: left;
+    margin-left: 100px;
+    margin-top: 80px;
+    display: inline-block;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 252px;
+    height: 144px;
+    text-align: left;
+    margin-left: 200px;
+    margin-top: 80px;
+    display: inline-block;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 252px;
+    height: 144px;
+    text-align: left;
+    margin-left: 267px;
+    margin-top: 80px;
+    display: inline-block;
+  }
 `;
 
 const MainText = styled.div`

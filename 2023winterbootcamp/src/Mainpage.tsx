@@ -107,9 +107,17 @@ const ButtonImage = styled.img`
 `;
 
 const TextField = styled.div`
-  margin-left: 267px;
   text-align: left;
   margin-top: 172px;
+  @media screen and (max-width: 768px) {
+    margin-left: 80px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 150px;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-left: 267px;
+  }
 `;
 
 const Text4 = styled.div`
@@ -138,120 +146,206 @@ const Page2Container = styled.div`
 
 const Page2 = styled(motion.div)`
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  height: 80%;
+  height: 60%;
   background-color: white;
   text-align: start;
   line-height: 1.5;
 `;
 
 const TextComponents = styled.div`
-  margin-left: 300px;
+  width: 300px;
   display: flex;
   align-items: center;
-  margin-top: 130px;
-`;
-
-const Rectangle = styled.div`
-  width: 3px;
-  height: 80px;
-  background-color: black;
 `;
 
 const Textb = styled.div`
+  border-left: 3px solid black;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 768px) {
+    width: 270px;
+    height: 80px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 300px;
+    height: 90px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 350px;
+    height: 100px;
+  }
 `;
 
 const Text6 = styled.div`
-  color: black;
-  font-weight: bold;
-  font-size: 34px;
-  margin-left: 10px;
-`;
-
-const Text7 = styled.div`
-  color: black;
-  font-weight: bold;
-  font-size: 34px;
-  margin-left: 10px;
+  @media screen and (max-width: 768px) {
+    color: black;
+    font-weight: bold;
+    font-size: 27px;
+    margin-left: 10px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    color: black;
+    font-weight: bold;
+    font-size: 30px;
+    margin-left: 10px;
+  }
+  @media screen and (min-width: 1024px) {
+    color: black;
+    font-weight: bold;
+    font-size: 34px;
+    margin-left: 10px;
+  }
 `;
 
 const Text8 = styled.div`
-  width: 350px;
   color: black;
-  font-size: 22px;
-  margin-left: 300px;
-  margin-top: 10px;
-  margin-bottom: 222px;
-  line-height: 1.8;
+  @media screen and (max-width: 768px) {
+    width: 270px;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-top: 18px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 300px;
+    font-size: 20px;
+    line-height: 1.8;
+    margin-top: 22px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 350px;
+    font-size: 22px;
+    line-height: 1.8;
+    margin-top: 30px;
+  }
 `;
 
 const Image2 = styled.div`
-  width: 300px;
-  max-width: 600px;
-  height: 400px;
   background-image: url("https://ifh.cc/g/Y5bZkt.jpg");
   background-size: cover;
   background-position: center;
-  margin-left: 300px;
   margin-bottom: 20px;
+  @media screen and (max-width: 768px) {
+    width: 250px;
+    height: 330px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 300px;
+    height: 400px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 330px;
+    height: 440px;
+  }
 `;
 
 const TextComponents2 = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 `;
 
 const Container1 = styled.div`
   width: 100%;
-  height: 900px;
   padding: 20px;
   background: white;
   position: relative;
   display: flex;
   align-items: center;
   z-index: 3;
+  @media screen and (max-width: 768px) {
+    height: 1900px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    height: 2500px;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 900px;
+  }
 `;
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: 650px;
   box-sizing: border-box;
   padding: 60px;
   display: flex;
-  justify-content: space-evenly;
+  @media screen and (max-width: 768px) {
+    height: 1800px;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    height: 2100px;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 650px;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
 `;
 
 const ImageBox = styled.div`
-  width: 380px;
-  height: 540px;
+  aspect-ratio: 1 / 1.5;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 768px) {
+    width: 350px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 500px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 26vw;
+  }
 `;
+
 const ImageBox2 = styled.div`
-  width: 470px;
-  height: 460px;
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 768px) {
+    width: 480px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 500px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 32vw;
+  }
 `;
+
 const ImageBox3 = styled.div`
-  width: 330px;
-  height: 590px;
+  aspect-ratio: 1 / 1.78;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 768px){
+    width: 350px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 500px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 22vw;
+  }
 `;
 const ImageBoxText = styled.div`
   width: 100%;
   height: 90px;
   box-sizing: border-box;
-  padding: 10px 28px;
+  padding: 10px 10px;
   font-size: 20px;
   font-weight: 700;
   text-align: center;
   line-height: 1.4;
+  @media screen and (max-width: 1023px) {
+    font-size: 24px;
+    padding: 0;
+  }
 `;
 const ImageBoxText2 = styled.div`
   width: 100%;
@@ -262,8 +356,11 @@ const ImageBoxText2 = styled.div`
   font-weight: 700;
   text-align: center;
   line-height: 1.7;
-  margin-bottom: 70px;
   margin-top: 10px;
+  @media screen and (max-width: 1023px) {
+    font-size: 24px;
+    padding: 0;
+  }
 `;
 const ImageBoxText3 = styled.div`
   width: 100%;
@@ -275,37 +372,60 @@ const ImageBoxText3 = styled.div`
   text-align: center;
   line-height: 1.7;
   margin-top: 10px;
+  @media screen and (max-width: 1023px) {
+    font-size: 24px;
+    padding: 0;
+  }
 `;
 interface ImageProps {
   imageurl: string;
 }
 const ImageBoxImage = styled.div<ImageProps>`
-  width: 374px;
-  height: 430px;
+  aspect-ratio: 1 / 1.15;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 26vw;
+  }
 `;
 const ImageBoxImage2 = styled.div<ImageProps>`
-  width: 450px;
-  height: 400px;
+  aspect-ratio: 9 / 6.5;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
   margin-left: 5px;
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 31vw;
+    margin-top: 10%;
+  }
 `;
-const ImageBoxImage3 = styled.div<ImageProps>`
-  width: 342px;
-  height: 458px;
+const ImageBoxImage3 = styled.img<ImageProps>`
+  aspect-ratio: 1 / 1.34;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 22vw;
+  }
 `;
 
 const Container2 = styled.div`
@@ -317,6 +437,12 @@ const Container2 = styled.div`
   text-align: center;
   background: black;
   padding: 300px 20px 20px 20px;
+  
+  @media screen and (max-width: 1023px){
+    & div {
+      font-size: 30px;
+    }
+  }
 `;
 
 const MiddleContainer = styled.div`
@@ -338,7 +464,7 @@ function Main() {
       setIsUp(true);
       const box = document.getElementById("page2container");
       animate(box as HTMLElement, { top: "20%" }, { duration: 1 });
-    } else if (latest < 400 && isUp) {
+    } else if (latest < 370 && isUp) {
       setIsUp(false);
       const box = document.getElementById("page2container");
       animate(box as HTMLElement, { top: "100%" }, { duration: 0.5 });
@@ -355,7 +481,6 @@ function Main() {
         setShowModal(false);
       }
     };
-
     document.addEventListener("mousedown", closeModal);
 
     return () => {
@@ -363,18 +488,18 @@ function Main() {
     };
   }, []);
   const [isDone, setIsDone] = useState([false, false, false]);
-  const [throttler, setThrottler] = useState(false)
+  const [throttler, setThrottler] = useState(false);
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest < 400){
-      const scroll = document.getElementById('scrollContent') as HTMLDivElement
-      scroll.style.top = `-${latest * 2}px`
+    if (latest < 400) {
+      const scroll = document.getElementById("scrollContent") as HTMLDivElement;
+      scroll.style.top = `-${latest * 2}px`;
     }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
     if (throttler) return;
-    setThrottler(true)
+    setThrottler(true);
     setTimeout(() => {
       //함수가 한 번만 실행될 수 있도록 상태변수 추가
       if (latest >= 400 && !isDone[0]) {
@@ -395,7 +520,7 @@ function Main() {
         setIsDone(_isDone);
         control3.start({ opacity: 1 });
       }
-      setThrottler(false)
+      setThrottler(false);
     }, 100);
   });
 
@@ -491,10 +616,9 @@ function Main() {
           >
             <TextComponents2>
               <TextComponents>
-                <Rectangle />
                 <Textb>
                   <Text6>GitHub 계정과</Text6>
-                  <Text7>이력서만 제출하세요</Text7>
+                  <Text6>이력서만 제출하세요</Text6>
                 </Textb>
               </TextComponents>
               <Text8>
@@ -516,8 +640,8 @@ function Main() {
           >
             <ImageBox>
               <ImageBoxText>
-                면접 종류, 포지션, 면접 방식, 이력서, <br />
-                레포지토리 선택 등 다양한 옵션
+                면접 종류, 포지션, 면접 방식, <br />
+                이력서 선택 등 다양한 옵션
               </ImageBoxText>
               <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
             </ImageBox>
@@ -551,7 +675,8 @@ function Main() {
           animate={control3}
           transition={{ duration: 1 }}
         >
-          teamA.와 함께 개발자 커리어 준비를 시작해보세요
+        teamA.와 함께
+        개발자 커리어 준비를 시작해보세요
         </motion.div>
       </Container2>
     </>
