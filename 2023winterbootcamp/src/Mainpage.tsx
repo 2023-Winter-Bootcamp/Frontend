@@ -202,7 +202,7 @@ const TextComponents2 = styled.div`
 
 const Container1 = styled.div`
   width: 100%;
-  height: 900px;
+  height: 600px;
   padding: 20px;
   background: white;
 `;
@@ -224,15 +224,15 @@ const ImageBox = styled.div`
 `;
 
 const ImageBox2 = styled.div`
-  width: 486px;
-  height: 345px;
+  width: 470px;
+  height: 460px;
   display: flex;
   flex-direction: column;
 `;
 
 const ImageBox3 = styled.div`
   width: 330px;
-  height: 510px;
+  height: 590px;
   display: flex;
   flex-direction: column;
 `;
@@ -257,13 +257,13 @@ const ImageBoxText2 = styled.div`
   font-weight: 700;
   text-align: center;
   line-height: 1.7;
-  margin-bottom: 100px;
+  margin-bottom: 70px;
   margin-top: 10px;
 `;
 
 const ImageBoxText3 = styled.div`
   width: 100%;
-  height: 90px;
+  height: 70px;
   box-sizing: border-box;
   padding: 10px 28px;
   font-size: 20px;
@@ -288,18 +288,19 @@ const ImageBoxImage = styled.div<ImageProps>`
 `;
 
 const ImageBoxImage2 = styled.div<ImageProps>`
-  width: 486px;
-  height: 345px;
+  width: 450px;
+  height: 400px;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+  margin-left: 5px;
 `;
 
 const ImageBoxImage3 = styled.div<ImageProps>`
   width: 342px;
-  height: 462px;
+  height: 458px;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
@@ -321,7 +322,7 @@ const Container2 = styled.div`
 
 const MiddleContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 80vh;
   background: linear-gradient(#fff, #000);
 `;
 
@@ -512,7 +513,7 @@ function Main() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={control1}
-            transition={{ duration: 1, delay: 0.25 }}
+            transition={{ duration: 1, delay: 0.5 }}
           >
             <ImageBox2>
               <ImageBoxText2>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText2>
@@ -522,7 +523,7 @@ function Main() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={control1}
-            transition={{ duration: 1, delay: 0.5 }}
+            transition={{ duration: 1, delay: 1.5 }}
           >
             <ImageBox3>
               <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
@@ -536,7 +537,7 @@ function Main() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={control2}
-          transition={{ duration: 1 }}
+          transition={{ duration: 2.5 }}
         >
           teamA.와 함께 개발자 커리어 준비를 시작해보세요
         </motion.div>

@@ -2,6 +2,38 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+`;
+
+const TextWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+`;
+
+const Text = styled.div`
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-left: 420px;
+`;
+
+const Input = styled.input`
+  width: 610px;
+  height: 40px;
+  border: none;
+  border-bottom: 1px solid #1a1a1a;
+  outline: none;
+  &::placeholder {
+    color: #c1c1c1;
+  }
+`;
+
 const Container1 = styled.div`
   display: flex;
   flex-direction: column;
@@ -222,6 +254,12 @@ function Choose() {
 
   return (
     <>
+      <Container>
+        <TextWrapper>
+          <Text>면접 제목</Text>
+        </TextWrapper>
+        <Input placeholder=""></Input>
+      </Container>
       <Container1>
         <TextWrapper1>
           <Text1>면접 종류</Text1>
