@@ -1,18 +1,18 @@
-import React from “react”;
-import styled from “styled-components”;
-import Modal from “./components/Modal”;
-import { useState, useEffect, useRef } from “react”;
-import { useNavigate } from “react-router-dom”;
+import React from "react";
+import styled from "styled-components";
+import Modal from "./components/Modal";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   motion,
   animate,
   useScroll,
   useMotionValueEvent,
   useAnimationControls,
-} from “framer-motion”;
+} from "framer-motion";
 
 const Container = styled.div`
-  background-image: url(“https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png”);
+  background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
   width: 100%;
   height: 120vh;
   display: flex;
@@ -192,7 +192,7 @@ const Image2 = styled.div`
   width: 300px;
   max-width: 600px;
   height: 400px;
-  background-image: url(“https://ifh.cc/g/Y5bZkt.jpg”);
+  background-image: url("https://ifh.cc/g/Y5bZkt.jpg");
   background-size: cover;
   background-position: center;
   margin-left: 300px;
@@ -332,15 +332,15 @@ function Main() {
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
 
-  useMotionValueEvent(scrollY, “change”, (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest >= 400 && !isUp) {
       setIsUp(true);
-      const box = document.getElementById(“page2container”);
-      animate(box as HTMLElement, { top: “20%” }, { duration: 1 });
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "20%" }, { duration: 1 });
     } else if (latest < 400 && isUp) {
       setIsUp(false);
-      const box = document.getElementById(“page2container”);
-      animate(box as HTMLElement, { top: “100%” }, { duration: 1 });
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "100%" }, { duration: 1 });
     }
   });
 
@@ -350,14 +350,14 @@ function Main() {
       setScrollPosition(position);
     };
 
-    window.addEventListener(“scroll”, handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener(“scroll”, handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   const handleAIInterviewClick = () => {
-    navigate(“/choose”);
+    navigate("/choose");
   };
 
   useEffect(() => {
@@ -367,10 +367,10 @@ function Main() {
       }
     };
 
-    document.addEventListener(“mousedown”, closeModal);
+    document.addEventListener("mousedown", closeModal);
 
     return () => {
-      document.removeEventListener(“mousedown”, closeModal);
+      document.removeEventListener("mousedown", closeModal);
     };
   }, []);
   const [isDone, setIsDone] = useState([false, false, false]);
@@ -378,7 +378,7 @@ function Main() {
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
-  useMotionValueEvent(scrollY, “change”, (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
     if (throttler) return;
     setThrottler(true)
@@ -438,8 +438,8 @@ function Main() {
               transition={{ duration: 2.5, delay: 2.5 }}
             >
               <Image
-                src=“https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png”
-                alt=“GitHub Logo”
+                src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                alt="GitHub Logo"
               />
             </motion.div>
             <ButtonWrapper>
@@ -451,8 +451,8 @@ function Main() {
                 <Button>
                   <ButtonContent>
                     <ButtonImage
-                      src=“https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png”
-                      alt=“GitHub Logo”
+                      src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                      alt="GitHub Logo"
                     />
                     내 깃허브
                   </ButtonContent>
@@ -473,8 +473,8 @@ function Main() {
                 <Button onClick={() => setShowModal(true)}>
                   <ButtonContent>
                     <ButtonImage
-                      src=“https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png”
-                      alt=“Document Icon”
+                      src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                      alt="Document Icon"
                     />
                     이력서 업로드
                   </ButtonContent>
@@ -490,7 +490,7 @@ function Main() {
             </TextField>
           </ScrollContent>
         </ScrollWrapper>
-        <Page2Container id=“page2container”>
+        <Page2Container id="page2container">
           <Page2
             initial={{ opacity: 0, y: 50 }}
             animate={control1}
@@ -526,7 +526,7 @@ function Main() {
                 면접 종류, 포지션, 면접 방식, 이력서, <br />
                 레포지토리 선택 등 다양한 옵션
               </ImageBoxText>
-              <ImageBoxImage imageurl=“https://ifh.cc/g/QKjM80.png” />
+              <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
             </ImageBox>
           </motion.div>
           <motion.div
@@ -536,7 +536,7 @@ function Main() {
           >
             <ImageBox2>
               <ImageBoxText2>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText2>
-              <ImageBoxImage2 imageurl=“https://ifh.cc/g/LG1kHy.png” />
+              <ImageBoxImage2 imageurl="https://ifh.cc/g/LG1kHy.png" />
             </ImageBox2>
           </motion.div>
           <motion.div
@@ -546,7 +546,7 @@ function Main() {
           >
             <ImageBox3>
               <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
-              <ImageBoxImage3 imageurl=“https://ifh.cc/g/vgbofK.jpg” />
+              <ImageBoxImage3 imageurl="https://ifh.cc/g/vgbofK.jpg" />
             </ImageBox3>
           </motion.div>
         </ImageContainer>
