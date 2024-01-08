@@ -363,18 +363,18 @@ function Main() {
     };
   }, []);
   const [isDone, setIsDone] = useState([false, false, false]);
-  const [throttler, setThrottler] = useState(false)
+  const [throttler, setThrottler] = useState(false);
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest < 400){
-      const scroll = document.getElementById('scrollContent') as HTMLDivElement
-      scroll.style.top = `-${latest * 2}px`
+    if (latest < 400) {
+      const scroll = document.getElementById("scrollContent") as HTMLDivElement;
+      scroll.style.top = `-${latest * 2}px`;
     }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
     if (throttler) return;
-    setThrottler(true)
+    setThrottler(true);
     setTimeout(() => {
       //함수가 한 번만 실행될 수 있도록 상태변수 추가
       if (latest >= 400 && !isDone[0]) {
@@ -395,7 +395,7 @@ function Main() {
         setIsDone(_isDone);
         control3.start({ opacity: 1 });
       }
-      setThrottler(false)
+      setThrottler(false);
     }, 100);
   });
 

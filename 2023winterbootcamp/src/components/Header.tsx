@@ -4,26 +4,78 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const HeaderContainer = styled.div`
-  background-color: white;
-  width: 100%;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  @media screen and (max-width: 768px) {
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  @media screen and (min-width: 1024px) {
+    background-color: white;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const Logo = styled(motion(Link))`
-  font-weight: bold;
-  font-size: 28px;
-  margin-bottom: 30px;
-  margin-left: 267px;
-  text-decoration: none;
-  color: black;
+  @media screen and (max-width: 768px) {
+    font-weight: bold;
+    font-size: 28px;
+    margin-bottom: 30px;
+    margin-left: 100px;
+    text-decoration: none;
+    color: black;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-weight: bold;
+    font-size: 28px;
+    margin-bottom: 30px;
+    margin-left: 200px;
+    text-decoration: none;
+    color: black;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-weight: bold;
+    font-size: 28px;
+    margin-bottom: 30px;
+    margin-left: 267px;
+    text-decoration: none;
+    color: black;
+  }
 `;
 
 const Navigationbar = styled.div`
-  display: flex;
-  gap: 20px;
-  margin-left: 267px;
-  margin-top: 30px;
+  @media screen and (max-width: 768px) {
+    display: flex;
+    gap: 20px;
+    margin-left: 100px;
+    margin-top: 30px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    display: flex;
+    gap: 20px;
+    margin-left: 200px;
+    margin-top: 30px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    display: flex;
+    gap: 20px;
+    margin-left: 267px;
+    margin-top: 30px;
+  }
 `;
 
 const NavItem = styled(Link)`
