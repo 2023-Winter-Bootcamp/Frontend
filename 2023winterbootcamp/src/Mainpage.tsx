@@ -126,7 +126,7 @@ const Text5 = styled.div`
 
 const Page2Container = styled.div`
   width: 100%;
-  height: 80%;
+  height: 100%;
   background-color: white;
   box-sizing: border-box;
   position: absolute;
@@ -211,6 +211,8 @@ const Container1 = styled.div`
   padding: 20px;
   background: white;
   position: relative;
+  display: flex;
+  align-items: center;
   z-index: 3;
 `;
 
@@ -308,18 +310,18 @@ const ImageBoxImage3 = styled.div<ImageProps>`
 
 const Container2 = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 60vh;
   color: white;
   font-size: 40px;
   font-weight: 700;
   text-align: center;
   background: black;
-  padding: 300px 20px 0 20px;
+  padding: 300px 20px 20px 20px;
 `;
 
 const MiddleContainer = styled.div`
   width: 100%;
-  height: 80vh;
+  height: 50vh;
   padding: 20px;
   background: linear-gradient(#fff, #000);
 `;
@@ -328,7 +330,6 @@ function Main() {
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const [scrollPosition, setScrollPosition] = useState(0);
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
 
@@ -340,21 +341,9 @@ function Main() {
     } else if (latest < 400 && isUp) {
       setIsUp(false);
       const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "100%" }, { duration: 1 });
+      animate(box as HTMLElement, { top: "100%" }, { duration: 0.5 });
     }
   });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const position = window.scrollY;
-      setScrollPosition(position);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   const handleAIInterviewClick = () => {
     navigate("/choose");
@@ -379,6 +368,10 @@ function Main() {
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
   useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest < 400){
+      const scroll = document.getElementById('scrollContent') as HTMLDivElement
+      scroll.style.top = `-${latest * 2}px`
+    }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
     if (throttler) return;
     setThrottler(true)
@@ -396,7 +389,7 @@ function Main() {
         setIsDone(_isDone);
         control2.start({ opacity: 1, y: 0 });
       }
-      if (latest >= 2400 && !isDone[2]) {
+      if (latest >= 2200 && !isDone[2]) {
         let _isDone = [...isDone];
         _isDone[2] = true;
         setIsDone(_isDone);
@@ -410,7 +403,7 @@ function Main() {
     <>
       <Container>
         <ScrollWrapper>
-          <ScrollContent style={{ top: `-${scrollPosition * 2}px` }}>
+          <ScrollContent id="scrollContent">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
