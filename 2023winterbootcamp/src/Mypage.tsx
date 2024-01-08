@@ -2,41 +2,127 @@ import React from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 100%;
-  height: 500px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    height: 500px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 100%;
+    height: 500px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 100%;
+    height: 500px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const Text1 = styled.div`
-  width: 170px;
-  height: 35px;
-  font-size: 28px;
-  font-weight: 700;
-  margin-top: 40px;
-  margin-left: 267px;
-  margin-bottom: 10px;
+  @media screen and (max-width: 768px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-left: 100px;
+    margin-bottom: 10px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-left: 200px;
+    margin-bottom: 10px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-left: 267px;
+    margin-bottom: 10px;
+  }
 `;
 
 const ResumeContainer = styled.div`
-  width: 920px;
-  height: 370px;
-  display: flex;
-  margin-left: 267px;
-  margin-bottom: 20px;
+  @media screen and (max-width: 768px) {
+    width: 920px;
+    height: 370px;
+    display: flex;
+    margin-left: 100px;
+    margin-bottom: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 920px;
+    height: 370px;
+    display: flex;
+    margin-left: 200px;
+    margin-bottom: 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 920px;
+    height: 370px;
+    display: flex;
+    margin-left: 267px;
+    margin-bottom: 20px;
+  }
 `;
 
 const ResumePreview = styled.div`
-  width: 249px;
-  height: 345px;
-  margin-top: 5px;
-  border-radius: 4px;
-  background-color: #fff;
-  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  & :hover {
-    border: 0px solid #fff;
+  @media screen and (max-width: 768px) {
+    width: 240px;
+    height: 340px;
+    margin-top: 5px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    & :hover {
+      border: 0px solid #fff;
+    }
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 249px;
+    height: 345px;
+    margin-top: 5px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    & :hover {
+      border: 0px solid #fff;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 249px;
+    height: 345px;
+    margin-top: 5px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    & :hover {
+      border: 0px solid #fff;
+    }
   }
 `;
 
@@ -51,12 +137,32 @@ const Text3 = styled.div`
 `;
 
 const Text2 = styled.div`
-  width: 170px;
-  height: 35px;
-  font-size: 28px;
-  font-weight: 700;
-  margin-left: 287px;
-  margin-bottom: 10px;
+  @media screen and (max-width: 768px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-left: 120px;
+    margin-bottom: 10px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-left: 220px;
+    margin-bottom: 10px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 170px;
+    height: 35px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-left: 287px;
+    margin-bottom: 10px;
+  }
 `;
 
 const InterviewContainer = styled.div`
