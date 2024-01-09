@@ -3,11 +3,29 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
-  margin-top: 20px;
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
 `;
 
 const TextWrapper = styled.div`
@@ -20,25 +38,78 @@ const Text = styled.div`
   font-size: 28px;
   font-weight: bold;
   margin-top: 40px;
-  margin-left: 420px;
+  margin-left: 29%;
+
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 28%;
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 const Input = styled.input`
-  width: 610px;
+  width: 41%;
   height: 40px;
-  border: none;
-  border-bottom: 1px solid #1a1a1a;
-  outline: none;
-  &::placeholder {
-    color: #c1c1c1;
+  @media screen and (max-width: 768px) {
+    border: none;
+    border-bottom: 1px solid #1a1a1a;
+    outline: none;
+    width: 68%;
+    &::placeholder {
+      color: #c1c1c1;
+    }
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    border: none;
+    border-bottom: 1px solid #1a1a1a;
+    outline: none;
+    width: 51%;
+    margin-left: 9%;
+    &::placeholder {
+      color: #c1c1c1;
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    border: none;
+    border-bottom: 1px solid #1a1a1a;
+    outline: none;
+    &::placeholder {
+      color: #c1c1c1;
+    }
   }
 `;
 
 const Container1 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
+  @media screen and (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  }
 `;
 
 const TextWrapper1 = styled.div`
@@ -51,14 +122,37 @@ const Text1 = styled.div`
   font-size: 28px;
   font-weight: bold;
   margin-top: 40px;
-  margin-bottom: 40px;
-  margin-left: 420px;
+  margin-left: 29%;
+
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 28.5%;
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 const ButtonsContainer = styled.div`
+  width: 42.5%;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 71%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 52%;
+    margin-left: 9%;
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 const Button = styled.button<{ isSelected: boolean }>`
@@ -148,26 +242,50 @@ function Choose() {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
+    margin-top: 20px;
   `;
 
   const Container3 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
+    margin-top: 20px;
   `;
 
   const Container4 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    @media screen and (max-width: 768px) {
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
+
+    @media screen and (min-width: 1024px) {
+    }
   `;
 
   const ResumeContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-right: 110px;
+    margin-right: 80px;
+    width: 100%;
+    max-width: 530px;
+    margin: 0 auto;
+    @media screen and (max-width: 769px) {
+      margin-left: 15%;
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+      margin-left: 29%;
+    }
+
+    @media screen and (min-width: 1024px) {
+      margin-left: 29%;
+    }
   `;
 
   const ResumeBox = styled.div<{ isSelected: boolean }>`
@@ -177,6 +295,7 @@ function Choose() {
     box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
     margin-bottom: 60px;
     margin-right: 10px;
+
     border: ${(props) =>
       props.isSelected ? "2px solid black" : "2px solid #ffffff"};
     cursor: pointer;
@@ -190,14 +309,24 @@ function Choose() {
     width: 100%;
     display: flex;
     justify-content: flex-start;
+    height: 90px;
   `;
 
   const Text2 = styled.div`
     font-size: 28px;
     font-weight: bold;
     margin-top: 40px;
-    margin-bottom: 10px;
-    margin-left: 420px;
+    margin-left: 29%;
+
+    @media screen and (max-width: 769px) {
+      margin-left: 15%;
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
+
+    @media screen and (min-width: 1024px) {
+    }
   `;
 
   const RepoContainer = styled.div`
@@ -207,6 +336,17 @@ function Choose() {
     max-width: 630px;
     margin: 0 auto;
     margin-bottom: 80px;
+    @media screen and (max-width: 769px) {
+      margin-left: 14%;
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+      margin-left: 28%;
+    }
+
+    @media screen and (min-width: 1024px) {
+      margin-left: 29%;
+    }
   `;
 
   const Repo = styled.div<{ isSelected: boolean }>`
@@ -214,12 +354,21 @@ function Choose() {
     height: 130px;
     background-color: white;
     border-radius: 10px;
+    margin-left: 5px;
     border: ${(props) =>
       props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
     cursor: pointer;
 
     &:hover {
       border: 2px solid black;
+    }
+    @media screen and (max-width: 769px) {
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
+
+    @media screen and (min-width: 1024px) {
     }
   `;
 
