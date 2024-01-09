@@ -18,7 +18,7 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfileBox = styled.div`
-  width: 700px;
+  width: 70%;
   display: flex;
   margin-top: 60px;
   margin-left: 18%;
@@ -191,13 +191,13 @@ const TextBox3 = styled.div`
 
 const QnAContainer = styled.div`
   width: 100%;
-  height: 1426px;
+  height: 100vh;
   padding: 20px;
 `;
 
 const QnABox = styled.div`
   width: 100%;
-  height: 1426px;
+  height: inherit;
   box-sizing: border-box;
   padding: 20px 20px 0px 20px;
   display: flex;
@@ -210,7 +210,10 @@ const QnAWrapper = styled.div`
   width: 100%;
   height: 555px;
   box-sizing: border-box;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
+  @media screen and (max-width: 1023px) {
+    height: 90vh;
+  }
 `;
 
 const QuestionBox = styled.div`
@@ -218,24 +221,57 @@ const QuestionBox = styled.div`
   height: 200px;
   box-sizing: border-box;
   padding: 25px 34px 15px;
-  margin: 0 25% 10px 15%;
+  margin: 0 25% 20px 15%;
   background: #fff;
+  
+  @media screen and (max-width: 1023px) {
+    margin: 0 12% 20px 12%;
+    width: 75%;
+    height: 25vh;
+  }
+  @media screen and (min-width: 1024px) {
+    margin: 0 25% 20px 15%;
+    min-width: 700px;
+  }
 `;
 
-const QnALargeText = styled.div`
+const QLargeText = styled.div`
   width: 100%;
   height: 34px;
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 10px;
+  overflow: auto;
 `;
 
-const QnASmallText = styled.div`
+const QSmallText = styled.div`
   width: 100%;
-  height: 114px;
+  height: 100px;
   font-size: 22px;
   font-weight: 400;
   color: #3a3a3a;
+  overflow: auto;
+`;
+
+const ALargeText = styled.div`
+  width: 100%;
+  height: 34px;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  overflow: auto;
+`;
+
+const ASmallText = styled.div`
+  width: 100%;
+  height: 185px;
+  font-size: 22px;
+  font-weight: 400;
+  color: #3a3a3a;
+  overflow: auto;
+  @media screen and (max-width: 1023px) {
+    height: 40vh;
+  }
 `;
 
 const AnswerBox = styled.div`
@@ -246,6 +282,15 @@ const AnswerBox = styled.div`
   padding: 30px 34px 0px;
   background: #fff;
   position: relative;
+  @media screen and (max-width: 1023px) {
+    width: 75%;
+    margin: 0 12% 0 12%;
+    height: 62vh;
+  }
+  @media screen and (min-width: 1024px) {
+    margin: 0 15% 0 25%;
+    min-width: 700px;
+  }
 `;
 
 const VoiceBox = styled.div`
@@ -259,7 +304,7 @@ const VoiceBox = styled.div`
 `;
 
 interface ButtonProps {
-  isPlaying: boolean;
+  $isPlaying: boolean;
 }
 
 const Button = styled.button<ButtonProps>`
@@ -273,9 +318,9 @@ const Button = styled.button<ButtonProps>`
   background-repeat: no-repeat;
 
   background-image: ${(props) =>
-    props.isPlaying
-      ? `url('https://i.postimg.cc/X7bpvB9Z/image.jpg')`
-      : `url('https://i.postimg.cc/mDgPBv9m/Polygon-2.jpg')`};
+    props.$isPlaying
+      ? "url('https://i.postimg.cc/X7bpvB9Z/image.jpg')"
+      : "url('https://i.postimg.cc/mDgPBv9m/Polygon-2.jpg')"};
 
   &:hover {
     cursor: pointer;
@@ -326,18 +371,14 @@ function Resultpage() {
         <QnABox>
           <QnAWrapper>
             <QuestionBox>
-              <QnALargeText>프로젝트 질문</QnALargeText>
-              <QnASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa.
-              </QnASmallText>
+              <QLargeText>프로젝트 질문</QLargeText>
+              <QSmallText>
+              프로젝트를 진행하면서 기술적으로 구현하기 가장 어려웠던 것은 무엇입니까?
+              </QSmallText>
             </QuestionBox>
             <AnswerBox>
-              <QnALargeText>나의 답변</QnALargeText>
-              <QnASmallText>
+              <ALargeText>나의 답변</ALargeText>
+              <ASmallText>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
                 tincidunt eget nullam non. Quis hendrerit dolor magna eget est
@@ -347,10 +388,10 @@ function Resultpage() {
                 augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
                 vivamus arcu felis. Egestas integer eget aliquet nibh praesent.
                 In hac habitasse platea dictumst quisque sagittis purus.
-              </QnASmallText>
+              </ASmallText>
               <VoiceBox>
                 <Button
-                  isPlaying={isPlaying1}
+                  $isPlaying={isPlaying1}
                   onClick={() => {
                     setIsPlaying1(!isPlaying1);
                   }}
@@ -361,18 +402,14 @@ function Resultpage() {
           </QnAWrapper>
           <QnAWrapper>
             <QuestionBox>
-              <QnALargeText>CS 지식 질문</QnALargeText>
-              <QnASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa.
-              </QnASmallText>
+              <QLargeText>CS 지식 질문</QLargeText>
+              <QSmallText>
+              절차지향 프로그래밍과 객체지향 프로그래밍의 차이점에 대해 설명해주세요.
+              </QSmallText>
             </QuestionBox>
             <AnswerBox>
-              <QnALargeText>나의 답변</QnALargeText>
-              <QnASmallText>
+              <ALargeText>나의 답변</ALargeText>
+              <ASmallText>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
                 tincidunt eget nullam non. Quis hendrerit dolor magna eget est
@@ -381,10 +418,10 @@ function Resultpage() {
                 tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor
                 augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
                 vivamus arcu felis.
-              </QnASmallText>
+              </ASmallText>
               <VoiceBox>
                 <Button
-                  isPlaying={isPlaying2}
+                  $isPlaying={isPlaying2}
                   onClick={() => {
                     setIsPlaying2(!isPlaying2);
                   }}
@@ -395,17 +432,14 @@ function Resultpage() {
           </QnAWrapper>
           <QnAWrapper>
             <QuestionBox>
-              <QnALargeText>인성 면접 질문</QnALargeText>
-              <QnASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit.
-              </QnASmallText>
+              <QLargeText>인성 면접 질문</QLargeText>
+              <QSmallText>
+              협력을 통해 탁월한 성과를 만들어낸 사례를 말해주세요. 협력의 장애 요인은 무엇이었고 그것을 어떻게 극복했나요?
+              </QSmallText>
             </QuestionBox>
             <AnswerBox>
-              <QnALargeText>나의 답변</QnALargeText>
-              <QnASmallText>
+              <ALargeText>나의 답변</ALargeText>
+              <ASmallText>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
                 tincidunt eget nullam non. Quis hendrerit dolor magna eget est
@@ -414,10 +448,10 @@ function Resultpage() {
                 tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor
                 augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
                 vivamus arcu felis.
-              </QnASmallText>
+              </ASmallText>
               <VoiceBox>
                 <Button
-                  isPlaying={isPlaying2}
+                  $isPlaying={isPlaying2}
                   onClick={() => {
                     setIsPlaying2(!isPlaying2);
                   }}

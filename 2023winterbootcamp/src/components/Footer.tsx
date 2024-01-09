@@ -56,14 +56,14 @@ const MainText = styled.div`
 `;
 
 interface SubTextProps {
-  margin_bottom: number;
+  $margin_bottom: number;
 }
 
 const SubText = styled.div<SubTextProps>`
   color: #fff;
   font-size: 12px;
   font-weight: 500;
-  margin-bottom: ${(props) => props.margin_bottom || 0}px;
+  margin-bottom: ${(props) => props.$margin_bottom || 0}px;
 `;
 
 function App() {
@@ -71,9 +71,9 @@ function App() {
     <FooterContainer>
       <TextBox>
         <MainText>teamA.</MainText>
-        <SubText margin_bottom={40}>문의 - 제안 teama@gmail.com</SubText>
-        <SubText margin_bottom={5}>2023-Winter-Techeer-SW-Bootcamp</SubText>
-        <SubText margin_bottom={0}>
+        <SubText $margin_bottom={40}>문의 - 제안 teama@gmail.com</SubText>
+        <SubText $margin_bottom={5}>2023-Winter-Techeer-SW-Bootcamp</SubText>
+        <SubText $margin_bottom={0}>
           Copyright 2023.teamA. All rights Reserved
         </SubText>
       </TextBox>
