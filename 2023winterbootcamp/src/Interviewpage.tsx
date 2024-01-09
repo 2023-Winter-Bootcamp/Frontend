@@ -11,6 +11,31 @@ const Up = styled.div`
 
 const Camera = styled.div`
   margin-left: 287px;
+  @media screen and (max-width: 768px) {
+    margin-left: 120px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 220px;
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+const Image = styled.img`
+  @media screen and (max-width: 768px) {
+    width: 480px;
+    height: 300px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 480px;
+    height: 300px;
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 const Info = styled.div`
@@ -18,6 +43,19 @@ const Info = styled.div`
   align-items: center;
   flex-direction: column;
   margin-right: 310px;
+  @media screen and (max-width: 768px) {
+    margin-left: 10px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 10px;
+    margin-right: 400px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 10px;
+    margin-right: 310px;
+  }
 `;
 
 const Timer = styled.div`
@@ -31,6 +69,20 @@ const Button = styled.div`
 const StyledButtonImage = styled.img`
   width: 25px;
   height: 25px;
+  @media screen and (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
 const Down = styled.div`
@@ -43,15 +95,42 @@ const Down = styled.div`
   align-items: center;
   margin: 0 auto;
   margin-bottom: 120px;
+  @media screen and (max-width: 768px) {
+    margin-left: 120px;
+    width: 540px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 220px;
+    width: 600px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 290px;
+    width: 900px;
+  }
 `;
 
 const Q = styled.div`
   width: 435px;
   height: 220px;
-  margin-top: 10px;
   margin-left: 30px;
   border-right: 1px solid #d6d6d6;
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
+  @media screen and (max-width: 768px) {
+    width: 235px;
+    height: 220px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 280px;
+    height: 220px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 435px;
+    height: 220px;
+  }
 `;
 
 const Text1 = styled.div`
@@ -63,14 +142,41 @@ const Text1 = styled.div`
 const Par = styled.div`
   color: #5a5a5a;
   font-size: 18px;
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-right: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-size: 16px;
+    margin-right: 20px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 18px;
+    margin-right: 20px;
+  }
 `;
 
 const A = styled.div`
-  width: 380px;
+  width: 435px;
   height: 220px;
-  margin-top: 10px;
-  margin-left: 28px;
+  margin-left: 30px;
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
+  @media screen and (max-width: 768px) {
+    width: 230px;
+    height: 220px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 240px;
+    height: 220px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 435px;
+    height: 220px;
+  }
 `;
 
 const Text2 = styled.div`
@@ -82,6 +188,20 @@ const Text2 = styled.div`
 const Par2 = styled.div`
   color: #5a5a5a;
   font-size: 18px;
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 18px;
+    margin-right: 30px;
+  }
 `;
 
 const Next = styled.button`
@@ -95,6 +215,26 @@ const StyledNextImage = styled.img`
   height: 50px;
   margin-top: 10px;
   margin-left: 330px;
+  @media screen and (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    margin-top: 25px;
+    margin-left: 180px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 40px;
+    height: 40px;
+    margin-left: 190px;
+    margin-top: -10px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 50px;
+    height: 50px;
+    margin-left: 340px;
+    margin-top: 20px;
+  }
 `;
 
 function Interviewpage() {
@@ -122,7 +262,7 @@ function Interviewpage() {
     <>
       <Up>
         <Camera>
-          <img
+          <Image
             src="https://i.postimg.cc/QdcMWgKq/Rectangle-23.png"
             alt="camera"
           />
