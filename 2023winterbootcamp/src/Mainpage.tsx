@@ -44,12 +44,27 @@ const Text1 = styled.div`
   font-weight: bold;
   font-size: 40px;
   margin-top: 100px;
+  @media screen and (max-width: 768px) {
+    font-size: 32px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-size: 35px;
+  }
+  @media screen and (min-width: 1024px) {
+    font-size: 40px;
+  }
 `;
 
 const Text2 = styled.div`
   color: #3a3a3a;
   font-size: 16px;
   margin-top: 20px;
+  @media screen and (max-width: 1023px) {
+    font-size: 15px;
+  }
+  @media screen and (min-width: 1024px) {
+    font-size: 16px;
+  }
 `;
 
 const Text3 = styled.div`
@@ -57,12 +72,26 @@ const Text3 = styled.div`
   font-weight: 700;
   font-size: 16px;
   margin-top: 4px;
+  @media screen and (max-width: 1023px) {
+    font-size: 14px;
+  }
+  @media screen and (min-width: 1024px) {
+    font-size: 16px;
+  }
 `;
 
 const Image = styled.img`
   width: 200px;
   height: 200px;
   margin-top: 40px;
+  @media screen and (max-width: 1023px) {
+    width: 180px;
+    height: 180px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 200px;
+    height: 200px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -91,6 +120,15 @@ const Button = styled.div`
   &:hover {
     background-color: #333;
     transform: translateY(-5px);
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: 128.4px;
+    height: 24px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 150px;
+    height: 28px;
   }
 `;
 
@@ -294,6 +332,7 @@ const ImageBox = styled.div`
   display: flex;
   flex-direction: column;
   @media screen and (max-width: 768px) {
+    aspect-ratio: 1 / 1.6;
     width: 350px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -323,7 +362,7 @@ const ImageBox3 = styled.div`
   aspect-ratio: 1 / 1.78;
   display: flex;
   flex-direction: column;
-  @media screen and (max-width: 768px){
+  @media screen and (max-width: 768px) {
     width: 350px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -351,7 +390,6 @@ const ImageBoxText2 = styled.div`
   width: 100%;
   height: 90px;
   box-sizing: border-box;
-  padding: 10px 28px;
   font-size: 20px;
   font-weight: 700;
   text-align: center;
@@ -359,7 +397,11 @@ const ImageBoxText2 = styled.div`
   margin-top: 10px;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
-    padding: 0;
+    height: 60px;
+  }
+  @media screen and (min-width: 1024px) {
+    padding: 10px 28px;
+    height: 90px;
   }
 `;
 const ImageBoxText3 = styled.div`
@@ -375,6 +417,7 @@ const ImageBoxText3 = styled.div`
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     padding: 0;
+    height: 60px;
   }
 `;
 interface ImageProps {
@@ -395,6 +438,7 @@ const ImageBoxImage = styled.div<ImageProps>`
     width: 26vw;
   }
 `;
+
 const ImageBoxImage2 = styled.div<ImageProps>`
   aspect-ratio: 9 / 6.5;
   background-image: url(${(props) => props.imageurl});
@@ -437,10 +481,10 @@ const Container2 = styled.div`
   text-align: center;
   background: black;
   padding: 300px 20px 20px 20px;
-  
-  @media screen and (max-width: 1023px){
+
+  @media screen and (max-width: 1023px) {
     & div {
-      font-size: 30px;
+      font-size: 25px;
     }
   }
 `;
@@ -463,7 +507,7 @@ function Main() {
     if (latest >= 400 && !isUp) {
       setIsUp(true);
       const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "20%" }, { duration: 1 });
+      animate(box as HTMLElement, { top: "20%" }, { duration: 0.8 });
     } else if (latest < 370 && isUp) {
       setIsUp(false);
       const box = document.getElementById("page2container");
@@ -514,7 +558,11 @@ function Main() {
         setIsDone(_isDone);
         control2.start({ opacity: 1, y: 0 });
       }
-      if (latest >= 2200 && !isDone[2]) {
+      if (
+        (latest >= 2100 && !isDone[2] && window.innerWidth >= 1024) ||
+        (latest >= 3570 && !isDone[2] && window.innerWidth >= 769 && window.innerWidth <= 1023) ||
+        (latest >= 2900 && !isDone[2] && window.innerWidth <= 768)
+      ) {
         let _isDone = [...isDone];
         _isDone[2] = true;
         setIsDone(_isDone);
@@ -522,6 +570,7 @@ function Main() {
       }
       setThrottler(false);
     }, 100);
+    console.log(latest)
   });
 
   return (
@@ -675,8 +724,7 @@ function Main() {
           animate={control3}
           transition={{ duration: 1 }}
         >
-        teamA.와 함께
-        개발자 커리어 준비를 시작해보세요
+          teamA.와 함께 개발자 커리어 준비를 시작해보세요
         </motion.div>
       </Container2>
     </>
