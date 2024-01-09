@@ -3,83 +3,190 @@ import styled from "styled-components";
 
 const ProfileContainer = styled.div`
   width: 100%;
-  height: 450px;
+  height: 420px;
   background: #070707;
   padding: 20px;
-`;
-
-const ProfileImage = styled.div`
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  background-image: url("https://ifh.cc/g/bHznLB.png");
-  margin-right: 50px;
-  border: none;
+  @media screen and (max-width: 768px){
+    height: 340px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    height: 380px;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 420px;
+  }
 `;
 
 const ProfileBox = styled.div`
   width: 700px;
-  height: 250px;
   display: flex;
   margin-top: 60px;
-  margin-left: 267px;
+  margin-left: 18%;
+  @media screen and (max-width: 768px) {
+    height: 180px;
+    margin-left: 12%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    height: 220px;
+    margin-left: 14%;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 250px;
+    margin-top: 60px;
+  }
+`;
+
+const ProfileImage = styled.div`
+  border-radius: 50%;
+  background-image: url("https://ifh.cc/g/bHznLB.png");
+  background-position: center;
+  border: none;
+  aspect-ratio: 1;
+  @media screen and (max-width: 768px) {
+    width: 180px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 220px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 250px;
+  }
 `;
 
 const ProfileInfo = styled.div`
-  width: 400px;
-  height: 195px;
-  margin-top: 10px;
-  margin-left: 20px;
+  height: inherit;
+  aspect-ratio: 1;
+  @media screen and (max-width: 768px) {
+    width: 350px;
+    margin-top: 0;
+    margin-left: 30px
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 400px;
+    margin-top: 0;
+    margin-left: 50px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 450px;
+    margin-top: 10px;
+    margin-left: 70px;
+  }
 `;
 
 const Text1 = styled.div`
-  width: 90px;
-  height: 34px;
-  font-size: 28px;
   font-weight: 700;
   color: white;
+  @media screen and (max-width: 768px) {
+    width: 60px;
+    height: 26px;
+    font-size: 20px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 70px;
+    height: 30px;
+    font-size: 24px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 90px;
+    height: 34px;
+    font-size: 28px;
+  }
 `;
 
 const Text2 = styled.div`
-  width: 80px;
-  height: 22px;
-  font-size: 18px;
   font-weight: 600;
-  line-height: 1.5;
   margin-bottom: 10px;
   color: white;
+  @media screen and (max-width: 768px) {
+    width: 70px;
+    height: 17px;
+    font-size: 14px;
+    line-height: 1.1;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 70px;
+    height: 20px;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 80px;
+    height: 22px;
+    font-size: 18px;
+    line-height: 1.5;
+  }
 `;
 
 const Text3 = styled.div`
-  width: 250px;
-  height: 22px;
-  font-size: 18px;
   font-weight: 500;
   color: white;
   line-height: 1.5;
   margin-bottom: 10px;
+  @media screen and (max-width: 768px) {
+    width: 250px;
+    height: 20px;
+    font-size: 15px;
+    line-height: 1.2;
+    margin-bottom: 7px;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 250px;
+    height: 22px;
+    font-size: 16px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 250px;
+    height: 22px;
+    font-size: 18px;
+  }
 `;
 
 const TextBox1 = styled.div`
-  width: 400px;
-  height: 86px;
   display: flex;
-  margin-top: 20px;
+  @media screen and (max-width: 768px) {
+    width: 300px;
+    height: 140px;
+    margin-top: 10px;
+  }
+  @media screen and (min-width: 769px) {
+    width: 400px;
+    height: 200px;
+    margin-top: 20px;
+  }
 `;
 
 const TextBox2 = styled.div`
   width: 100px;
-  height: 86px;
+  height: inherit;
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 768px) {
+    
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 80px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 100px;
+  }
 `;
 
 const TextBox3 = styled.div`
   width: 270px;
-  height: 86px;
+  height: inherit;
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
+  @media screen and (max-width: 768px) {
+    
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 10px;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-left: 20px;
+  }
 `;
 
 const QnAContainer = styled.div`
@@ -225,7 +332,7 @@ function Resultpage() {
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
                 tincidunt eget nullam non. Quis hendrerit dolor magna eget est
                 lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa. 
+                massa.
               </QnASmallText>
             </QuestionBox>
             <AnswerBox>
