@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import axios from "axios";
 
@@ -61,6 +61,7 @@ const Text1 = styled.div`
 `;
 
 const ResumeContainer = styled.div`
+
   @media screen and (max-width: 768px) {
     width: 920px;
     height: 370px;
@@ -86,13 +87,17 @@ const ResumeContainer = styled.div`
   }
 `;
 
-const ResumePreview = styled.div<{ $imageUrl?: string }>`
-  background-image: url(${(props) => props.$imageUrl || ""});
+const PreviewOutline = styled.div`
+  padding: 10px;
   margin-right: 20px;
-  background-size: cover;
-  background-position: center;
-  ${(props) => props.$imageUrl && css``}
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 200ms ease-out;
+  background-color: rgb(1,1,1,1);
+  &:hover {
+    background-color: rgb(0,0,0,0.8);
+  }
   @media screen and (max-width: 768px) {
     width: 240px;
     height: 340px;
@@ -132,16 +137,49 @@ const ResumePreview = styled.div<{ $imageUrl?: string }>`
     }
   }
 `;
+
+const ResumePreview = styled.div<{ $imageUrl?: string }>`
+  background-image: url(${(props) => props.$imageUrl || ""});
+  background-size: cover;
+  background-position: center;
+  ${(props) =>
+    props.$imageUrl &&
+    css`
+      ${PreviewOutline}:hover & {
+        & > div {
+          opacity: 1;
+        }
+      }
+    `}
+
+  @media screen and (max-width: 768px) {
+    width: 220px;
+    height: 320px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 229px;
+    height: 325px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 229px;
+    height: 325px;
+  }
+`;
 const GrayBox = styled.div`
   width: inherit;
   height: inherit;
-  background: #808080;
-  opacity: 1;
+  background-color: rgb(0, 0, 0, 0.8);
+  opacity: 0;
+  display: inline-block;
+  transition: opacity 200ms ease-out;
 `;
 const Text3 = styled.div`
   text-align: center;
-  color: #d7d7d7;
-  font-size: 16px;
+  color: rgb(255, 255, 255, 1);
+  font-size: 20px;
+  font-weight: 600;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -233,13 +271,17 @@ function MyPage() {
           {resumeList.length !== 0 ? (
             resumeList.map((item, idx) => {
               return (
-                <ResumePreview key={item.id} $imageUrl={item.image_url}>
-                    <Text3>
-                      등록일
-                      <br />
-                      {item.created_at.slice(0, 10)}
-                    </Text3>
-                </ResumePreview>
+                <PreviewOutline>
+                  <ResumePreview key={item.id} $imageUrl={item.image_url}>
+                    <GrayBox>
+                      <Text3>
+                        등록일
+                        <br />
+                        {item.created_at.slice(0, 10)}
+                      </Text3>
+                    </GrayBox>
+                  </ResumePreview>
+                </PreviewOutline>
               );
             })
           ) : (
