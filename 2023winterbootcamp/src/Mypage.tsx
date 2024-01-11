@@ -1,5 +1,6 @@
-import React from "react";
-import styled from "styled-components";
+import React, { ReactElement, useEffect, useState } from "react";
+import styled, { css } from "styled-components";
+import axios from "axios";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -85,7 +86,13 @@ const ResumeContainer = styled.div`
   }
 `;
 
-const ResumePreview = styled.div`
+const ResumePreview = styled.div<{ $imageUrl?: string }>`
+  background-image: url(${(props) => props.$imageUrl || ""});
+  margin-right: 20px;
+  background-size: cover;
+  background-position: center;
+  ${(props) => props.$imageUrl && css``}
+
   @media screen and (max-width: 768px) {
     width: 240px;
     height: 340px;
@@ -125,7 +132,12 @@ const ResumePreview = styled.div`
     }
   }
 `;
-
+const GrayBox = styled.div`
+  width: inherit;
+  height: inherit;
+  background: #808080;
+  opacity: 1;
+`;
 const Text3 = styled.div`
   text-align: center;
   color: #d7d7d7;
@@ -188,20 +200,57 @@ const Text4 = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+type Resume = {
+  id: number;
+  image_url: string;
+  created_at: string;
+};
 
-function Mypage() {
+function MyPage() {
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
+
+  const getResumes = async () => {
+    try {
+      const response = await axios.get<Resume[]>(
+        "http://localhost:8000/api/resumes/"
+      );
+      if (response.status === 200) {
+        setResumeList(response.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  useEffect(() => {
+    getResumes();
+  }, []);
+
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <ResumePreview>
-            <Text3>
-              등록된 이력서가 없습니다.
-              <br />
-              이력서를 등록해주세요!
-            </Text3>
-          </ResumePreview>
+          {resumeList.length !== 0 ? (
+            resumeList.map((item, idx) => {
+              return (
+                <ResumePreview key={item.id} $imageUrl={item.image_url}>
+                    <Text3>
+                      등록일
+                      <br />
+                      {item.created_at.slice(0, 10)}
+                    </Text3>
+                </ResumePreview>
+              );
+            })
+          ) : (
+            <ResumePreview>
+              <Text3>
+                등록된 이력서가 없습니다
+                <br />
+                이력서를 등록해주세요!
+              </Text3>
+            </ResumePreview>
+          )}
         </ResumeContainer>
       </Container>
       <Text2>나의 면접</Text2>
@@ -214,4 +263,4 @@ function Mypage() {
   );
 }
 
-export default Mypage;
+export default MyPage;
