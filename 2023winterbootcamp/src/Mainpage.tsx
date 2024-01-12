@@ -580,7 +580,6 @@ function Main() {
       }
       setThrottler(false);
     }, 100);
-    console.log(latest);
   });
 
   return (
