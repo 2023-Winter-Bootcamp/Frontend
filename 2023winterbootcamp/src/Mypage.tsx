@@ -88,7 +88,11 @@ const ResumeContainer = styled.div`
   }
 `;
 
-const ResumePreview = styled.div`
+const ResumePreview = styled.div<{ $pre_image_url: string }>`
+  background-image: url(${(props) => props.$pre_image_url});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   @media screen and (max-width: 768px) {
     width: 240px;
     height: 340px;
@@ -118,7 +122,7 @@ const ResumePreview = styled.div`
   @media screen and (min-width: 1024px) {
     width: 249px;
     height: 345px;
-    margin-top: -140px;
+    margin-top: 5px;
     border-radius: 4px;
     background-color: #fff;
     box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
@@ -138,7 +142,7 @@ const Text3 = styled.div`
   align-items: center;
   margin-top: 145px;
   justify-content: center;
-  height: 95%;
+  height: auto;
 `;
 
 const Text2 = styled.div`
@@ -225,10 +229,25 @@ const InterviewTitle = styled.div`
   margin-top: 3%;
 `;
 
+const DeleteButton = styled.button`
+  width: 20%;
+  height: 20px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+`;
+
 type Interview = {
   id: number;
   title: string;
 };
+
+type Resume = {
+  id: number;
+  pre_image_url: string;
+  title: string;
+  created_at: string;
+};
+
 function Mypage() {
   const [pdfUrl, setPdfUrl] = useState(""); // PDF 파일 URL 상태 추가
 
@@ -252,47 +271,57 @@ function Mypage() {
     }
   };
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleFileUpload,
+    //accept: ".pdf",
+  });
+
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
   const [interviewList, setInterviewList] = useState<Interview[]>([]);
 
   const getInterviewList = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/interviews/");
-      console.log(response.data);
       setInterviewList(response.data);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const getResumes = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/resumes/");
+      setResumeList(response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function handleClick(id: number) {
+    let findIndex;
+    resumeList.forEach(async (item, idx) => {
+      if (item.id === id) {
+        try {
+          const response = await axios.delete(
+            `http://localhost:8000/api/resumes/delete/${id}`
+          );
+          let cpyResumeList = [...resumeList];
+          cpyResumeList.splice(idx, 1);
+          setResumeList(cpyResumeList);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+  }
+
   useEffect(() => {
+    getResumes();
     getInterviewList();
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: handleFileUpload,
-    //accept: ".pdf",
-  });
-
-  useEffect(() => {
-    // 이력서 목록을 가져오는 API 호출
-    axios
-      .get("http://localhost:8000/api/resumes/")
-      .then((response) => {
-        // 받아온 데이터에서 이력서의 URL을 가져옴 (예시로는 response.data[0].url을 가져왔다고 가정)
-        const resumeUrl = response.data[0]?.url; // 올바른 데이터가 없을 경우를 처리하기 위해 ?. 연산자 사용
-
-        // 이력서의 URL을 상태에 설정하여 미리보기로 사용
-        if (resumeUrl) {
-          setPdfUrl(resumeUrl);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching resume data:", error);
-      });
-  }, [pdfUrl]); // pdfUrl이 변경될 때마다 이펙트 실행
-
   const EmptyResumePreview = () => (
-    <ResumePreview>
+    <ResumePreview $pre_image_url="">
       <Text3>
         등록된 이력서가 없습니다.
         <br />
@@ -301,23 +330,29 @@ function Mypage() {
     </ResumePreview>
   );
 
-  const FilledResumePreview = () => (
-    <ResumePreview>
-      <Document file={pdfUrl}>
-        <Page pageNumber={1} />
-      </Document>
-    </ResumePreview>
-  );
-
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {pdfUrl ? <FilledResumePreview /> : <EmptyResumePreview />}
-          </div>
+          {resumeList ? (
+            resumeList.map((item, idx) => {
+              return (
+                <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
+                  <Text3>
+                    {item.title}
+                    <br />
+                    {item.created_at.slice(0, 10)}
+                  </Text3>
+                  <DeleteButton onClick={() => handleClick(item.id)}>
+                    삭제
+                  </DeleteButton>
+                </ResumePreview>
+              );
+            })
+          ) : (
+            <EmptyResumePreview />
+          )}
         </ResumeContainer>
       </Container>
       <Text2>나의 면접</Text2>
@@ -326,8 +361,8 @@ function Mypage() {
           {interviewList.length ? (
             interviewList.map((item, idx) => {
               return (
-                <InterviewWrapper>
-                    <InterviewTitle>{item.title}</InterviewTitle>
+                <InterviewWrapper key={idx}>
+                  <InterviewTitle>{item.title}</InterviewTitle>
                 </InterviewWrapper>
               );
             })
