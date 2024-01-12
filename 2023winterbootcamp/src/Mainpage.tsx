@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import Modal from "./components/Modal";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -497,26 +498,47 @@ const MiddleContainer = styled.div`
 `;
 
 function Main() {
-  const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
-    const file = new FormData();
-    file.append("file", acceptedFiles[0]);
-    const user_id = "1";
-    file.append("user_id", user_id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/resumes/create",
-        file
-      );
-      console.log("File uploaded successfully!", response.data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
+  const handleFileUpload = async (title: string) => {
+    if (selectedFile) {
+      const file = new FormData();
+      file.append("file", selectedFile);
+      const user_id = "1";
+      file.append("user_id", user_id);
+      file.append("title", title);
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/resumes/create",
+          file
+        );
+        console.log("File uploaded successfully!", response.data);
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
     }
   };
+
+  const handleModalRegister = (title: string) => {
+    // 모달에서 등록 버튼이 눌렸을 때 실행되는 함수
+    handleFileUpload(title);
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: handleFileUpload,
-    //accept: ".pdf",
+    onDrop: (acceptedFiles) => {
+      setSelectedFile(acceptedFiles[0]);
+      setIsModalOpen(true);
+    },
+    // accept: ".pdf",
   });
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   const navigate = useNavigate();
   const { scrollY } = useScroll();
@@ -649,7 +671,7 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 1 }}
                 >
-                  <Button>
+                  <Button onClick={handleModalClose}>
                     <ButtonContent>
                       <ButtonImage
                         src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
@@ -663,6 +685,13 @@ function Main() {
                   </Button>
                 </motion.div>
               </div>
+              {isModalOpen && (
+                <Modal
+                  ref={modalRef}
+                  onClose={handleModalClose}
+                  onRegister={handleModalRegister}
+                />
+              )}
             </ButtonWrapper>
 
             <TextField>
