@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<Main />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/choose" element={<Choose />} />
-          <Route path="/interview" element={<Interview />} />
+          <Route path="/interview/:id" element={<Interview />} />
           <Route path="/result" element={<Resultpage />} />
         </Routes>
         <Footer />

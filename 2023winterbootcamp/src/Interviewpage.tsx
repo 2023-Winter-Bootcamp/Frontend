@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const Up = styled.div`
   margin-top: 40px;
@@ -237,10 +238,35 @@ const StyledNextImage = styled.img`
   }
 `;
 
+export interface Question {
+  type_name: string;
+  content: string;
+}
+
 function Interviewpage() {
   const [buttonImage, setButtonImage] = useState(
     "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
   );
+
+  const [questions, setQuestions] = useState<Question[]>([]); // 질문 상태 배열 추가
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 질문의 인덱스 상태
+
+  const { id } = useParams(); // 면접 ID를 useParams로 받아오기
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`http://localhost:8000/api/interviews/${id}/questions/`)
+        .then((response) => {
+          console.log(response.data.questions);
+          setQuestions(response.data.questions);
+        })
+        .catch((error) => {
+          console.error("Error fetching questions:", error);
+        });
+    }
+  }, [id]);
 
   const handleButtonClick = () => {
     if (
@@ -252,10 +278,15 @@ function Interviewpage() {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleNextButtonClick = () => {
-    navigate("/result");
+    // 다음 질문이 있는지 확인
+    if (currentQuestionIndex < questions.length - 1) {
+      // 다음 질문의 인덱스로 업데이트
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else {
+      // 마지막 질문이었다면 결과 페이지로 이동
+      navigate("/result");
+    }
   };
 
   return (
@@ -275,16 +306,17 @@ function Interviewpage() {
         </Info>
       </Up>
       <Down>
-        <Q>
-          <Text1>질문</Text1>
-          <Par>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat
-          </Par>
-        </Q>
+        {questions.map((question, index) => (
+          <Q
+            key={index}
+            style={{
+              display: index === currentQuestionIndex ? "block" : "none",
+            }}
+          >
+            <Text1>{question.type_name}</Text1>
+            <Par>{question.content}</Par>
+          </Q>
+        ))}
         <A>
           <Text2>답변</Text2>
           <Par2>
@@ -295,7 +327,11 @@ function Interviewpage() {
           </Par2>
           <Next onClick={handleNextButtonClick}>
             <StyledNextImage
-              src="https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+              src={
+                currentQuestionIndex === questions.length - 1
+                  ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                  : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+              }
               alt="next"
             />
           </Next>
