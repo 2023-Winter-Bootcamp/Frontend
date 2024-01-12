@@ -499,7 +499,7 @@ const MiddleContainer = styled.div`
 function Main() {
   const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
     const file = new FormData();
-    file.append("resume", acceptedFiles[0]);
+    file.append("file", acceptedFiles[0]);
     const user_id = "1";
     file.append("user_id", user_id);
 
