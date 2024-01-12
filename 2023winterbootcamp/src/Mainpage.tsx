@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import Modal from "./components/Modal";
-import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   motion,
@@ -10,6 +8,8 @@ import {
   useMotionValueEvent,
   useAnimationControls,
 } from "framer-motion";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
 
 const Container = styled.div`
   background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
@@ -497,8 +497,27 @@ const MiddleContainer = styled.div`
 `;
 
 function Main() {
-  const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
+    const file = new FormData();
+    file.append("resume", acceptedFiles[0]);
+    const user_id = "1";
+    file.append("user_id", user_id);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/resumes/create",
+        file
+      );
+      console.log("File uploaded successfully!", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleFileUpload,
+    //accept: ".pdf",
+  });
+
   const navigate = useNavigate();
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
@@ -519,18 +538,6 @@ function Main() {
     navigate("/choose");
   };
 
-  useEffect(() => {
-    const closeModal = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        setShowModal(false);
-      }
-    };
-    document.addEventListener("mousedown", closeModal);
-
-    return () => {
-      document.removeEventListener("mousedown", closeModal);
-    };
-  }, []);
   const [isDone, setIsDone] = useState([false, false, false]);
   const [throttler, setThrottler] = useState(false);
   const control1 = useAnimationControls();
@@ -560,7 +567,10 @@ function Main() {
       }
       if (
         (latest >= 2100 && !isDone[2] && window.innerWidth >= 1024) ||
-        (latest >= 3570 && !isDone[2] && window.innerWidth >= 769 && window.innerWidth <= 1023) ||
+        (latest >= 3570 &&
+          !isDone[2] &&
+          window.innerWidth >= 769 &&
+          window.innerWidth <= 1023) ||
         (latest >= 2900 && !isDone[2] && window.innerWidth <= 768)
       ) {
         let _isDone = [...isDone];
@@ -570,7 +580,7 @@ function Main() {
       }
       setThrottler(false);
     }, 100);
-    console.log(latest)
+    console.log(latest);
   });
 
   return (
@@ -632,23 +642,28 @@ function Main() {
               >
                 <Button onClick={handleAIInterviewClick}>AI 면접</Button>
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1 }}
-              >
-                <Button onClick={() => setShowModal(true)}>
-                  <ButtonContent>
-                    <ButtonImage
-                      src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                      alt="Document Icon"
-                    />
-                    이력서 업로드
-                  </ButtonContent>
-                </Button>
-              </motion.div>
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 1 }}
+                >
+                  <Button>
+                    <ButtonContent>
+                      <ButtonImage
+                        src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                        alt="Document Icon"
+                      />
+                      <div {...getRootProps()}>
+                        <input {...getInputProps()} />
+                        이력서 업로드
+                      </div>
+                    </ButtonContent>
+                  </Button>
+                </motion.div>
+              </div>
             </ButtonWrapper>
-            {showModal && <Modal ref={modalRef}></Modal>}
 
             <TextField>
               <Text4>깃허브 연동</Text4>

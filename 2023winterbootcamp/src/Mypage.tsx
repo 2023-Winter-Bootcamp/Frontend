@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import { Document, Page } from "react-pdf";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -115,7 +118,7 @@ const ResumePreview = styled.div`
   @media screen and (min-width: 1024px) {
     width: 249px;
     height: 345px;
-    margin-top: 5px;
+    margin-top: -140px;
     border-radius: 4px;
     background-color: #fff;
     box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
@@ -134,6 +137,8 @@ const Text3 = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 145px;
+  justify-content: center;
+  height: 95%;
 `;
 
 const Text2 = styled.div`
@@ -190,18 +195,78 @@ const Text4 = styled.div`
 `;
 
 function Mypage() {
+  const [pdfUrl, setPdfUrl] = useState(""); // PDF 파일 URL 상태 추가
+
+  const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
+    const file = new FormData();
+    file.append("file", acceptedFiles[0]); // 파일을 FormData에 추가
+    const user_id = "1";
+    file.append("user_id", user_id);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/resumes/create",
+        file
+      );
+      console.log("File uploaded successfully!", response.data);
+
+      // 업로드된 PDF 파일의 URL을 설정하여 렌더링
+      setPdfUrl(response.data.url); // 여기서 URL은 실제 업로드된 PDF 파일의 URL로 설정해야 합니다.
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleFileUpload,
+    //accept: ".pdf",
+  });
+
+  useEffect(() => {
+    // 이력서 목록을 가져오는 API 호출
+    axios
+      .get("http://localhost:8000/api/resumes/")
+      .then((response) => {
+        // 받아온 데이터에서 이력서의 URL을 가져옴 (예시로는 response.data[0].url을 가져왔다고 가정)
+        const resumeUrl = response.data[0]?.url; // 올바른 데이터가 없을 경우를 처리하기 위해 ?. 연산자 사용
+
+        // 이력서의 URL을 상태에 설정하여 미리보기로 사용
+        if (resumeUrl) {
+          setPdfUrl(resumeUrl);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching resume data:", error);
+      });
+  }, [pdfUrl]); // pdfUrl이 변경될 때마다 이펙트 실행
+
+  const EmptyResumePreview = () => (
+    <ResumePreview>
+      <Text3>
+        등록된 이력서가 없습니다.
+        <br />
+        이력서를 등록해주세요!
+      </Text3>
+    </ResumePreview>
+  );
+
+  const FilledResumePreview = () => (
+    <ResumePreview>
+      <Document file={pdfUrl}>
+        <Page pageNumber={1} />
+      </Document>
+    </ResumePreview>
+  );
+
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <ResumePreview>
-            <Text3>
-              등록된 이력서가 없습니다.
-              <br />
-              이력서를 등록해주세요!
-            </Text3>
-          </ResumePreview>
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            {pdfUrl ? <FilledResumePreview /> : <EmptyResumePreview />}
+          </div>
         </ResumeContainer>
       </Container>
       <Text2>나의 면접</Text2>

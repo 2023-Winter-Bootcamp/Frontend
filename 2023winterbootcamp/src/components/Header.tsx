@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import githubLogin from "./githubLogin";
 
 const HeaderContainer = styled.div`
   @media screen and (max-width: 768px) {
@@ -133,7 +134,13 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 `;
 
-function App() {
+function Header() {
+  const handleGithubLogin = () => {
+    // 깃허브 로그인 버튼 클릭 시 실행되는 함수
+    githubLogin(); // Axios를 사용한 API 호출
+    // API 호출 후 로직을 추가해야 합니다.
+  };
+
   return (
     <HeaderContainer>
       <Logo
@@ -155,6 +162,7 @@ function App() {
         </MotionNavItem>
         <MotionNavItem
           to="/"
+          onClick={handleGithubLogin} // 깃허브 로그인 함수 실행
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
@@ -190,4 +198,4 @@ function App() {
   );
 }
 
-export default App;
+export default Header;
