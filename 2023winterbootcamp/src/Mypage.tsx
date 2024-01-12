@@ -194,6 +194,41 @@ const Text4 = styled.div`
   align-items: center;
 `;
 
+const InterviewBox = styled.div`
+  width: 65%;
+  height: inherit;
+  display: flex;
+  overflow-x: auto;
+  margin-left: 287px;
+  align-items: center;
+`;
+
+const InterviewWrapper = styled.div`
+  width: 355px;
+  height: 255px;
+  border-radius: 20px;
+  margin-right: 20px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background: url("https://i.postimg.cc/ZqvhQ27G/Rectangle-17.png");
+  background-position: center;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const InterviewTitle = styled.div`
+  width: 20%;
+  height: 30px;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-left: 6%;
+  margin-top: 3%;
+`;
+
+type Interview = {
+  id: number;
+  title: string;
+};
 function Mypage() {
   const [pdfUrl, setPdfUrl] = useState(""); // PDF 파일 URL 상태 추가
 
@@ -216,6 +251,22 @@ function Mypage() {
       console.error("Error uploading file:", error);
     }
   };
+
+  const [interviewList, setInterviewList] = useState<Interview[]>([]);
+
+  const getInterviewList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/interviews/");
+      console.log(response.data);
+      setInterviewList(response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    getInterviewList();
+  }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: handleFileUpload,
@@ -271,9 +322,21 @@ function Mypage() {
       </Container>
       <Text2>나의 면접</Text2>
       <InterviewContainer>
-        <TextContainer>
-          <Text4>진행된 면접이 없습니다.</Text4>
-        </TextContainer>
+        <InterviewBox>
+          {interviewList.length ? (
+            interviewList.map((item, idx) => {
+              return (
+                <InterviewWrapper>
+                    <InterviewTitle>{item.title}</InterviewTitle>
+                </InterviewWrapper>
+              );
+            })
+          ) : (
+            <TextContainer>
+              <Text4>진행된 면접이 없습니다.</Text4>
+            </TextContainer>
+          )}
+        </InterviewBox>
       </InterviewContainer>
     </>
   );
