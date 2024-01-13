@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const ProfileContainer = styled.div`
@@ -6,7 +6,7 @@ const ProfileContainer = styled.div`
   height: 420px;
   background: #070707;
   padding: 20px;
-  @media screen and (max-width: 768px){
+  @media screen and (max-width: 768px) {
     height: 340px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -59,7 +59,7 @@ const ProfileInfo = styled.div`
   @media screen and (max-width: 768px) {
     width: 350px;
     margin-top: 0;
-    margin-left: 30px
+    margin-left: 30px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 400px;
@@ -163,7 +163,6 @@ const TextBox2 = styled.div`
   display: flex;
   flex-direction: column;
   @media screen and (max-width: 768px) {
-    
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 80px;
@@ -179,7 +178,6 @@ const TextBox3 = styled.div`
   display: flex;
   flex-direction: column;
   @media screen and (max-width: 768px) {
-    
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     margin-left: 10px;
@@ -193,6 +191,7 @@ const QnAContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 20px;
+  background: linear-gradient(#f4f4f4 90%, lightgray);
 `;
 
 const QnABox = styled.div`
@@ -223,7 +222,7 @@ const QuestionBox = styled.div`
   padding: 25px 34px 15px;
   margin: 0 25% 20px 15%;
   background: #fff;
-  
+
   @media screen and (max-width: 1023px) {
     margin: 0 12% 20px 12%;
     width: 75%;
@@ -238,7 +237,7 @@ const QuestionBox = styled.div`
 const QLargeText = styled.div`
   width: 100%;
   height: 34px;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   margin-bottom: 10px;
   overflow: auto;
@@ -247,7 +246,7 @@ const QLargeText = styled.div`
 const QSmallText = styled.div`
   width: 100%;
   height: 100px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
   overflow: auto;
@@ -256,7 +255,7 @@ const QSmallText = styled.div`
 const ALargeText = styled.div`
   width: 100%;
   height: 34px;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   margin-bottom: 10px;
   overflow: auto;
@@ -265,7 +264,7 @@ const ALargeText = styled.div`
 const ASmallText = styled.div`
   width: 100%;
   height: 185px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
   overflow: auto;
@@ -299,8 +298,8 @@ const VoiceBox = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  right: 40px;
-  bottom: 25px;
+  right: -15px;
+  bottom: 15px;
 `;
 
 interface ButtonProps {
@@ -308,11 +307,11 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
-  width: 29px;
-  height: 33px;
+  width: 15px;
+  height: 18px;
   background-size: contain;
-  margin-right: 14px;
-  margin-top: 4px;
+  margin-right: 8px;
+  margin-top: 13px;
   border: none;
   outline: none;
   background-repeat: no-repeat;
@@ -336,134 +335,169 @@ const Text4 = styled.div`
   margin-top: 5px;
 `;
 
-function Resultpage() {
-  const [isPlaying1, setIsPlaying1] = useState(false);
-  const [isPlaying2, setIsPlaying2] = useState(false);
+interface InterviewData {
+  title: string;
+  interview_type_names: string[];
+  position: string;
+  style: string;
+  resume: number;
+  repo_names: string[];
+  questions: { type_name: string; content: string }[];
+  answers: { content: string; record_url: string }[];
+}
+
+const Resultpage = () => {
+  const [interviewData, setInterviewData] = useState<InterviewData | null>(
+    null
+  );
+  const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
+
+  const audioRefs = useRef<HTMLAudioElement[]>([]);
+
+  const toggleAudio = (index: number) => {
+    const newIsPlayingList = [...isPlayingList];
+    newIsPlayingList[index] = !newIsPlayingList[index];
+    setIsPlayingList(newIsPlayingList);
+  };
+
+  const playAudio = (index: number) => {
+    if (audioRefs.current[index]) {
+      audioRefs.current[index].play();
+      // 재생 중인 오디오가 없을 때만 toggleAudio 호출
+      if (!isPlayingList[index]) {
+        toggleAudio(index);
+      }
+    }
+  };
+
+  const pauseAudio = (index: number) => {
+    if (audioRefs.current[index]) {
+      audioRefs.current[index].pause();
+      // 일시 정지된 오디오가 있을 때만 toggleAudio 호출
+      if (isPlayingList[index]) {
+        toggleAudio(index);
+      }
+    }
+  };
+
+  // useEffect(() => {
+  //   if (interviewData) {
+  //     audioRefs.current = Array(interviewData.questions.length)
+  //       .fill(null)
+  //       .map(
+  //         (_, index) =>
+  //           (audioRefs.current[index] ??= document.createElement("audio"))
+  //       );
+  //   }
+  // }, [interviewData]);
+
+  useEffect(() => {
+    isPlayingList.forEach((isPlaying, index) => {
+      const audioRef = audioRefs.current[index];
+
+      if (audioRef) {
+        // 오디오의 상태를 체크하여 버튼 상태 갱신
+        if (isPlaying) {
+          audioRef.play();
+        } else {
+          audioRef.pause();
+        }
+
+        audioRef.addEventListener("ended", () => {
+          // 오디오 재생이 끝나면 버튼을 다시 play 상태로 변경
+          const newIsPlayingList = [...isPlayingList];
+          newIsPlayingList[index] = false;
+          setIsPlayingList(newIsPlayingList);
+        });
+      }
+    });
+  }, [isPlayingList]);
+
+  useEffect(() => {
+    const title = 1; // 실제 면접 ID로 교체하세요
+    fetch(`http://localhost:8000/api/interviews/${title}/`)
+      .then((response) => response.json())
+      .then((data) => setInterviewData(data))
+      .catch((error) =>
+        console.error("면접 데이터를 가져오는 중 에러 발생:", error)
+      );
+  }, []);
+
   return (
     <>
-      <ProfileContainer>
-        <ProfileBox>
-          <ProfileImage />
-          <ProfileInfo>
-            <Text1>안나경</Text1>
-            <TextBox1>
-              <TextBox2>
-                <Text2>직군/직무</Text2>
-                <Text2>번호</Text2>
-                <Text2>이메일</Text2>
-                <Text2>면접 종류</Text2>
-                <Text2>포지션</Text2>
-                <Text2>면접 방식</Text2>
-              </TextBox2>
-              <TextBox3>
-                <Text3>프론트엔드 개발자 및 디자이너</Text3>
-                <Text3>010-XXXX-XXXX</Text3>
-                <Text3>nakyung.ahn.03@gmail.com</Text3>
-                <Text3>프로젝트, CS질문, 인성면접</Text3>
-                <Text3>Frontend</Text3>
-                <Text3>화상 면접</Text3>
-              </TextBox3>
-            </TextBox1>
-          </ProfileInfo>
-        </ProfileBox>
-      </ProfileContainer>
-      <QnAContainer>
-        <QnABox>
-          <QnAWrapper>
-            <QuestionBox>
-              <QLargeText>프로젝트 질문</QLargeText>
-              <QSmallText>
-              프로젝트를 진행하면서 기술적으로 구현하기 가장 어려웠던 것은 무엇입니까?
-              </QSmallText>
-            </QuestionBox>
-            <AnswerBox>
-              <ALargeText>나의 답변</ALargeText>
-              <ASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa. Commodo odio aenean sed adipiscing diam donec adipiscing
-                tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor
-                augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
-                vivamus arcu felis. Egestas integer eget aliquet nibh praesent.
-                In hac habitasse platea dictumst quisque sagittis purus.
-              </ASmallText>
-              <VoiceBox>
-                <Button
-                  $isPlaying={isPlaying1}
-                  onClick={() => {
-                    setIsPlaying1(!isPlaying1);
-                  }}
-                />
-                <Text4>음성 듣기</Text4>
-              </VoiceBox>
-            </AnswerBox>
-          </QnAWrapper>
-          <QnAWrapper>
-            <QuestionBox>
-              <QLargeText>CS 지식 질문</QLargeText>
-              <QSmallText>
-              절차지향 프로그래밍과 객체지향 프로그래밍의 차이점에 대해 설명해주세요.
-              </QSmallText>
-            </QuestionBox>
-            <AnswerBox>
-              <ALargeText>나의 답변</ALargeText>
-              <ASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa. Commodo odio aenean sed adipiscing diam donec adipiscing
-                tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor
-                augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
-                vivamus arcu felis.
-              </ASmallText>
-              <VoiceBox>
-                <Button
-                  $isPlaying={isPlaying2}
-                  onClick={() => {
-                    setIsPlaying2(!isPlaying2);
-                  }}
-                />
-                <Text4>음성 듣기</Text4>
-              </VoiceBox>
-            </AnswerBox>
-          </QnAWrapper>
-          <QnAWrapper>
-            <QuestionBox>
-              <QLargeText>인성 면접 질문</QLargeText>
-              <QSmallText>
-              협력을 통해 탁월한 성과를 만들어낸 사례를 말해주세요. 협력의 장애 요인은 무엇이었고 그것을 어떻게 극복했나요?
-              </QSmallText>
-            </QuestionBox>
-            <AnswerBox>
-              <ALargeText>나의 답변</ALargeText>
-              <ASmallText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl
-                tincidunt eget nullam non. Quis hendrerit dolor magna eget est
-                lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet
-                massa. Commodo odio aenean sed adipiscing diam donec adipiscing
-                tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor
-                augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui
-                vivamus arcu felis.
-              </ASmallText>
-              <VoiceBox>
-                <Button
-                  $isPlaying={isPlaying2}
-                  onClick={() => {
-                    setIsPlaying2(!isPlaying2);
-                  }}
-                />
-                <Text4>음성 듣기</Text4>
-              </VoiceBox>
-            </AnswerBox>
-          </QnAWrapper>
-        </QnABox>
-      </QnAContainer>
+      {interviewData && (
+        <>
+          <ProfileContainer>
+            <ProfileBox>
+              <ProfileImage />
+              <ProfileInfo>
+                <Text1>안나경</Text1>
+                <TextBox1>
+                  <TextBox2>
+                    <Text2>면접 제목</Text2>
+                    <Text2>면접 종류</Text2>
+                    <Text2>포지션</Text2>
+                    <Text2>면접 방식</Text2>
+                    <Text2>이력서</Text2>
+                    <Text2>Repository</Text2>
+                  </TextBox2>
+                  <TextBox3>
+                    <Text3>{interviewData.title}</Text3>
+                    <Text3>
+                      {interviewData.interview_type_names.join(", ")}
+                    </Text3>
+                    <Text3>{interviewData.position}</Text3>
+                    <Text3>{interviewData.style}</Text3>
+                    <Text3>{interviewData.resume}</Text3>
+                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
+                  </TextBox3>
+                </TextBox1>
+              </ProfileInfo>
+            </ProfileBox>
+          </ProfileContainer>
+          <QnAContainer>
+            <QnABox>
+              {interviewData.questions.map((question, index) => (
+                <QnAWrapper key={index}>
+                  <QuestionBox>
+                    <QLargeText>{question.type_name}</QLargeText>
+                    <QSmallText>{question.content}</QSmallText>
+                  </QuestionBox>
+                  <AnswerBox>
+                    <ALargeText>나의 답변</ALargeText>
+                    <ASmallText>
+                      {interviewData.answers[index].content}
+                    </ASmallText>
+                    <VoiceBox>
+                      <audio
+                        ref={(audioRef) => {
+                          // 여기서 non-null 어설션을 사용합니다.
+                          audioRefs.current[index] = audioRef!;
+                        }}
+                        src={interviewData.answers[index].record_url}
+                      ></audio>
+                      {isPlayingList[index] ? (
+                        <Button
+                          $isPlaying={isPlayingList[index]}
+                          onClick={() => pauseAudio(index)}
+                        />
+                      ) : (
+                        <Button
+                          $isPlaying={isPlayingList[index]}
+                          onClick={() => playAudio(index)}
+                        />
+                      )}
+                      <Text4>음성 듣기</Text4>
+                    </VoiceBox>
+                  </AnswerBox>
+                </QnAWrapper>
+              ))}
+            </QnABox>
+          </QnAContainer>
+        </>
+      )}
     </>
   );
-}
+};
 
 export default Resultpage;
