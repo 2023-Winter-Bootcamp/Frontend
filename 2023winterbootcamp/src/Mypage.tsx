@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { Document, Page } from "react-pdf";
+import plus_icon from "./images/plus_icon.png";
+import interview_image from "./images/interview_image.jpg";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -63,29 +64,36 @@ const Text1 = styled.div`
 `;
 
 const ResumeContainer = styled.div`
+  width: 60%;
+  height: 370px;
+  display: flex;
+  margin-bottom: 20px;
+  overflow-x: auto;
   @media screen and (max-width: 768px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
     margin-left: 100px;
-    margin-bottom: 20px;
+    height: 330px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
     margin-left: 200px;
-    margin-bottom: 20px;
+    height: 355px;
   }
 
-  @media screen and (min-width: 1024px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
     margin-left: 267px;
-    margin-bottom: 20px;
+    height: 355px;
   }
+  @media screen and (min-width: 1400px) {
+    margin-left: 267px;
+    height: 380px;
+  }
+`;
+
+const ScrollContainer = styled.div<{ len: number }>`
+  width: ${(props) => props.len * 400}px;
+  height: 100%;
+  flex: 1;
+  display: flex;
 `;
 
 const ResumePreview = styled.div<{ $pre_image_url: string }>`
@@ -93,43 +101,37 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  & :hover {
+    border: 0px solid #fff;
+  }
+
   @media screen and (max-width: 768px) {
-    width: 240px;
-    height: 340px;
-    margin-top: 5px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
+    width: 215px;
+    height: 300px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 249px;
-    height: 345px;
-    margin-top: 5px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
+    width: 230px;
+    height: 320px;
   }
 
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    width: 230px;
+    height: 320px;
+  }
+
+  @media screen and (min-width: 1400px) {
     width: 249px;
     height: 345px;
-    margin-top: 5px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
   }
 `;
 
@@ -137,11 +139,6 @@ const Text3 = styled.div`
   text-align: center;
   color: #d7d7d7;
   font-size: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 145px;
-  justify-content: center;
   height: auto;
 `;
 
@@ -199,12 +196,22 @@ const Text4 = styled.div`
 `;
 
 const InterviewBox = styled.div`
-  width: 65%;
+  width: 60%;
   height: inherit;
   display: flex;
   overflow-x: auto;
-  margin-left: 287px;
   align-items: center;
+  @media screen and (max-width: 768px) {
+    margin-left: 120px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 220px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 287px;
+  }
 `;
 
 const InterviewWrapper = styled.div`
@@ -213,8 +220,9 @@ const InterviewWrapper = styled.div`
   border-radius: 20px;
   margin-right: 20px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background: url("https://i.postimg.cc/ZqvhQ27G/Rectangle-17.png");
+  background: url(${interview_image});
   background-position: center;
+  background-size: cover;
   &:hover {
     cursor: pointer;
   }
@@ -232,13 +240,16 @@ const InterviewTitle = styled.div`
 const DeleteButton = styled.button`
   width: 20%;
   height: 20px;
-  margin-left: 50%;
-  transform: translateX(-50%);
+  margin-top: 20px;
 `;
 
-const PdfInput = styled.input`
-  width: 100%;
-  height: 100%;
+const PlusIcon = styled.div`
+  width: 30%;
+  aspect-ratio: 1;
+  background-image: url(${plus_icon});
+  background-size: cover;
+  opacity: 0.2;
+  margin-top: 20px;
 `;
 type Interview = {
   id: number;
@@ -258,12 +269,13 @@ function Mypage() {
     file.append("file", acceptedFiles[0]); // 파일을 FormData에 추가
     const user_id = "1";
     file.append("user_id", user_id);
-
+    file.append("title", "이력서1");
     try {
       const response = await axios.post(
         "http://localhost:8000/api/resumes/create",
         file
       );
+      getResumes();
       console.log("File uploaded successfully!", response.data);
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -324,8 +336,13 @@ function Mypage() {
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          {resumeList.length !== 0 ? (
-            resumeList.map((item, idx) => {
+          <ScrollContainer len={resumeList.length}>
+            <ResumePreview $pre_image_url="" {...getRootProps()}>
+              <input type="file" {...getInputProps()} />
+              <Text3>이력서를 등록해주세요!</Text3>
+              <PlusIcon />
+            </ResumePreview>
+            {resumeList.map((item, idx) => {
               return (
                 <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
                   <Text3>
@@ -338,17 +355,8 @@ function Mypage() {
                   </DeleteButton>
                 </ResumePreview>
               );
-            })
-          ) : (
-            <ResumePreview $pre_image_url="" {...getRootProps()}>
-              <PdfInput type="file" {...getInputProps()}></PdfInput>
-              <Text3>
-                등록된 이력서가 없습니다.
-                <br />
-                이력서를 등록해주세요!
-              </Text3>
-            </ResumePreview>
-          )}
+            })}
+          </ScrollContainer>
         </ResumeContainer>
       </Container>
       <Text2>나의 면접</Text2>

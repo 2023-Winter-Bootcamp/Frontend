@@ -676,10 +676,7 @@ function Main() {
                         src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
                         alt="Document Icon"
                       />
-                      <div {...getRootProps()}>
-                        <input {...getInputProps()} />
-                        이력서 업로드
-                      </div>
+                      이력서 업로드
                     </ButtonContent>
                   </Button>
                 </motion.div>
