@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import plus_icon from "./images/plus_icon.png";
 import interview_image from "./images/interview_image.jpg";
+import Modal from "./components/Modal";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -264,28 +265,48 @@ type Resume = {
 };
 
 function Mypage() {
-  const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
-    const file = new FormData();
-    file.append("file", acceptedFiles[0]); // 파일을 FormData에 추가
-    const user_id = "1";
-    file.append("user_id", user_id);
-    file.append("title", "이력서1");
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/resumes/create",
-        file
-      );
-      getResumes();
-      console.log("File uploaded successfully!", response.data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileUpload = async (title: string) => {
+    if (selectedFile) {
+      const file = new FormData();
+      file.append("file", selectedFile);
+      const user_id = "1";
+      file.append("user_id", user_id);
+      file.append("title", title);
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/resumes/create",
+          file
+        );
+        console.log("File uploaded successfully!", response.data);
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
     }
   };
 
+  const handleModalRegister = (title: string) => {
+    // 모달에서 등록 버튼이 눌렸을 때 실행되는 함수
+    handleFileUpload(title);
+  };
+
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: handleFileUpload,
-    //accept: ".pdf",
+    onDrop: (acceptedFiles) => {
+      setSelectedFile(acceptedFiles[0]);
+      setIsModalOpen(true);
+    },
+    // accept: ".pdf",
   });
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    getResumes();
+  };
 
   const [resumeList, setResumeList] = useState<Resume[]>([]);
   const [interviewList, setInterviewList] = useState<Interview[]>([]);
@@ -342,6 +363,13 @@ function Mypage() {
               <Text3>이력서를 등록해주세요!</Text3>
               <PlusIcon />
             </ResumePreview>
+            {isModalOpen && (
+                <Modal
+                  ref={modalRef}
+                  onClose={handleModalClose}
+                  onRegister={handleModalRegister}
+                />
+              )}
             {resumeList.map((item, idx) => {
               return (
                 <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
