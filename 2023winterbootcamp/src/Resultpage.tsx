@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
+// import sampleAudio from './sample-3s.mp3';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -38,7 +39,7 @@ const ProfileBox = styled.div`
 
 const ProfileImage = styled.div`
   border-radius: 50%;
-  background-image: url("https://ifh.cc/g/bHznLB.png");
+  background-image: url('https://ifh.cc/g/bHznLB.png');
   background-position: center;
   border: none;
   aspect-ratio: 1;
@@ -349,6 +350,30 @@ const Resultpage = () => {
   const [interviewData, setInterviewData] = useState<InterviewData | null>(
     null
   );
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // 재생
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+    setIsPlaying(true);
+  };
+  // 일시 정지
+  const pauseAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setIsPlaying(false);
+  };
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.play();
+    } else audioRef.current.pause();
+  }, [isPlaying]);
 
   useEffect(() => {
     // 백엔드 API에서 면접 데이터를 가져옴
@@ -357,7 +382,7 @@ const Resultpage = () => {
       .then((response) => response.json())
       .then((data) => setInterviewData(data))
       .catch((error) =>
-        console.error("면접 데이터를 가져오는 중 에러 발생:", error)
+        console.error('면접 데이터를 가져오는 중 에러 발생:', error)
       );
   }, []);
 
@@ -382,12 +407,12 @@ const Resultpage = () => {
                   <TextBox3>
                     <Text3>{interviewData.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names.join(", ")}
+                      {interviewData.interview_type_names.join(', ')}
                     </Text3>
                     <Text3>{interviewData.position}</Text3>
                     <Text3>{interviewData.style}</Text3>
                     <Text3>{interviewData.resume}</Text3>
-                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
+                    <Text3>{interviewData.repo_names.join(', ')}</Text3>
                   </TextBox3>
                 </TextBox1>
               </ProfileInfo>
@@ -407,6 +432,15 @@ const Resultpage = () => {
                       {interviewData.answers[index].content}
                     </ASmallText>
                     <VoiceBox>
+                      <audio
+                        ref={audioRef}
+                        src={interviewData.answers[index].record_url}
+                      ></audio>
+                      {isPlaying ? (
+                        <Button $isPlaying={isPlaying} onClick={pauseAudio} />
+                      ) : (
+                        <Button $isPlaying={isPlaying} onClick={playAudio} />
+                      )}
                       <Text4>음성 듣기</Text4>
                     </VoiceBox>
                   </AnswerBox>
