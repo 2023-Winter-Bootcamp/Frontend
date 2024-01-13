@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+
 import axios from "axios";
 
 const Up = styled.div`
@@ -17,24 +19,9 @@ const Camera = styled.div`
   max-width: 700px;
   min-width: 400px;
   height: 400px;
-  background-image: url('https://i.postimg.cc/QdcMWgKq/Rectangle-23.png');
+  background-image: url("https://i.postimg.cc/QdcMWgKq/Rectangle-23.png");
   background-position: center;
   background-size: cover;
-`;
-
-const Image = styled.img`
- /*  @media screen and (max-width: 768px) {
-    width: 480px;
-    height: 300px;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 480px;
-    height: 300px;
-  }
-
-  @media screen and (min-width: 1024px) {
-  } */
 `;
 
 const Info = styled.div`
@@ -53,6 +40,9 @@ const Timer = styled.div`
 `;
 
 const Button = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
   cursor: pointer;
 `;
 
@@ -68,18 +58,13 @@ const StyledButtonImage = styled.img`
     width: 20px;
     height: 20px;
   }
-
-  @media screen and (min-width: 1024px) {
-    width: 25px;
-    height: 25px;
-  }
 `;
 
 const Down = styled.div`
   width: 80%;
   max-width: 800px;
-  height: 280px;
-  background-color: #f6f6f6 ;
+  height: 250px;
+  background-color: #f6f6f6;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -93,6 +78,7 @@ const Down = styled.div`
 const Q = styled.div`
   width: 90%;
   height: 220px;
+  margin: 0 auto;
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
 `;
 
@@ -103,21 +89,20 @@ const QuestionText = styled.div`
 `;
 
 const ContentText = styled.div`
+  width: 100%;
+  height: 100px;
   color: #5a5a5a;
   font-size: 18px;
   @media screen and (max-width: 768px) {
     font-size: 14px;
-    margin-right: 20px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-size: 16px;
-    margin-right: 20px;
   }
 
   @media screen and (min-width: 1024px) {
     font-size: 18px;
-    margin-right: 20px;
   }
 `;
 
@@ -184,16 +169,45 @@ function Interviewpage() {
       navigate("/result");
     }
   };
+  const recorderControls = useAudioRecorder();
+
+  const addAudioElement = async (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    const file = new FormData();
+    file.append('question','1');
+    file.append('record_url',blob)
+    try{
+      const response = await axios.post(
+        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex+1}/answers/create/`,
+        file
+      )
+    }catch(e){
+      console.error(e);
+    }
+  };
 
   return (
     <>
       <Up>
-        <Camera/>
+        <Camera />
         <Info>
           <Timer>00:00</Timer>
           <Button onClick={handleButtonClick}>
             <StyledButtonImage src={buttonImage} alt="button" />
           </Button>
+          <Button>질문 끝</Button>
+          <div>
+            <AudioRecorder
+              onRecordingComplete={(blob) => addAudioElement(blob)}
+              recorderControls={recorderControls}
+            />
+            <button onClick={recorderControls.stopRecording}>
+              Stop recording
+            </button>
+          </div>
         </Info>
       </Up>
       <Down>
@@ -208,16 +222,16 @@ function Interviewpage() {
             <ContentText>{question.content}</ContentText>
           </Q>
         ))}
-          <Next onClick={handleNextButtonClick}>
-            <StyledNextImage
-              src={
-                currentQuestionIndex === questions.length - 1
-                  ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                  : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-              }
-              alt="next"
-            />
-          </Next>
+        <Next onClick={handleNextButtonClick}>
+          <StyledNextImage
+            src={
+              currentQuestionIndex === questions.length - 1
+                ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+            }
+            alt="next"
+          />
+        </Next>
       </Down>
     </>
   );
