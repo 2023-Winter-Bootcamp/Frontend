@@ -236,6 +236,10 @@ const DeleteButton = styled.button`
   transform: translateX(-50%);
 `;
 
+const PdfInput = styled.input`
+  width: 100%;
+  height: 100%;
+`;
 type Interview = {
   id: number;
   title: string;
@@ -249,8 +253,6 @@ type Resume = {
 };
 
 function Mypage() {
-  const [pdfUrl, setPdfUrl] = useState(""); // PDF 파일 URL 상태 추가
-
   const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
     const file = new FormData();
     file.append("file", acceptedFiles[0]); // 파일을 FormData에 추가
@@ -263,9 +265,6 @@ function Mypage() {
         file
       );
       console.log("File uploaded successfully!", response.data);
-
-      // 업로드된 PDF 파일의 URL을 설정하여 렌더링
-      setPdfUrl(response.data.url); // 여기서 URL은 실제 업로드된 PDF 파일의 URL로 설정해야 합니다.
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -320,22 +319,12 @@ function Mypage() {
     getInterviewList();
   }, []);
 
-  const EmptyResumePreview = () => (
-    <ResumePreview $pre_image_url="">
-      <Text3>
-        등록된 이력서가 없습니다.
-        <br />
-        이력서를 등록해주세요!
-      </Text3>
-    </ResumePreview>
-  );
-
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          {resumeList ? (
+          {resumeList.length !== 0 ? (
             resumeList.map((item, idx) => {
               return (
                 <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
@@ -351,7 +340,14 @@ function Mypage() {
               );
             })
           ) : (
-            <EmptyResumePreview />
+            <ResumePreview $pre_image_url="" {...getRootProps()}>
+              <PdfInput type="file" {...getInputProps()}></PdfInput>
+              <Text3>
+                등록된 이력서가 없습니다.
+                <br />
+                이력서를 등록해주세요!
+              </Text3>
+            </ResumePreview>
           )}
         </ResumeContainer>
       </Container>
