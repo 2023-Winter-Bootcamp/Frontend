@@ -361,18 +361,6 @@ const Resultpage = () => {
       );
   }, []);
 
-  // const playAudio = () => {
-  //   const audio = new Audio("your-audio-file.mp3");
-
-  //   if (isPlaying) {
-  //     audio.pause();
-  //   } else {
-  //     audio.play();
-  //   }
-
-  //   setIsPlaying(!isPlaying);
-  // };
-
   return (
     <>
       {interviewData && (
@@ -419,8 +407,6 @@ const Resultpage = () => {
                       {interviewData.answers[index].content}
                     </ASmallText>
                     <VoiceBox>
-                      <Button />
-
                       <Text4>음성 듣기</Text4>
                     </VoiceBox>
                   </AnswerBox>

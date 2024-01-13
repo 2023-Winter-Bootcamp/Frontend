@@ -13,7 +13,7 @@ import axios from "axios";
 import Modal from "./components/Modal";
 
 const Container = styled.div`
-  background-image: url("https://i.postimg.cc/fb66hRk3/2024-01-03-8-09-33.png");
+  background-image: url("https://ifh.cc/g/9wn5LW.jpg");
   width: 100%;
   height: 120vh;
   display: flex;
