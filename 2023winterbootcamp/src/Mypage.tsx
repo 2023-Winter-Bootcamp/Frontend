@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import { Document, Page } from "react-pdf";
+import plus_icon from "./images/plus_icon.png";
+import interview_image from "./images/interview_image.jpg";
+import Modal from "./components/Modal";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -63,69 +65,74 @@ const Text1 = styled.div`
 `;
 
 const ResumeContainer = styled.div`
+  width: 60%;
+  height: 370px;
+  display: flex;
+  margin-bottom: 20px;
+  overflow-x: auto;
   @media screen and (max-width: 768px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
     margin-left: 100px;
-    margin-bottom: 20px;
+    height: 330px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
     margin-left: 200px;
-    margin-bottom: 20px;
+    height: 355px;
   }
 
-  @media screen and (min-width: 1024px) {
-    width: 920px;
-    height: 370px;
-    display: flex;
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
     margin-left: 267px;
-    margin-bottom: 20px;
+    height: 355px;
+  }
+  @media screen and (min-width: 1400px) {
+    margin-left: 267px;
+    height: 380px;
   }
 `;
 
-const ResumePreview = styled.div`
+const ScrollContainer = styled.div<{ len: number }>`
+  width: ${(props) => props.len * 400}px;
+  height: 100%;
+  flex: 1;
+  display: flex;
+`;
+
+const ResumePreview = styled.div<{ $pre_image_url: string }>`
+  background-image: url(${(props) => props.$pre_image_url});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  & :hover {
+    border: 0px solid #fff;
+  }
+
   @media screen and (max-width: 768px) {
-    width: 240px;
-    height: 340px;
-    margin-top: 5px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
+    width: 215px;
+    height: 300px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 249px;
-    height: 345px;
-    margin-top: 5px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
+    width: 230px;
+    height: 320px;
   }
 
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    width: 230px;
+    height: 320px;
+  }
+
+  @media screen and (min-width: 1400px) {
     width: 249px;
     height: 345px;
-    margin-top: -140px;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    & :hover {
-      border: 0px solid #fff;
-    }
   }
 `;
 
@@ -133,12 +140,7 @@ const Text3 = styled.div`
   text-align: center;
   color: #d7d7d7;
   font-size: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 145px;
-  justify-content: center;
-  height: 95%;
+  height: auto;
 `;
 
 const Text2 = styled.div`
@@ -195,12 +197,22 @@ const Text4 = styled.div`
 `;
 
 const InterviewBox = styled.div`
-  width: 65%;
+  width: 60%;
   height: inherit;
   display: flex;
   overflow-x: auto;
-  margin-left: 287px;
   align-items: center;
+  @media screen and (max-width: 768px) {
+    margin-left: 120px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 220px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 287px;
+  }
 `;
 
 const InterviewWrapper = styled.div`
@@ -209,8 +221,9 @@ const InterviewWrapper = styled.div`
   border-radius: 20px;
   margin-right: 20px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background: url("https://i.postimg.cc/ZqvhQ27G/Rectangle-17.png");
+  background: url(${interview_image});
   background-position: center;
+  background-size: cover;
   &:hover {
     cursor: pointer;
   }
@@ -225,99 +238,153 @@ const InterviewTitle = styled.div`
   margin-top: 3%;
 `;
 
+const DeleteButton = styled.button`
+  width: 20%;
+  height: 20px;
+  margin-top: 20px;
+`;
+
+const PlusIcon = styled.div`
+  width: 30%;
+  aspect-ratio: 1;
+  background-image: url(${plus_icon});
+  background-size: cover;
+  opacity: 0.2;
+  margin-top: 20px;
+`;
 type Interview = {
   id: number;
   title: string;
 };
+
+type Resume = {
+  id: number;
+  pre_image_url: string;
+  title: string;
+  created_at: string;
+};
+
 function Mypage() {
-  const [pdfUrl, setPdfUrl] = useState(""); // PDF 파일 URL 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileUpload = async (acceptedFiles: (string | Blob)[]) => {
-    const file = new FormData();
-    file.append("file", acceptedFiles[0]); // 파일을 FormData에 추가
-    const user_id = "1";
-    file.append("user_id", user_id);
+  const handleFileUpload = async (title: string) => {
+    if (selectedFile) {
+      const file = new FormData();
+      file.append("file", selectedFile);
+      const user_id = "1";
+      file.append("user_id", user_id);
+      file.append("title", title);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/resumes/create",
-        file
-      );
-      console.log("File uploaded successfully!", response.data);
-
-      // 업로드된 PDF 파일의 URL을 설정하여 렌더링
-      setPdfUrl(response.data.url); // 여기서 URL은 실제 업로드된 PDF 파일의 URL로 설정해야 합니다.
-    } catch (error) {
-      console.error("Error uploading file:", error);
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/resumes/create",
+          file
+        );
+        console.log("File uploaded successfully!", response.data);
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
     }
   };
 
+  const handleModalRegister = (title: string) => {
+    // 모달에서 등록 버튼이 눌렸을 때 실행되는 함수
+    handleFileUpload(title);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setSelectedFile(acceptedFiles[0]);
+      setIsModalOpen(true);
+    },
+    // accept: ".pdf",
+  });
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    getResumes();
+  };
+
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
   const [interviewList, setInterviewList] = useState<Interview[]>([]);
 
   const getInterviewList = async () => {
     try {
       const response = await axios.get("http://localhost:8000/api/interviews/");
-      console.log(response.data);
       setInterviewList(response.data);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const getResumes = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/resumes/");
+      setResumeList(response.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  function handleClick(id: number) {
+    let findIndex;
+    resumeList.forEach(async (item, idx) => {
+      if (item.id === id) {
+        try {
+          const response = await axios.delete(
+            `http://localhost:8000/api/resumes/delete/${id}`
+          );
+          let cpyResumeList = [...resumeList];
+          cpyResumeList.splice(idx, 1);
+          setResumeList(cpyResumeList);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+  }
+
   useEffect(() => {
+    getResumes();
     getInterviewList();
   }, []);
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: handleFileUpload,
-    //accept: ".pdf",
-  });
-
-  useEffect(() => {
-    // 이력서 목록을 가져오는 API 호출
-    axios
-      .get("http://localhost:8000/api/resumes/")
-      .then((response) => {
-        // 받아온 데이터에서 이력서의 URL을 가져옴 (예시로는 response.data[0].url을 가져왔다고 가정)
-        const resumeUrl = response.data[0]?.url; // 올바른 데이터가 없을 경우를 처리하기 위해 ?. 연산자 사용
-
-        // 이력서의 URL을 상태에 설정하여 미리보기로 사용
-        if (resumeUrl) {
-          setPdfUrl(resumeUrl);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching resume data:", error);
-      });
-  }, [pdfUrl]); // pdfUrl이 변경될 때마다 이펙트 실행
-
-  const EmptyResumePreview = () => (
-    <ResumePreview>
-      <Text3>
-        등록된 이력서가 없습니다.
-        <br />
-        이력서를 등록해주세요!
-      </Text3>
-    </ResumePreview>
-  );
-
-  const FilledResumePreview = () => (
-    <ResumePreview>
-      <Document file={pdfUrl}>
-        <Page pageNumber={1} />
-      </Document>
-    </ResumePreview>
-  );
 
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <div {...getRootProps()}>
-            <input {...getInputProps()} />
-            {pdfUrl ? <FilledResumePreview /> : <EmptyResumePreview />}
-          </div>
+          <ScrollContainer len={resumeList.length}>
+            <ResumePreview $pre_image_url="" {...getRootProps()}>
+              <input type="file" {...getInputProps()} />
+              <Text3>이력서를 등록해주세요!</Text3>
+              <PlusIcon />
+            </ResumePreview>
+            {isModalOpen && (
+                <Modal
+                  ref={modalRef}
+                  onClose={handleModalClose}
+                  onRegister={handleModalRegister}
+                />
+              )}
+            {resumeList.map((item, idx) => {
+              return (
+                <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
+                  <Text3>
+                    {item.title}
+                    <br />
+                    {item.created_at.slice(0, 10)}
+                  </Text3>
+                  <DeleteButton onClick={() => handleClick(item.id)}>
+                    삭제
+                  </DeleteButton>
+                </ResumePreview>
+              );
+            })}
+          </ScrollContainer>
         </ResumeContainer>
       </Container>
       <Text2>나의 면접</Text2>
@@ -326,8 +393,8 @@ function Mypage() {
           {interviewList.length ? (
             interviewList.map((item, idx) => {
               return (
-                <InterviewWrapper>
-                    <InterviewTitle>{item.title}</InterviewTitle>
+                <InterviewWrapper key={idx}>
+                  <InterviewTitle>{item.title}</InterviewTitle>
                 </InterviewWrapper>
               );
             })
