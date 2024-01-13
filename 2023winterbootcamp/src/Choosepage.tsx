@@ -214,7 +214,7 @@ function Choose() {
 
   const handleStartClick = () => {
     setStartClicked(true);
-    navigate("/interview");
+    navigate("/interview/1");
   };
 
   const handleResumeSelect = (index: number) => {
