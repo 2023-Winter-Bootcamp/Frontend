@@ -82,7 +82,7 @@ const Text1 = styled.div`
     font-size: 20px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 70px;
+    width: 75px;
     height: 30px;
     font-size: 24px;
   }
