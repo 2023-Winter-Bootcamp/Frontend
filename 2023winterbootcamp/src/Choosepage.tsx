@@ -322,10 +322,30 @@ function Choose() {
   const [selectedInterviewType, setSelectedInterviewType] = useState<
     string | null
   >(null);
-  const [startClicked, setStartClicked] = useState(false);
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
   const [title, setTitle] = useState<string>('');
+
+  const [startClicked, setStartClicked] = useState(false);
+
+  useEffect(() => {
+    const isAllSelected =
+      selectedMultiButtons.length > 0 &&
+      selectedPosition !== null &&
+      selectedInterviewType !== null &&
+      selectedResume !== null &&
+      selectedRepos.length > 0 &&
+      title !== '';
+
+    setStartClicked(isAllSelected);
+  }, [
+    selectedMultiButtons,
+    selectedPosition,
+    selectedInterviewType,
+    selectedResume,
+    selectedRepos,
+    title,
+  ]);
 
   const handleMultiButtonClick = (buttonName: string) => {
     const selectedIndex = selectedMultiButtons.indexOf(buttonName);
@@ -356,9 +376,9 @@ function Choose() {
 
   const navigate = useNavigate();
 
-  const handleStartClick = () => {
+  const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate('/interview/1');
+    navigate('/interview/' + id);
   };
 
   const handleResumeSelect = (index: number) => {
@@ -400,7 +420,7 @@ function Choose() {
           type_names: selectedMultiButtons,
         }
       );
-      handleStartClick();
+      handleStartClick(response.data.id);
       console.log(response.data);
     } catch (e) {
       console.log(e);
