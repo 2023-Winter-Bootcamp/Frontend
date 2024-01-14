@@ -139,7 +139,7 @@ function Interviewpage() {
   );
 
   const [questions, setQuestions] = useState<Question[]>([]); // 질문 상태 배열 추가
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 질문의 인덱스 상태
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1); // 현재 질문의 인덱스 상태
 
   const { id } = useParams(); // 면접 ID를 useParams로 받아오기
   const navigate = useNavigate();
@@ -170,7 +170,7 @@ function Interviewpage() {
 
   const handleNextButtonClick = () => {
     // 다음 질문이 있는지 확인
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < questions.length) {
       // 다음 질문의 인덱스로 업데이트
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -187,18 +187,20 @@ function Interviewpage() {
     audio.src = url;
     audio.controls = true;
     const file = new FormData();
-    file.append("question", "1");
+    file.append("question", currentQuestionIndex.toString());
     file.append("record_url", blob);
     try {
       const response = await axios.post(
         `http://localhost:8000/api/interviews/questions/${
-          currentQuestionIndex + 1
+          currentQuestionIndex
         }/answers/create/`,
         file
       );
     } catch (e) {
       console.error(e);
     }
+    handleNextButtonClick();
+
   };
   //질문 음성파일 실행 끝나면 2초 뒤 녹음 실행
   const handleRecordingStart = () => {
@@ -207,10 +209,10 @@ function Interviewpage() {
     },2000)
   }
 
-  useEffect(()=> {
-    if(!recorderControls.recordingBlob) return;
-    handleNextButtonClick();
-  }, [recorderControls.recordingBlob])
+  // useEffect(()=> {
+  //   if(!recorderControls.recordingBlob) return;
+    
+  // }, [recorderControls.recordingBlob])
 
   return (
     <>
@@ -229,7 +231,7 @@ function Interviewpage() {
           <Q
             key={index}
             style={{
-              display: index === currentQuestionIndex ? "block" : "none",
+              display: index+1 === currentQuestionIndex ? "block" : "none",
             }}
           >
             <QuestionText>{question.type_name}</QuestionText>
