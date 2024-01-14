@@ -63,7 +63,7 @@ const StyledButtonImage = styled.img`
 const Down = styled.div`
   width: 80%;
   max-width: 800px;
-  height: 250px;
+  height: 300px;
   background-color: #f6f6f6;
   border-radius: 20px;
   display: flex;
@@ -79,6 +79,7 @@ const Q = styled.div`
   width: 90%;
   height: 220px;
   margin: 0 auto;
+
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
 `;
 
@@ -107,16 +108,24 @@ const ContentText = styled.div`
 `;
 
 const Next = styled.button`
+  width: 40px;
+  height: 40px;
   border: none;
   background: none;
   cursor: pointer;
-  margin-left: auto;
   margin-bottom: 30px;
 `;
 
 const StyledNextImage = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
+`;
+
+const RecordBox = styled.div`
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 export interface Question {
@@ -169,6 +178,7 @@ function Interviewpage() {
       navigate("/result");
     }
   };
+
   const recorderControls = useAudioRecorder();
 
   const addAudioElement = async (blob: Blob) => {
@@ -177,17 +187,30 @@ function Interviewpage() {
     audio.src = url;
     audio.controls = true;
     const file = new FormData();
-    file.append('question','1');
-    file.append('record_url',blob)
-    try{
+    file.append("question", "1");
+    file.append("record_url", blob);
+    try {
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex+1}/answers/create/`,
+        `http://localhost:8000/api/interviews/questions/${
+          currentQuestionIndex + 1
+        }/answers/create/`,
         file
-      )
-    }catch(e){
+      );
+    } catch (e) {
       console.error(e);
     }
   };
+  //질문 음성파일 실행 끝나면 2초 뒤 녹음 실행
+  const handleRecordingStart = () => {
+    setTimeout(()=>{
+      recorderControls.startRecording();
+    },2000)
+  }
+
+  useEffect(()=> {
+    if(!recorderControls.recordingBlob) return;
+    handleNextButtonClick();
+  }, [recorderControls.recordingBlob])
 
   return (
     <>
@@ -198,16 +221,7 @@ function Interviewpage() {
           <Button onClick={handleButtonClick}>
             <StyledButtonImage src={buttonImage} alt="button" />
           </Button>
-          <Button>질문 끝</Button>
-          <div>
-            <AudioRecorder
-              onRecordingComplete={(blob) => addAudioElement(blob)}
-              recorderControls={recorderControls}
-            />
-            <button onClick={recorderControls.stopRecording}>
-              Stop recording
-            </button>
-          </div>
+          <Button onClick={handleRecordingStart}>질문 끝</Button>
         </Info>
       </Up>
       <Down>
@@ -222,7 +236,15 @@ function Interviewpage() {
             <ContentText>{question.content}</ContentText>
           </Q>
         ))}
-        <Next onClick={handleNextButtonClick}>
+        <RecordBox>
+          <div>
+            <AudioRecorder
+              onRecordingComplete={(blob) => addAudioElement(blob)}
+              recorderControls={recorderControls}
+              showVisualizer={true}
+            />
+          </div>
+          <Next onClick={handleNextButtonClick}>
           <StyledNextImage
             src={
               currentQuestionIndex === questions.length - 1
@@ -232,6 +254,7 @@ function Interviewpage() {
             alt="next"
           />
         </Next>
+        </RecordBox>
       </Down>
     </>
   );
