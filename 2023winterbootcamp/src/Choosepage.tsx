@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -159,8 +160,8 @@ const Button = styled.button<{ isSelected: boolean }>`
   font-size: 14px;
   width: 200px;
   height: 54px;
-  background-color: ${(props) => (props.isSelected ? "#1a1a1a" : "white")};
-  color: ${(props) => (props.isSelected ? "white" : "#1a1a1a")};
+  background-color: ${(props) => (props.isSelected ? '#1a1a1a' : 'white')};
+  color: ${(props) => (props.isSelected ? 'white' : '#1a1a1a')};
   border: 1px solid white;
   border-bottom: 1px solid #1a1a1a;
   margin: 0 5px;
@@ -169,6 +170,148 @@ const Button = styled.button<{ isSelected: boolean }>`
   &:hover {
     border: 1px solid #1a1a1a;
   }
+`;
+
+const Container2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+`;
+
+const Container3 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+`;
+
+const Container4 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media screen and (max-width: 768px) {
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+const ResumeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-right: 80px;
+  width: 100%;
+  max-width: 530px;
+  margin: 0 auto;
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 29%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 29%;
+  }
+`;
+
+const ResumeBox = styled.div<{ isSelected: boolean }>`
+  width: 249px;
+  height: 345px;
+  background-color: white;
+  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 60px;
+  margin-right: 10px;
+
+  border: ${(props) =>
+    props.isSelected ? '2px solid black' : '2px solid #ffffff'};
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid black;
+  }
+`;
+
+const TextWrapper2 = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  height: 90px;
+`;
+
+const Text2 = styled.div`
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-left: 29%;
+
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+const RepoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 630px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+  @media screen and (max-width: 769px) {
+    margin-left: 14%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 28%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 29%;
+  }
+`;
+
+const Repo = styled.div<{ isSelected: boolean }>`
+  width: 308px;
+  height: 130px;
+  background-color: white;
+  border-radius: 10px;
+  margin-left: 5px;
+  border: ${(props) =>
+    props.isSelected ? '2px solid black' : '2px solid #e7e7e7'};
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid black;
+  }
+  @media screen and (max-width: 769px) {
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+const Reponame = styled.div`
+  color: #7a7a7a;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 20px;
+  margin-top: 15px;
 `;
 
 function Choose() {
@@ -182,6 +325,7 @@ function Choose() {
   const [startClicked, setStartClicked] = useState(false);
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
+  const [title, setTitle] = useState<string>('');
 
   const handleMultiButtonClick = (buttonName: string) => {
     const selectedIndex = selectedMultiButtons.indexOf(buttonName);
@@ -214,7 +358,7 @@ function Choose() {
 
   const handleStartClick = () => {
     setStartClicked(true);
-    navigate("/interview/1");
+    navigate('/interview/1');
   };
 
   const handleResumeSelect = (index: number) => {
@@ -238,150 +382,33 @@ function Choose() {
     setSelectedRepos(updatedSelectedRepos);
   };
 
-  const Container2 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  `;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
 
-  const Container3 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  `;
-
-  const Container4 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    @media screen and (max-width: 768px) {
+  const createInterview = async () => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/interviews/create/',
+        {
+          user: 1,
+          title: title,
+          position: selectedPosition,
+          style: selectedInterviewType,
+          resume: selectedResume,
+          repo_names: selectedRepos,
+          type_names: selectedMultiButtons,
+        }
+      );
+      handleStartClick();
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
     }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
-
-    @media screen and (min-width: 1024px) {
-    }
-  `;
-
-  const ResumeContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-right: 80px;
-    width: 100%;
-    max-width: 530px;
-    margin: 0 auto;
-    @media screen and (max-width: 769px) {
-      margin-left: 15%;
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-      margin-left: 29%;
-    }
-
-    @media screen and (min-width: 1024px) {
-      margin-left: 29%;
-    }
-  `;
-
-  const ResumeBox = styled.div<{ isSelected: boolean }>`
-    width: 249px;
-    height: 345px;
-    background-color: white;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    margin-bottom: 60px;
-    margin-right: 10px;
-
-    border: ${(props) =>
-      props.isSelected ? "2px solid black" : "2px solid #ffffff"};
-    cursor: pointer;
-
-    &:hover {
-      border: 2px solid black;
-    }
-  `;
-
-  const TextWrapper2 = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    height: 90px;
-  `;
-
-  const Text2 = styled.div`
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 40px;
-    margin-left: 29%;
-
-    @media screen and (max-width: 769px) {
-      margin-left: 15%;
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
-
-    @media screen and (min-width: 1024px) {
-    }
-  `;
-
-  const RepoContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 630px;
-    margin: 0 auto;
-    margin-bottom: 80px;
-    @media screen and (max-width: 769px) {
-      margin-left: 14%;
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-      margin-left: 28%;
-    }
-
-    @media screen and (min-width: 1024px) {
-      margin-left: 29%;
-    }
-  `;
-
-  const Repo = styled.div<{ isSelected: boolean }>`
-    width: 308px;
-    height: 130px;
-    background-color: white;
-    border-radius: 10px;
-    margin-left: 5px;
-    border: ${(props) =>
-      props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
-    cursor: pointer;
-
-    &:hover {
-      border: 2px solid black;
-    }
-    @media screen and (max-width: 769px) {
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
-
-    @media screen and (min-width: 1024px) {
-    }
-  `;
-
-  const Reponame = styled.div`
-    color: #7a7a7a;
-    font-size: 18px;
-    font-weight: 500;
-    margin-left: 20px;
-    margin-top: 15px;
-  `;
+  };
 
   const Start = styled.button`
-    background-color: ${startClicked ? "#1a1a1a" : "#cacaca"};
+    background-color: ${startClicked ? '#1a1a1a' : '#cacaca'};
     color: #fff;
     font-weight: bold;
     font-size: 14px;
@@ -397,7 +424,7 @@ function Choose() {
     cursor: pointer;
 
     &:hover {
-      background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
+      background-color: ${startClicked ? '#1a1a1a' : '#1a1a1a'};
     }
   `;
 
@@ -407,7 +434,7 @@ function Choose() {
         <TextWrapper>
           <Text>면접 제목</Text>
         </TextWrapper>
-        <Input placeholder=""></Input>
+        <Input placeholder='' onChange={handleChange}></Input>
       </Container>
       <Container1>
         <TextWrapper1>
@@ -415,20 +442,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedMultiButtons.includes("프로젝트")}
-            onClick={() => handleMultiButtonClick("프로젝트")}
+            isSelected={selectedMultiButtons.includes('project')}
+            onClick={() => handleMultiButtonClick('project')}
           >
             프로젝트
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes("CS 질문")}
-            onClick={() => handleMultiButtonClick("CS 질문")}
+            isSelected={selectedMultiButtons.includes('cs')}
+            onClick={() => handleMultiButtonClick('cs')}
           >
             CS 질문
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes("인성 면접")}
-            onClick={() => handleMultiButtonClick("인성 면접")}
+            isSelected={selectedMultiButtons.includes('personality')}
+            onClick={() => handleMultiButtonClick('personality')}
           >
             인성 면접
           </Button>
@@ -440,20 +467,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedPosition === "Frontend"}
-            onClick={() => handlePositionClick("Frontend")}
+            isSelected={selectedPosition === 'frontend'}
+            onClick={() => handlePositionClick('frontend')}
           >
             Frontend
           </Button>
           <Button
-            isSelected={selectedPosition === "Backend"}
-            onClick={() => handlePositionClick("Backend")}
+            isSelected={selectedPosition === 'backend'}
+            onClick={() => handlePositionClick('backend')}
           >
             Backend
           </Button>
           <Button
-            isSelected={selectedPosition === "Fullstack"}
-            onClick={() => handlePositionClick("Fullstack")}
+            isSelected={selectedPosition === 'fullstack'}
+            onClick={() => handlePositionClick('fullstack')}
           >
             Fullstack
           </Button>
@@ -465,20 +492,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedInterviewType === "화상 면접"}
-            onClick={() => handleInterviewTypeClick("화상 면접")}
+            isSelected={selectedInterviewType === 'video'}
+            onClick={() => handleInterviewTypeClick('video')}
           >
             화상 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === "음성 면접"}
-            onClick={() => handleInterviewTypeClick("음성 면접")}
+            isSelected={selectedInterviewType === 'voice'}
+            onClick={() => handleInterviewTypeClick('voice')}
           >
             음성 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === "텍스트 면접"}
-            onClick={() => handleInterviewTypeClick("텍스트 면접")}
+            isSelected={selectedInterviewType === 'text'}
+            onClick={() => handleInterviewTypeClick('text')}
           >
             텍스트 면접
           </Button>
@@ -518,7 +545,7 @@ function Choose() {
           </Repo>
         </RepoContainer>
       </Container4>
-      <Start onClick={handleStartClick}>면접시작</Start>
+      <Start onClick={createInterview}>면접시작</Start>
     </>
   );
 }
