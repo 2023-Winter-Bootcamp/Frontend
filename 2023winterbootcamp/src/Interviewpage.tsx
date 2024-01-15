@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
-
 import axios from "axios";
+import { useRecoilValue } from "recoil";
+import { questionState } from "./App";
 
 const Up = styled.div`
   width: 100%;
@@ -31,37 +32,18 @@ const Info = styled.div`
   margin-top: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
 `;
 
 const Timer = styled.div`
-  margin-bottom: 4px;
-`;
-
-const Button = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
-  cursor: pointer;
-`;
-
-const StyledButtonImage = styled.img`
-  width: 25px;
-  height: 25px;
-  @media screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 20px;
-    height: 20px;
-  }
+  color: white;
+  font-size: 20px;
+  margin-left: 20px;
 `;
 
 const Down = styled.div`
-  width: 80%;
+  width: 60%;
   max-width: 800px;
   height: 300px;
   background-color: #f6f6f6;
@@ -72,6 +54,7 @@ const Down = styled.div`
   margin-left: 50%;
   transform: translateX(-50%);
   margin-top: 50px;
+  margin-bottom: 50px;
   padding: 20px;
 `;
 
@@ -125,47 +108,109 @@ const RecordBox = styled.div`
   width: 100%;
   height: 60px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 `;
 
-export interface Question {
-  type_name: string;
-  content: string;
-}
+const StartModal = styled.div`
+  width: 100%;
+  height: 700px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StartButton = styled.button`
+  width: 450px;
+  height: 240px;
+  background-color: black;
+  color: white;
+  box-shadow: 5px 5px 4px 0px rgba(0, 0, 0, 0.25);
+  font-size: 40px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+    background-color: gray;
+  }
+`;
 
 function Interviewpage() {
+  const question = useRecoilValue(questionState);
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 질문의 인덱스 상태
+  const { id } = useParams(); // 면접 ID를 useParams로 받아오기
+  const navigate = useNavigate();
+  const questions = useRecoilValue(questionState);
+  const [timer, setTimer] = useState(0);
   const [buttonImage, setButtonImage] = useState(
     "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
   );
 
-  const [questions, setQuestions] = useState<Question[]>([]); // 질문 상태 배열 추가
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1); // 현재 질문의 인덱스 상태
-
-  const { id } = useParams(); // 면접 ID를 useParams로 받아오기
-  const navigate = useNavigate();
-
   useEffect(() => {
-    if (id) {
-      axios
-        .get(`http://localhost:8000/api/interviews/${id}/questions/`)
-        .then((response) => {
-          console.log(response.data.questions);
-          setQuestions(response.data.questions);
-        })
-        .catch((error) => {
-          console.error("Error fetching questions:", error);
-        });
+    const audioElement = audioRef.current;
+    const handleEnded = () => {
+      handleRecordingStart();
+    };
+
+    if (audioElement) {
+      audioElement.addEventListener("ended", handleEnded);
     }
+
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener("ended", handleEnded);
+      }
+    };
   }, [id]);
 
-  const handleButtonClick = () => {
-    if (
-      buttonImage === "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
-    ) {
-      setButtonImage("https://i.postimg.cc/SxLc9SV2/2024-01-04-2-59-20.png");
-    } else {
-      setButtonImage("https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png");
+  useEffect(() => {
+    if (currentQuestionIndex === 0 || currentQuestionIndex > question.length)
+      return;
+    getQ2AudioData();
+    const t = setInterval(()=>{
+      setTimer((prev) => prev + 1)
+    })
+  }, [currentQuestionIndex]);
+
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const getQ2AudioData = async () => {
+    console.log(questions);
+    const response = await axios({
+      method: "post",
+      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
+      headers: {},
+      data: {
+        voice: {
+          languageCode: "ko-KR",
+        },
+        input: {
+          text: `${questions[currentQuestionIndex - 1].content}`,
+        },
+        audioConfig: {
+          audioEncoding: "mp3",
+        },
+      },
+    });
+    const base64String = response.data.audioContent;
+    const audioBlob = base64ToBlob(base64String);
+    if (audioRef.current && audioBlob !== undefined) {
+      audioRef.current.src = URL.createObjectURL(audioBlob);
+      audioRef.current.play();
     }
+  };
+
+  const base64ToBlob = (base64: string) => {
+    const byteCharacters = atob(base64);
+    const byteNumbers = Array.from(byteCharacters).map((char) =>
+      char.charCodeAt(0)
+    );
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "audio/mp3" });
+    return blob;
   };
 
   const handleNextButtonClick = () => {
@@ -182,84 +227,111 @@ function Interviewpage() {
   const recorderControls = useAudioRecorder();
 
   const addAudioElement = async (blob: Blob) => {
-    const url = URL.createObjectURL(blob);
-    const audio = document.createElement("audio");
-    audio.src = url;
-    audio.controls = true;
     const file = new FormData();
     file.append("question", currentQuestionIndex.toString());
     file.append("record_url", blob);
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${
-          currentQuestionIndex
-        }/answers/create/`,
+        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex}/answers/create/`,
         file
       );
     } catch (e) {
       console.error(e);
     }
     handleNextButtonClick();
-
   };
   //질문 음성파일 실행 끝나면 2초 뒤 녹음 실행
   const handleRecordingStart = () => {
-    setTimeout(()=>{
+    setTimeout(() => {
       recorderControls.startRecording();
-    },2000)
-  }
+    }, 1);
+  };
 
-  // useEffect(()=> {
-  //   if(!recorderControls.recordingBlob) return;
-    
-  // }, [recorderControls.recordingBlob])
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let interval : NodeJS.Timer;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isRunning]);
+
+  const startStopwatch = () => {
+    setIsRunning(true);
+  };
+
+  const formatTime = (timeInSeconds : number) => {
+    const hours = Math.floor(timeInSeconds / 3600);
+    const minutes = Math.floor((timeInSeconds % 3600) / 60);
+    const seconds = timeInSeconds % 60;
+
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(seconds).padStart(2, '0');
+
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+  };
+
+  const interviewStart = () => {
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    startStopwatch();
+  }
 
   return (
     <>
-      <Up>
-        <Camera />
-        <Info>
-          <Timer>00:00</Timer>
-          <Button onClick={handleButtonClick}>
-            <StyledButtonImage src={buttonImage} alt="button" />
-          </Button>
-          <Button onClick={handleRecordingStart}>질문 끝</Button>
-        </Info>
-      </Up>
-      <Down>
-        {questions.map((question, index) => (
-          <Q
-            key={index}
-            style={{
-              display: index+1 === currentQuestionIndex ? "block" : "none",
-            }}
+      {currentQuestionIndex === 0 ? (
+        <StartModal>
+          <StartButton
+            onClick={interviewStart}
           >
-            <QuestionText>{question.type_name}</QuestionText>
-            <ContentText>{question.content}</ContentText>
-          </Q>
-        ))}
-        <RecordBox>
-          <div>
-            <AudioRecorder
-              onRecordingComplete={(blob) => addAudioElement(blob)}
-              recorderControls={recorderControls}
-              showVisualizer={true}
-            />
-          </div>
-          <Next onClick={handleNextButtonClick}>
-          <StyledNextImage
-            src={
-              currentQuestionIndex === questions.length - 1
-                ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-            }
-            alt="next"
-          />
-        </Next>
-        </RecordBox>
-      </Down>
+            면접 시작
+          </StartButton>
+        </StartModal>
+      ) : (
+        <>
+          <Up>
+            <Camera>
+              <Info>
+                <Timer>{formatTime(elapsedTime)}</Timer>
+              </Info>
+            </Camera>
+          </Up>
+          <Down>
+            {questions.map((question, index) => (
+              <Q
+                key={index}
+                style={{
+                  display:
+                    index + 1 === currentQuestionIndex ? "block" : "none",
+                }}
+              >
+                <QuestionText>{question.type_name}</QuestionText>
+                <ContentText>{question.content}</ContentText>
+              </Q>
+            ))}
+            <RecordBox>
+              <div>
+                <AudioRecorder
+                  onRecordingComplete={(blob) => addAudioElement(blob)}
+                  recorderControls={recorderControls}
+                  showVisualizer={true}
+                />
+              </div>
+            </RecordBox>
+          </Down>
+        </>
+      )}
+
+      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
     </>
   );
 }
-
 export default Interviewpage;

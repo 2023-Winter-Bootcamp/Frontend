@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { atom, useRecoilState, useSetRecoilState } from "recoil";
+import { questionState } from "./App";
 const Container = styled.div`
   @media screen and (max-width: 768px) {
     display: flex;
@@ -182,7 +184,8 @@ function Choose() {
   const [startClicked, setStartClicked] = useState(false);
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
-
+  const [id,setId] = useState('1'); //사용자 아이디
+  const [question, setQuestion] = useRecoilState(questionState);
   const handleMultiButtonClick = (buttonName: string) => {
     const selectedIndex = selectedMultiButtons.indexOf(buttonName);
     let updatedSelectedButtons: string[];
@@ -214,7 +217,7 @@ function Choose() {
 
   const handleStartClick = () => {
     setStartClicked(true);
-    navigate("/interview/1");
+    getQuestions(id);
   };
 
   const handleResumeSelect = (index: number) => {
@@ -237,6 +240,16 @@ function Choose() {
 
     setSelectedRepos(updatedSelectedRepos);
   };
+
+  const getQuestions = async (id : string) => {
+    try{
+      const response = await axios.get(`http://localhost:8000/api/interviews/${id}/questions/`);
+      setQuestion(response.data.questions);
+      navigate("/interview/1");
+    }catch(e){
+      console.error(e)
+    }
+  }
 
   const Container2 = styled.div`
     display: flex;
@@ -518,7 +531,7 @@ function Choose() {
           </Repo>
         </RepoContainer>
       </Container4>
-      <Start onClick={handleStartClick}>면접시작</Start>
+      <Start onClick={handleStartClick}>선택 완료</Start>
     </>
   );
 }
