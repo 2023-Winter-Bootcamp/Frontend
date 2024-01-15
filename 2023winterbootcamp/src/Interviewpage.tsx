@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
-
 import axios from "axios";
 
 const Up = styled.div`
@@ -191,27 +190,24 @@ function Interviewpage() {
     file.append("record_url", blob);
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${
-          currentQuestionIndex
-        }/answers/create/`,
+        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex}/answers/create/`,
         file
       );
     } catch (e) {
       console.error(e);
     }
     handleNextButtonClick();
-
   };
   //질문 음성파일 실행 끝나면 2초 뒤 녹음 실행
   const handleRecordingStart = () => {
-    setTimeout(()=>{
+    setTimeout(() => {
       recorderControls.startRecording();
-    },2000)
-  }
+    }, 2000);
+  };
 
   // useEffect(()=> {
   //   if(!recorderControls.recordingBlob) return;
-    
+
   // }, [recorderControls.recordingBlob])
 
   return (
@@ -231,7 +227,7 @@ function Interviewpage() {
           <Q
             key={index}
             style={{
-              display: index+1 === currentQuestionIndex ? "block" : "none",
+              display: index + 1 === currentQuestionIndex ? "block" : "none",
             }}
           >
             <QuestionText>{question.type_name}</QuestionText>
@@ -247,15 +243,15 @@ function Interviewpage() {
             />
           </div>
           <Next onClick={handleNextButtonClick}>
-          <StyledNextImage
-            src={
-              currentQuestionIndex === questions.length - 1
-                ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-            }
-            alt="next"
-          />
-        </Next>
+            <StyledNextImage
+              src={
+                currentQuestionIndex === questions.length - 1
+                  ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                  : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+              }
+              alt="next"
+            />
+          </Next>
         </RecordBox>
       </Down>
     </>
