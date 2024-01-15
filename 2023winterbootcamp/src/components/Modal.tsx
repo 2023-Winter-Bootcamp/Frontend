@@ -4,19 +4,35 @@ import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
   onClose: () => void;
+  onRegister: (title: string) => void;
 }
 
-const ModalWrapper = styled.div`
-  position: absolute;
-  top: 29%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  height: 220px;
-  background-color: #fff;
+const ModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+`;
+
+const ModalWrapper = styled.div`
+  position: absolute;
+  width: 400px;
+  height: 220px;
+  background-color: #fff;
+  border: 2px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 1000;
 `;
 
 const TextWrapper = styled.div`
@@ -60,11 +76,6 @@ const Text = styled.div`
   margin-top: -10px;
 `;
 
-interface ModalProps {
-  onClose: () => void;
-  onRegister: (title: string) => void; // onRegister 프로퍼티 추가
-}
-
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
   ({ onClose, onRegister }, ref) => {
     const navigate = useNavigate();
@@ -75,23 +86,32 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         return;
       }
 
-      onRegister(title); // 콜백 함수 호출
+      onRegister(title);
       onClose();
       navigate("/mypage");
     };
 
+    const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      // 모달 바깥 부분 클릭 시 모달 닫기
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    };
+
     return (
-      <ModalWrapper ref={ref}>
-        <TextWrapper>
-          <Text>이력서가 등록되었습니다. 제목을 입력해주세요</Text>
-          <Input
-            placeholder="이력서 제목을 입력해주세요."
-            value={title}
-            onChange={(e) => setTitle(e.target.value)} // 제목 변경 핸들러
-          />
-          <Button onClick={handleRegisterClick}>등록</Button>
-        </TextWrapper>
-      </ModalWrapper>
+      <ModalBackground onClick={handleModalClick}>
+        <ModalWrapper ref={ref}>
+          <TextWrapper>
+            <Text>이력서가 등록되었습니다. 제목을 입력해주세요</Text>
+            <Input
+              placeholder="이력서 제목을 입력해주세요."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <Button onClick={handleRegisterClick}>등록</Button>
+          </TextWrapper>
+        </ModalWrapper>
+      </ModalBackground>
     );
   }
 );

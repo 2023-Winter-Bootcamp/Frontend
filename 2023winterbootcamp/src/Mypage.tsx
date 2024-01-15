@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import plus_icon from "./images/plus_icon.png";
 import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
@@ -111,12 +112,12 @@ const Text7 = styled.div`
 
 const Text3 = styled.div`
   text-align: center;
-  color: #000000;
+  color: black;
   font-size: 16px;
   height: auto;
   opacity: 0;
   position: relative;
-  z-index: -1;
+  z-index: 2;
   transition: opacity 0.1s ease;
 
   &:hover {
@@ -133,7 +134,7 @@ const Text6 = styled.div`
   transition: opacity 0.1s ease;
   opacity: 0;
   position: relative;
-  z-index: -1;
+  z-index: 2;
 
   &:hover {
     opacity: 1;
@@ -181,7 +182,7 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
   &:hover {
     & ${Text3} {
       opacity: 1;
-      z-index: 1;
+      z-index: 2;
     }
     & ${Text6} {
       opacity: 1;
@@ -205,6 +206,7 @@ const ResumePreview1 = styled.div<{ $pre_image_url: string }>`
   margin-right: 20px;
   box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
   margin-top: 5px;
+  margin-left: 5px;
   border-radius: 4px;
   cursor: pointer;
   transition: filter 0.1s ease;
@@ -368,6 +370,7 @@ type Resume = {
 };
 
 function Mypage() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -379,8 +382,9 @@ function Mypage() {
       );
       const interviewResult = response.data.title;
 
-      // 여기에서 interviewResult를 사용하여 원하는 동작을 수행하면 됩니다.
+      // 여기에서 필요한 동작을 수행하고 페이지 이동
       console.log(`면접 결과: ${interviewResult}`);
+      navigate(`/interviews/${id}`); // 해당 페이지로 이동
     } catch (error) {
       console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
     }
@@ -500,7 +504,7 @@ function Mypage() {
                     이력서 입니다.
                     <br />
                     <DeleteButton onClick={() => handleClick(item.id)}>
-                      삭제하기
+                      <b>삭제하기</b>
                     </DeleteButton>
                   </Text3>
                 </ResumePreview>
@@ -517,7 +521,10 @@ function Mypage() {
               {interviewList.length ? (
                 interviewList.map((item, idx) => {
                   return (
-                    <InterviewWrapper key={idx}>
+                    <InterviewWrapper
+                      key={idx}
+                      onClick={() => handleInterviewClick(item.id)}
+                    >
                       <InterviewTitle>{item.title}</InterviewTitle>
                     </InterviewWrapper>
                   );
