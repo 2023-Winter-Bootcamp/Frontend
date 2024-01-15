@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
-import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
+import axios from 'axios';
 
 const Up = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ const Camera = styled.div`
   max-width: 700px;
   min-width: 400px;
   height: 400px;
-  background-image: url("https://i.postimg.cc/QdcMWgKq/Rectangle-23.png");
+  background-image: url('https://i.postimg.cc/QdcMWgKq/Rectangle-23.png');
   background-position: center;
   background-size: cover;
 `;
@@ -128,17 +128,19 @@ const RecordBox = styled.div`
 `;
 
 export interface Question {
+  id: number;
   type_name: string;
   content: string;
 }
 
 function Interviewpage() {
   const [buttonImage, setButtonImage] = useState(
-    "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
+    'https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png'
   );
 
   const [questions, setQuestions] = useState<Question[]>([]); // 질문 상태 배열 추가
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1); // 현재 질문의 인덱스 상태
+  const [questionId, setQuestionId] = useState<number>(0);
 
   const { id } = useParams(); // 면접 ID를 useParams로 받아오기
   const navigate = useNavigate();
@@ -150,20 +152,21 @@ function Interviewpage() {
         .then((response) => {
           console.log(response.data.questions);
           setQuestions(response.data.questions);
+          setQuestionId(response.data.questions[currentQuestionIndex - 1].id);
         })
         .catch((error) => {
-          console.error("Error fetching questions:", error);
+          console.error('Error fetching questions:', error);
         });
     }
   }, [id]);
 
   const handleButtonClick = () => {
     if (
-      buttonImage === "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
+      buttonImage === 'https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png'
     ) {
-      setButtonImage("https://i.postimg.cc/SxLc9SV2/2024-01-04-2-59-20.png");
+      setButtonImage('https://i.postimg.cc/SxLc9SV2/2024-01-04-2-59-20.png');
     } else {
-      setButtonImage("https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png");
+      setButtonImage('https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png');
     }
   };
 
@@ -171,10 +174,11 @@ function Interviewpage() {
     // 다음 질문이 있는지 확인
     if (currentQuestionIndex < questions.length) {
       // 다음 질문의 인덱스로 업데이트
+      setQuestionId(questions[currentQuestionIndex].id);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // 마지막 질문이었다면 결과 페이지로 이동
-      navigate("/result");
+      navigate('/result/' + id);
     }
   };
 
@@ -182,15 +186,15 @@ function Interviewpage() {
 
   const addAudioElement = async (blob: Blob) => {
     const url = URL.createObjectURL(blob);
-    const audio = document.createElement("audio");
+    const audio = document.createElement('audio');
     audio.src = url;
     audio.controls = true;
     const file = new FormData();
-    file.append("question", currentQuestionIndex.toString());
-    file.append("record_url", blob);
+    file.append('question', questionId.toString());
+    file.append('record_url', blob);
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex}/answers/create/`,
+        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
         file
       );
     } catch (e) {
@@ -217,7 +221,7 @@ function Interviewpage() {
         <Info>
           <Timer>00:00</Timer>
           <Button onClick={handleButtonClick}>
-            <StyledButtonImage src={buttonImage} alt="button" />
+            <StyledButtonImage src={buttonImage} alt='button' />
           </Button>
           <Button onClick={handleRecordingStart}>질문 끝</Button>
         </Info>
@@ -227,7 +231,7 @@ function Interviewpage() {
           <Q
             key={index}
             style={{
-              display: index + 1 === currentQuestionIndex ? "block" : "none",
+              display: index + 1 === currentQuestionIndex ? 'block' : 'none',
             }}
           >
             <QuestionText>{question.type_name}</QuestionText>
@@ -246,10 +250,10 @@ function Interviewpage() {
             <StyledNextImage
               src={
                 currentQuestionIndex === questions.length - 1
-                  ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                  : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                  ? 'https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png'
+                  : 'https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png'
               }
-              alt="next"
+              alt='next'
             />
           </Next>
         </RecordBox>
