@@ -91,13 +91,58 @@ const ResumeContainer = styled.div`
 `;
 
 const ScrollContainer = styled.div<{ len: number }>`
-  width: ${(props) => props.len * 400}px;
+  width: ${(props) => props.len * 500}px;
   height: 100%;
   flex: 1;
   display: flex;
 `;
 
+const Text7 = styled.div`
+  text-align: center;
+  color: #d7d7d7;
+  font-size: 16px;
+  height: auto;
+  opacity: 1;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const Text3 = styled.div`
+  text-align: center;
+  color: #000000;
+  font-size: 16px;
+  height: auto;
+  opacity: 0;
+  position: relative;
+  z-index: -1;
+  transition: opacity 0.1s ease;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
+const Text6 = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  text-align: left;
+  color: black;
+  transition: opacity 0.1s ease;
+  opacity: 0;
+  position: relative;
+  z-index: -1;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
 const ResumePreview = styled.div<{ $pre_image_url: string }>`
+  position: relative;
   background-image: url(${(props) => props.$pre_image_url});
   background-position: center;
   background-size: cover;
@@ -111,9 +156,7 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
   margin-top: 5px;
   border-radius: 4px;
   cursor: pointer;
-  & :hover {
-    border: 0px solid #fff;
-  }
+  transition: filter 0.1s ease;
 
   @media screen and (max-width: 768px) {
     width: 215px;
@@ -134,13 +177,66 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
     width: 249px;
     height: 345px;
   }
+
+  &:hover {
+    & ${Text3} {
+      opacity: 1;
+      z-index: 1;
+    }
+    & ${Text6} {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    filter: brightness(50%);
+  }
 `;
 
-const Text3 = styled.div`
-  text-align: center;
-  color: #d7d7d7;
-  font-size: 16px;
-  height: auto;
+const ResumePreview1 = styled.div<{ $pre_image_url: string }>`
+  position: relative;
+  background-image: url(${(props) => props.$pre_image_url});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+  margin-top: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: filter 0.1s ease;
+
+  @media screen and (max-width: 768px) {
+    width: 215px;
+    height: 300px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 230px;
+    height: 320px;
+  }
+
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    width: 230px;
+    height: 320px;
+  }
+
+  @media screen and (min-width: 1400px) {
+    width: 249px;
+    height: 345px;
+  }
+
+  &:hover {
+    & ${Text3} {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    filter: brightness(100%);
+  }
 `;
 
 const Text2 = styled.div`
@@ -176,6 +272,17 @@ const InterviewContainer = styled.div`
   width: 100%;
   height: 353px;
   background-color: #1a1a1a;
+  overflow-x: auto;
+`;
+
+const InterviewContainer2 = styled.div`
+  width: 60%;
+  height: 360px;
+  display: flex;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  margin-left: 290px;
+  overflow-y: hidden;
 `;
 
 const TextContainer = styled.div`
@@ -197,26 +304,16 @@ const Text4 = styled.div`
 `;
 
 const InterviewBox = styled.div`
-  width: 60%;
+  width: 1200px;
   height: inherit;
   display: flex;
   overflow-x: auto;
   align-items: center;
-  @media screen and (max-width: 768px) {
-    margin-left: 120px;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 220px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    margin-left: 287px;
-  }
+  margin-left: 10px;
 `;
 
 const InterviewWrapper = styled.div`
-  width: 355px;
+  width: 500px;
   height: 255px;
   border-radius: 20px;
   margin-right: 20px;
@@ -228,20 +325,24 @@ const InterviewWrapper = styled.div`
     cursor: pointer;
   }
 `;
+
 const InterviewTitle = styled.div`
-  width: 20%;
+  width: 70%;
   height: 30px;
   color: white;
   font-size: 20px;
   font-weight: 600;
   margin-left: 6%;
-  margin-top: 3%;
+  margin-top: 5%;
 `;
 
 const DeleteButton = styled.button`
-  width: 20%;
+  width: 40%;
   height: 20px;
   margin-top: 20px;
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
 `;
 
 const PlusIcon = styled.div`
@@ -251,7 +352,9 @@ const PlusIcon = styled.div`
   background-size: cover;
   opacity: 0.2;
   margin-top: 20px;
+  font-weight: 100;
 `;
+
 type Interview = {
   id: number;
   title: string;
@@ -268,6 +371,20 @@ function Mypage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleInterviewClick = async (id: number) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/interviews/${id}/`
+      );
+      const interviewResult = response.data.title;
+
+      // 여기에서 interviewResult를 사용하여 원하는 동작을 수행하면 됩니다.
+      console.log(`면접 결과: ${interviewResult}`);
+    } catch (error) {
+      console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
+    }
+  };
 
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
@@ -291,7 +408,6 @@ function Mypage() {
   };
 
   const handleModalRegister = (title: string) => {
-    // 모달에서 등록 버튼이 눌렸을 때 실행되는 함수
     handleFileUpload(title);
   };
 
@@ -358,29 +474,35 @@ function Mypage() {
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview $pre_image_url="" {...getRootProps()}>
+            <ResumePreview1 $pre_image_url="" {...getRootProps()}>
               <input type="file" {...getInputProps()} />
-              <Text3>이력서를 등록해주세요!</Text3>
-              <PlusIcon />
-            </ResumePreview>
+              <Text7>
+                이 곳을 클릭해
+                <br />
+                이력서를 등록해주세요!
+              </Text7>
+            </ResumePreview1>
             {isModalOpen && (
-                <Modal
-                  ref={modalRef}
-                  onClose={handleModalClose}
-                  onRegister={handleModalRegister}
-                />
-              )}
+              <Modal
+                ref={modalRef}
+                onClose={handleModalClose}
+                onRegister={handleModalRegister}
+              />
+            )}
             {resumeList.map((item, idx) => {
               return (
                 <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
+                  <Text6>{item.title}</Text6>
                   <Text3>
-                    {item.title}
                     <br />
-                    {item.created_at.slice(0, 10)}
+                    {item.created_at.slice(0, 10)}에 등록한
+                    <br />
+                    이력서 입니다.
+                    <br />
+                    <DeleteButton onClick={() => handleClick(item.id)}>
+                      삭제하기
+                    </DeleteButton>
                   </Text3>
-                  <DeleteButton onClick={() => handleClick(item.id)}>
-                    삭제
-                  </DeleteButton>
                 </ResumePreview>
               );
             })}
@@ -389,21 +511,25 @@ function Mypage() {
       </Container>
       <Text2>나의 면접</Text2>
       <InterviewContainer>
-        <InterviewBox>
-          {interviewList.length ? (
-            interviewList.map((item, idx) => {
-              return (
-                <InterviewWrapper key={idx}>
-                  <InterviewTitle>{item.title}</InterviewTitle>
-                </InterviewWrapper>
-              );
-            })
-          ) : (
-            <TextContainer>
-              <Text4>진행된 면접이 없습니다.</Text4>
-            </TextContainer>
-          )}
-        </InterviewBox>
+        <InterviewContainer2>
+          <ScrollContainer len={resumeList.length}>
+            <InterviewBox>
+              {interviewList.length ? (
+                interviewList.map((item, idx) => {
+                  return (
+                    <InterviewWrapper key={idx}>
+                      <InterviewTitle>{item.title}</InterviewTitle>
+                    </InterviewWrapper>
+                  );
+                })
+              ) : (
+                <TextContainer>
+                  <Text4>진행된 면접이 없습니다.</Text4>
+                </TextContainer>
+              )}
+            </InterviewBox>
+          </ScrollContainer>
+        </InterviewContainer2>
       </InterviewContainer>
     </>
   );
