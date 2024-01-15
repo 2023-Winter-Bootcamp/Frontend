@@ -537,12 +537,12 @@ function Choose() {
         </TextWrapper2>
         <ResumeContainer>
           <ResumeBox
-            isSelected={selectedResume === 0}
-            onClick={() => handleResumeSelect(0)}
-          />
-          <ResumeBox
             isSelected={selectedResume === 1}
             onClick={() => handleResumeSelect(1)}
+          />
+          <ResumeBox
+            isSelected={selectedResume === 2}
+            onClick={() => handleResumeSelect(2)}
           />
         </ResumeContainer>
       </Container4>
