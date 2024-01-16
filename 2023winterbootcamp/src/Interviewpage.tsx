@@ -262,7 +262,7 @@ function Interviewpage() {
     console.log(questions);
     const response = await axios({
       method: "post",
-      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCcoFgHo5jVFT5H5zF2wldTDZkgHiOmvvg",
+      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
       headers: {},
       data: {
         voice: {
