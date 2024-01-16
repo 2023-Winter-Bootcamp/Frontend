@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
-import { useRecoilValue } from "recoil";
-import { questionState } from "./App";
 
 const Up = styled.div`
   width: 100%;
@@ -136,19 +134,61 @@ const StartButton = styled.button`
     background-color: gray;
   }
 `;
+const Button = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
+  cursor: pointer;
+`;
+
+const StyledButtonImage = styled.img`
+  width: 25px;
+  height: 25px;
+  @media screen and (max-width: 768px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export interface Question {
+  id: number;
+  type_name: string;
+  content: string;
+}
 
 function Interviewpage() {
-  const question = useRecoilValue(questionState);
-
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 현재 질문의 인덱스 상태
-  const { id } = useParams(); // 면접 ID를 useParams로 받아오기
-  const navigate = useNavigate();
-  const questions = useRecoilValue(questionState);
-  const [timer, setTimer] = useState(0);
   const [buttonImage, setButtonImage] = useState(
     "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
   );
+  const [questions, setQuestions] = useState<Question[]>([]); // 질문 상태 배열 추가
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1); // 현재 질문의 인덱스 상태
+  const [questionId, setQuestionId] = useState<number>(0);
+  const [isInterviewStart, setIsInterviewStart] = useState(false);
+  const { id } = useParams(); // 면접 ID를 useParams로 받아오기
+  const navigate = useNavigate();
 
+  //질문 생성 기능
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`http://localhost:8000/api/interviews/${id}/questions/`)
+        .then((response) => {
+          console.log(response.data.qusetions);
+          setQuestions(response.data.questions);
+          setQuestionId(response.data.questions[currentQuestionIndex - 1].id);
+        })
+        .catch((error) => {
+          console.error("Error fetching questions:", error);
+        });
+    }
+  }, [id]);
+
+  //질문 음성이 종료되면 녹음 시작
   useEffect(() => {
     const audioElement = audioRef.current;
     const handleEnded = () => {
@@ -166,22 +206,19 @@ function Interviewpage() {
     };
   }, [id]);
 
-  useEffect(() => {
-    if (currentQuestionIndex === 0 || currentQuestionIndex > question.length)
-      return;
-    getQ2AudioData();
-    const t = setInterval(()=>{
-      setTimer((prev) => prev + 1)
-    })
-  }, [currentQuestionIndex]);
-
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  //처음 페이지 로딩된 후, 다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
+  /* useEffect(() => {
+    if(!isInterviewStart) return;
+    getQ2AudioData();
+  }, [isInterviewStart, currentQuestionIndex]); */
 
   const getQ2AudioData = async () => {
     console.log(questions);
     const response = await axios({
       method: "post",
-      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
+      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCcoFgHo5jVFT5H5zF2wldTDZkgHiOmvvg",
       headers: {},
       data: {
         voice: {
@@ -217,10 +254,11 @@ function Interviewpage() {
     // 다음 질문이 있는지 확인
     if (currentQuestionIndex < questions.length) {
       // 다음 질문의 인덱스로 업데이트
+      setQuestionId(questions[currentQuestionIndex].id);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       // 마지막 질문이었다면 결과 페이지로 이동
-      navigate("/result");
+      navigate("/result/" + id);
     }
   };
 
@@ -228,11 +266,11 @@ function Interviewpage() {
 
   const addAudioElement = async (blob: Blob) => {
     const file = new FormData();
-    file.append("question", currentQuestionIndex.toString());
+    file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${currentQuestionIndex}/answers/create/`,
+        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
         file
       );
     } catch (e) {
@@ -244,14 +282,14 @@ function Interviewpage() {
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
-    }, 1);
+    }, 2000);
   };
 
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
-    let interval : NodeJS.Timer;
+    let interval: NodeJS.Timer;
 
     if (isRunning) {
       interval = setInterval(() => {
@@ -268,32 +306,29 @@ function Interviewpage() {
     setIsRunning(true);
   };
 
-  const formatTime = (timeInSeconds : number) => {
+  const formatTime = (timeInSeconds: number) => {
     const hours = Math.floor(timeInSeconds / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
     const seconds = timeInSeconds % 60;
 
-    const formattedHours = String(hours).padStart(2, '0');
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
+    const formattedHours = String(hours).padStart(2, "0");
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
 
     return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
   const interviewStart = () => {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    setIsInterviewStart(true);
+    getQ2AudioData();
     startStopwatch();
-  }
+  };
 
   return (
     <>
-      {currentQuestionIndex === 0 ? (
+      {!isInterviewStart ? (
         <StartModal>
-          <StartButton
-            onClick={interviewStart}
-          >
-            면접 시작
-          </StartButton>
+          <StartButton onClick={interviewStart}>면접 시작</StartButton>
         </StartModal>
       ) : (
         <>
@@ -325,6 +360,16 @@ function Interviewpage() {
                   showVisualizer={true}
                 />
               </div>
+              <Next onClick={handleNextButtonClick}>
+                <StyledNextImage
+                  src={
+                    currentQuestionIndex === questions.length - 1
+                      ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                      : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
+                  }
+                  alt="next"
+                />
+              </Next>
             </RecordBox>
           </Down>
         </>

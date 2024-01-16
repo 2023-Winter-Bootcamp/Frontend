@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const ProfileContainer = styled.div`
@@ -354,6 +355,8 @@ const Resultpage = () => {
 
   const audioRefs = useRef<HTMLAudioElement[]>([]);
 
+  const { id } = useParams();
+  
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
     newIsPlayingList[index] = !newIsPlayingList[index];
@@ -414,15 +417,14 @@ const Resultpage = () => {
   }, [isPlayingList]);
 
   useEffect(() => {
-    const title = 1; // 실제 면접 ID로 교체하세요
-    fetch(`http://localhost:8000/api/interviews/${title}/`)
+    fetch(`http://localhost:8000/api/interviews/${id}/`)
       .then((response) => response.json())
       .then((data) => setInterviewData(data))
       .catch((error) =>
-        console.error("면접 데이터를 가져오는 중 에러 발생:", error)
+        console.error('면접 데이터를 가져오는 중 에러 발생:', error)
       );
   }, []);
-
+  
   return (
     <>
       {interviewData && (

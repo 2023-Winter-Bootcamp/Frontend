@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { atom, useRecoilState, useSetRecoilState } from "recoil";
-import { questionState } from "./App";
+
 const Container = styled.div`
   @media screen and (max-width: 768px) {
     display: flex;
@@ -173,85 +172,7 @@ const Button = styled.button<{ isSelected: boolean }>`
   }
 `;
 
-function Choose() {
-  const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
-    []
-  );
-  const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
-  const [selectedInterviewType, setSelectedInterviewType] = useState<
-    string | null
-  >(null);
-  const [startClicked, setStartClicked] = useState(false);
-  const [selectedResume, setSelectedResume] = useState<number | null>(null);
-  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
-  const [id,setId] = useState('1'); //사용자 아이디
-  const [question, setQuestion] = useRecoilState(questionState);
-  const handleMultiButtonClick = (buttonName: string) => {
-    const selectedIndex = selectedMultiButtons.indexOf(buttonName);
-    let updatedSelectedButtons: string[];
-
-    if (selectedIndex !== -1) {
-      updatedSelectedButtons = selectedMultiButtons.filter(
-        (selectedButton) => selectedButton !== buttonName
-      );
-    } else {
-      updatedSelectedButtons = [...selectedMultiButtons, buttonName];
-    }
-
-    setSelectedMultiButtons(updatedSelectedButtons);
-  };
-
-  const handlePositionClick = (buttonName: string) => {
-    setSelectedPosition((prevSelected) =>
-      prevSelected === buttonName ? null : buttonName
-    );
-  };
-
-  const handleInterviewTypeClick = (buttonName: string) => {
-    setSelectedInterviewType((prevSelected) =>
-      prevSelected === buttonName ? null : buttonName
-    );
-  };
-
-  const navigate = useNavigate();
-
-  const handleStartClick = () => {
-    setStartClicked(true);
-    getQuestions(id);
-  };
-
-  const handleResumeSelect = (index: number) => {
-    if (selectedResume === index) {
-      setSelectedResume(null);
-    } else {
-      setSelectedResume(index);
-    }
-  };
-
-  const handleRepoSelect = (index: number) => {
-    const selectedIndex = selectedRepos.indexOf(index);
-    let updatedSelectedRepos: number[];
-
-    if (selectedIndex === -1) {
-      updatedSelectedRepos = [...selectedRepos, index];
-    } else {
-      updatedSelectedRepos = selectedRepos.filter((i) => i !== index);
-    }
-
-    setSelectedRepos(updatedSelectedRepos);
-  };
-
-  const getQuestions = async (id : string) => {
-    try{
-      const response = await axios.get(`http://localhost:8000/api/interviews/${id}/questions/`);
-      setQuestion(response.data.questions);
-      navigate("/interview/1");
-    }catch(e){
-      console.error(e)
-    }
-  }
-
-  const Container2 = styled.div`
+const Container2 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -392,6 +313,120 @@ function Choose() {
     margin-left: 20px;
     margin-top: 15px;
   `;
+  
+
+function Choose() {
+  const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
+    []
+  );
+  const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [selectedInterviewType, setSelectedInterviewType] = useState<
+    string | null
+  >(null);
+  const [startClicked, setStartClicked] = useState(false);
+  const [selectedResume, setSelectedResume] = useState<number | null>(null);
+  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
+  const [id,setId] = useState('1'); //사용자 아이디
+  const [title, setTitle] = useState<string>('');
+
+  useEffect(() => {
+    const isAllSelected =
+      selectedMultiButtons.length > 0 &&
+      selectedPosition !== null &&
+      selectedInterviewType !== null &&
+      selectedResume !== null &&
+      selectedRepos.length > 0 &&
+      title !== '';
+
+    setStartClicked(isAllSelected);
+  }, [
+    selectedMultiButtons,
+    selectedPosition,
+    selectedInterviewType,
+    selectedResume,
+    selectedRepos,
+    title,
+  ]);
+
+  const handleMultiButtonClick = (buttonName: string) => {
+    const selectedIndex = selectedMultiButtons.indexOf(buttonName);
+    let updatedSelectedButtons: string[];
+
+    if (selectedIndex !== -1) {
+      updatedSelectedButtons = selectedMultiButtons.filter(
+        (selectedButton) => selectedButton !== buttonName
+      );
+    } else {
+      updatedSelectedButtons = [...selectedMultiButtons, buttonName];
+    }
+
+    setSelectedMultiButtons(updatedSelectedButtons);
+  };
+
+  const handlePositionClick = (buttonName: string) => {
+    setSelectedPosition((prevSelected) =>
+      prevSelected === buttonName ? null : buttonName
+    );
+  };
+
+  const handleInterviewTypeClick = (buttonName: string) => {
+    setSelectedInterviewType((prevSelected) =>
+      prevSelected === buttonName ? null : buttonName
+    );
+  };
+
+  const navigate = useNavigate();
+
+  const handleStartClick = (id: number) => {
+    setStartClicked(true);
+    navigate('/interview/' + id);
+  };
+
+  const handleResumeSelect = (index: number) => {
+    if (selectedResume === index) {
+      setSelectedResume(null);
+    } else {
+      setSelectedResume(index);
+    }
+  };
+
+  const handleRepoSelect = (index: number) => {
+    const selectedIndex = selectedRepos.indexOf(index);
+    let updatedSelectedRepos: number[];
+
+    if (selectedIndex === -1) {
+      updatedSelectedRepos = [...selectedRepos, index];
+    } else {
+      updatedSelectedRepos = selectedRepos.filter((i) => i !== index);
+    }
+
+    setSelectedRepos(updatedSelectedRepos);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const createInterview = async () => {
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/api/interviews/create/',
+        {
+          user: 1,
+          title: title,
+          position: selectedPosition,
+          style: selectedInterviewType,
+          resume: selectedResume,
+          repo_names: selectedRepos,
+          type_names: selectedMultiButtons,
+        }
+      );
+      handleStartClick(response.data.id);
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const Start = styled.button`
     background-color: ${startClicked ? "#1a1a1a" : "#cacaca"};
@@ -413,6 +448,7 @@ function Choose() {
       background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
     }
   `;
+  
 
   return (
     <>
@@ -420,7 +456,7 @@ function Choose() {
         <TextWrapper>
           <Text>면접 제목</Text>
         </TextWrapper>
-        <Input placeholder=""></Input>
+        <Input placeholder='' onChange={handleChange}></Input>
       </Container>
       <Container1>
         <TextWrapper1>
@@ -428,20 +464,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedMultiButtons.includes("프로젝트")}
-            onClick={() => handleMultiButtonClick("프로젝트")}
+            isSelected={selectedMultiButtons.includes('project')}
+            onClick={() => handleMultiButtonClick('project')}
           >
             프로젝트
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes("CS 질문")}
-            onClick={() => handleMultiButtonClick("CS 질문")}
+            isSelected={selectedMultiButtons.includes('cs')}
+            onClick={() => handleMultiButtonClick('cs')}
           >
             CS 질문
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes("인성 면접")}
-            onClick={() => handleMultiButtonClick("인성 면접")}
+            isSelected={selectedMultiButtons.includes('personality')}
+            onClick={() => handleMultiButtonClick('personality')}
           >
             인성 면접
           </Button>
@@ -453,20 +489,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedPosition === "Frontend"}
-            onClick={() => handlePositionClick("Frontend")}
+            isSelected={selectedPosition === 'frontend'}
+            onClick={() => handlePositionClick('frontend')}
           >
             Frontend
           </Button>
           <Button
-            isSelected={selectedPosition === "Backend"}
-            onClick={() => handlePositionClick("Backend")}
+            isSelected={selectedPosition === 'backend'}
+            onClick={() => handlePositionClick('backend')}
           >
             Backend
           </Button>
           <Button
-            isSelected={selectedPosition === "Fullstack"}
-            onClick={() => handlePositionClick("Fullstack")}
+            isSelected={selectedPosition === 'fullstack'}
+            onClick={() => handlePositionClick('fullstack')}
           >
             Fullstack
           </Button>
@@ -478,20 +514,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedInterviewType === "화상 면접"}
-            onClick={() => handleInterviewTypeClick("화상 면접")}
+            isSelected={selectedInterviewType === 'video'}
+            onClick={() => handleInterviewTypeClick('video')}
           >
             화상 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === "음성 면접"}
-            onClick={() => handleInterviewTypeClick("음성 면접")}
+            isSelected={selectedInterviewType === 'voice'}
+            onClick={() => handleInterviewTypeClick('voice')}
           >
             음성 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === "텍스트 면접"}
-            onClick={() => handleInterviewTypeClick("텍스트 면접")}
+            isSelected={selectedInterviewType === 'text'}
+            onClick={() => handleInterviewTypeClick('text')}
           >
             텍스트 면접
           </Button>
@@ -503,12 +539,12 @@ function Choose() {
         </TextWrapper2>
         <ResumeContainer>
           <ResumeBox
-            isSelected={selectedResume === 0}
-            onClick={() => handleResumeSelect(0)}
-          />
-          <ResumeBox
             isSelected={selectedResume === 1}
             onClick={() => handleResumeSelect(1)}
+          />
+          <ResumeBox
+            isSelected={selectedResume === 2}
+            onClick={() => handleResumeSelect(2)}
           />
         </ResumeContainer>
       </Container4>
@@ -531,7 +567,7 @@ function Choose() {
           </Repo>
         </RepoContainer>
       </Container4>
-      <Start onClick={handleStartClick}>선택 완료</Start>
+      <Start onClick={createInterview}>선택 완료</Start>
     </>
   );
 }
