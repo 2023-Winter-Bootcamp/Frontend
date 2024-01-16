@@ -69,7 +69,7 @@ const Input = styled.input`
   &::placeholder {
     color: #c1c1c1;
   }
-  /* 엔터 키 처리 */
+
   &:focus {
     outline: none;
   }
