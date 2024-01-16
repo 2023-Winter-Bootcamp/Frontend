@@ -8,66 +8,47 @@ import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
 
 const Container = styled.div`
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
   @media screen and (max-width: 768px) {
-    width: 100%;
-    height: 500px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
+    height: 450px;
   }
-
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 100%;
-    height: 500px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
+    height: 475x;
   }
 
-  @media screen and (min-width: 1024px) {
-    width: 100%;
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    height: 475px;
+  }
+  @media screen and (min-width: 1400px) {
     height: 500px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
   }
 `;
 
 const Text1 = styled.div`
+  width: 170px;
+  height: 35px;
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 10px;
   @media screen and (max-width: 768px) {
-    width: 170px;
-    height: 35px;
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 40px;
     margin-left: 100px;
-    margin-bottom: 10px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 170px;
-    height: 35px;
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 40px;
     margin-left: 200px;
-    margin-bottom: 10px;
   }
 
   @media screen and (min-width: 1024px) {
-    width: 170px;
-    height: 35px;
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 40px;
     margin-left: 267px;
-    margin-bottom: 10px;
   }
 `;
 
 const ResumeContainer = styled.div`
   width: 60%;
-  height: 370px;
   display: flex;
   margin-bottom: 20px;
   overflow-x: auto;
@@ -118,7 +99,6 @@ const Text3 = styled.div`
   opacity: 0;
   position: relative;
   z-index: 2;
-  transition: opacity 0.1s ease;
 
   &:hover {
     opacity: 1;
@@ -131,7 +111,6 @@ const Text6 = styled.div`
   font-size: 16px;
   text-align: left;
   color: black;
-  transition: opacity 0.1s ease;
   opacity: 0;
   position: relative;
   z-index: 2;
@@ -140,6 +119,14 @@ const Text6 = styled.div`
     opacity: 1;
     z-index: 1;
   }
+`;
+
+const BlackBox = styled.div`
+  width: 100%;
+  height: 0;
+  background-color: black;
+  opacity: 0.6;
+  position: absolute;
 `;
 
 const ResumePreview = styled.div<{ $pre_image_url: string }>`
@@ -156,8 +143,6 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
   box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
   margin-top: 5px;
   border-radius: 4px;
-  cursor: pointer;
-  transition: filter 0.1s ease;
 
   @media screen and (max-width: 768px) {
     width: 215px;
@@ -183,13 +168,16 @@ const ResumePreview = styled.div<{ $pre_image_url: string }>`
     & ${Text3} {
       opacity: 1;
       z-index: 2;
+      color: white;
     }
     & ${Text6} {
       opacity: 1;
       z-index: 1;
+      color: white;
     }
-
-    filter: brightness(50%);
+    & ${BlackBox} {
+      height: 100%;
+    }
   }
 `;
 
@@ -209,7 +197,6 @@ const ResumePreview1 = styled.div<{ $pre_image_url: string }>`
   margin-left: 5px;
   border-radius: 4px;
   cursor: pointer;
-  transition: filter 0.1s ease;
 
   @media screen and (max-width: 768px) {
     width: 215px;
@@ -272,25 +259,41 @@ const Text2 = styled.div`
 
 const InterviewContainer = styled.div`
   width: 100%;
-  height: 353px;
+  height: 370px;
   background-color: #1a1a1a;
   overflow-x: auto;
   overflow-y: hidden;
+  display: flex;
+  align-items: center;
 `;
 
 const InterviewContainer2 = styled.div`
-  width: 60%;
-  height: 360px;
+  width: 70%;
+  height: 310px;
   display: flex;
   margin-bottom: 20px;
   overflow-x: auto;
-  margin-left: 290px;
   overflow-y: hidden;
+  @media screen and (max-width: 768px) {
+    margin-left: 110px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 210px;
+  }
+
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    margin-left: 277px;
+  }
+
+  @media screen and (min-width: 1400px) {
+    margin-left: 277px;
+  }
 `;
 
 const TextContainer = styled.div`
   width: 100%;
-  height: 353px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -311,12 +314,13 @@ const InterviewBox = styled.div<{ boxWidth: number }>`
   height: inherit;
   display: flex;
   overflow-x: auto;
+  /* overflow-y: hidden; */
   align-items: center;
   margin-left: 10px;
 `;
 
 const InterviewWrapper = styled.div`
-  width: 1500px;
+  width: 380px;
   height: 255px;
   border-radius: 20px;
   margin-right: 20px;
@@ -325,6 +329,25 @@ const InterviewWrapper = styled.div`
   background-size: cover;
   &:hover {
     cursor: pointer;
+  }
+  @media screen and (max-width: 768px) {
+    width: 345px;
+    height: 230px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 360px;
+    height: 240px;
+  }
+
+  @media screen and (min-width: 1024px) and (max-width: 1399px) {
+    width: 360px;
+    height: 240px;
+  }
+
+  @media screen and (min-width: 1400px) {
+    width: 380px;
+    height: 255px;
   }
 `;
 
@@ -339,7 +362,7 @@ const InterviewTitle = styled.div`
 `;
 
 const DeleteButton = styled.button`
-  width: 40%;
+  width: 50%;
   height: 20px;
   margin-top: 20px;
   background-color: transparent;
@@ -347,14 +370,11 @@ const DeleteButton = styled.button`
   text-decoration: underline;
 `;
 
-const PlusIcon = styled.div`
-  width: 30%;
-  aspect-ratio: 1;
-  background-image: url(${plus_icon});
-  background-size: cover;
-  opacity: 0.2;
-  margin-top: 20px;
-  font-weight: 100;
+const BoldText = styled.b`
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  cursor: pointer;
 `;
 
 type Interview = {
@@ -450,7 +470,6 @@ function Mypage() {
   };
 
   function handleClick(id: number) {
-    let findIndex;
     resumeList.forEach(async (item, idx) => {
       if (item.id === id) {
         try {
@@ -472,12 +491,23 @@ function Mypage() {
     getInterviewList();
   }, []);
 
+  const scrollConRef = useRef<HTMLDivElement>(null);
+  const interviewConRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (interviewList.length === 0) {
+      scrollConRef.current?.style.setProperty("justify-content", "center");
+      interviewConRef.current?.style.setProperty("justify-content", "center");
+    } else {
+      scrollConRef.current?.style.setProperty("justify-content", "start");
+      interviewConRef.current?.style.setProperty("justify-content", "start");
+    }
+  }, [interviewList]);
   return (
     <>
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <ScrollContainer len={interviewList.length}>
+          <ScrollContainer len={resumeList.length}>
             <ResumePreview1 $pre_image_url="" {...getRootProps()}>
               <input type="file" {...getInputProps()} />
               <Text7>
@@ -496,6 +526,7 @@ function Mypage() {
             {resumeList.map((item, idx) => {
               return (
                 <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
+                  <BlackBox />
                   <Text6>{item.title}</Text6>
                   <Text3>
                     <br />
@@ -504,7 +535,7 @@ function Mypage() {
                     이력서 입니다.
                     <br />
                     <DeleteButton onClick={() => handleClick(item.id)}>
-                      <b>삭제하기</b>
+                      <BoldText>삭제하기</BoldText>
                     </DeleteButton>
                   </Text3>
                 </ResumePreview>
@@ -515,10 +546,10 @@ function Mypage() {
       </Container>
       <Text2>나의 면접</Text2>
       <InterviewContainer>
-        <InterviewContainer2>
-          <ScrollContainer len={interviewList.length}>
-            <InterviewBox boxWidth={interviewList.length * 400}>
-              {interviewList.length ? (
+        <InterviewContainer2 ref={interviewConRef}>
+          <ScrollContainer len={interviewList.length || 2} ref={scrollConRef}>
+            <InterviewBox boxWidth={interviewList.length * 400 || 400}>
+              {interviewList.length !== 0 ? (
                 interviewList.map((item, idx) => {
                   return (
                     <InterviewWrapper
