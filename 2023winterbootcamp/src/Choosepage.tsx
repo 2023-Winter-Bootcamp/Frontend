@@ -142,7 +142,7 @@ const ButtonsContainer = styled.div`
   width: 42.5%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 10px;
   @media screen and (max-width: 768px) {
     width: 71%;
