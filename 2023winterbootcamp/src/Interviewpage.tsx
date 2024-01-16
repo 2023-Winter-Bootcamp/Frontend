@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
+import Camera from "./components/Camera";
+import { useRecoilValue } from "recoil";
+import { interviewTypeState } from "./components/Recoil";
 
 const Up = styled.div`
   width: 100%;
@@ -12,56 +15,45 @@ const Up = styled.div`
   margin-top: 50px;
   display: flex;
   justify-content: center;
+  position: relative;
 `;
 
-const Camera = styled.div`
-  width: 60%;
-  max-width: 700px;
-  min-width: 400px;
-  height: 400px;
-  background-image: url("https://i.postimg.cc/QdcMWgKq/Rectangle-23.png");
-  background-position: center;
-  background-size: cover;
-`;
+// const Info = styled.div`
+//   width: 50px;
+//   height: 50px;
+//   margin-left: 15px;
+//   margin-top: 15px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: start;
+//   align-items: center;
+// `;
 
-const Info = styled.div`
-  width: 50px;
-  height: 50px;
-  margin-left: 15px;
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-`;
-
-const Timer = styled.div`
-  color: white;
-  font-size: 20px;
-  margin-left: 20px;
-`;
+// const Timer = styled.div`
+//   color: white;
+//   font-size: 20px;
+//   margin-left: 20px;
+//   z-index: 9999;
+//   position: absolute;
+// `;
 
 const Down = styled.div`
-  width: 60%;
-  max-width: 800px;
+  width: 740px;
   height: 300px;
-  background-color: #f6f6f6;
-  border-radius: 20px;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  margin-left: 50%;
+  margin-left: 50.3%;
   transform: translateX(-50%);
-  margin-top: 50px;
+  margin-top: 130px;
   margin-bottom: 50px;
-  padding: 20px;
 `;
 
 const Q = styled.div`
   width: 90%;
   height: 220px;
   margin: 0 auto;
-
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
 `;
 
@@ -179,25 +171,10 @@ const Dot = styled(motion.div)`
   margin-top: 10px;
 `;
 
-const Button = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
-  cursor: pointer;
-`;
-
-const StyledButtonImage = styled.img`
-  width: 25px;
-  height: 25px;
-  @media screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 20px;
-    height: 20px;
-  }
+const VideoContainer = styled.div`
+  width: 2000px;
+  height: 500px;
+  background-color: gray;
 `;
 
 export interface Question {
@@ -207,16 +184,16 @@ export interface Question {
 }
 
 function Interviewpage() {
-  const [buttonImage, setButtonImage] = useState(
-    "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
-  );
+  // const [buttonImage, setButtonImage] = useState(
+  //   "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
+  // );
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [questionId, setQuestionId] = useState<number>(0);
   const [isInterviewStart, setIsInterviewStart] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const selectedInterviewType = useRecoilValue(interviewTypeState);
   useEffect(() => {
     window.scrollTo(0, 0);
     if (id) {
@@ -231,6 +208,7 @@ function Interviewpage() {
           console.error("Error fetching questions:", error);
         });
     }
+    console.log(selectedInterviewType);
   }, [id]);
 
   useEffect(() => {
@@ -259,28 +237,35 @@ function Interviewpage() {
   }, [isInterviewStart, currentQuestionIndex]); */
 
   const getQ2AudioData = async () => {
-    console.log(questions);
-    const response = await axios({
-      method: "post",
-      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
-      headers: {},
-      data: {
-        voice: {
-          languageCode: "ko-KR",
+    try {
+      const response = await axios({
+        method: "post",
+        url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCcoFgHo5jVFT5H5zF2wldTDZkgHiOmvvg",
+        headers: {},
+        data: {
+          voice: {
+            languageCode: "ko-KR",
+          },
+          input: {
+            text: `${questions[currentQuestionIndex - 1].content}`,
+          },
+          audioConfig: {
+            audioEncoding: "mp3",
+          },
         },
-        input: {
-          text: `${questions[currentQuestionIndex - 1].content}`,
-        },
-        audioConfig: {
-          audioEncoding: "mp3",
-        },
-      },
-    });
-    const base64String = response.data.audioContent;
-    const audioBlob = base64ToBlob(base64String);
-    if (audioRef.current && audioBlob !== undefined) {
-      audioRef.current.src = URL.createObjectURL(audioBlob);
-      audioRef.current.play();
+      });
+
+      // 여기서 response를 사용하여 로그를 출력하거나 다른 작업을 수행할 수 있습니다.
+      console.log("Audio data response:", response);
+
+      const base64String = response.data.audioContent;
+      const audioBlob = base64ToBlob(base64String);
+      if (audioRef.current && audioBlob !== undefined) {
+        audioRef.current.src = URL.createObjectURL(audioBlob);
+        audioRef.current.play();
+      }
+    } catch (error) {
+      console.error("Error fetching audio data:", error);
     }
   };
 
@@ -322,10 +307,11 @@ function Interviewpage() {
     }
     handleNextButtonClick();
   };
-  //질문 음성파일 실행 끝나면 2초 뒤 녹음 실행
+
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
+      // 음성 면접 또는 텍스트 면접인 경우에만 처리
     }, 2000);
   };
 
@@ -412,19 +398,29 @@ function Interviewpage() {
             <Dot variants={fadeIn}>
               *면접할 준비가 되셨다면,
               <br />
-              ‘면접 시작' 버튼을 눌러주세요!
+              면접 시작 버튼을 눌러주세요!
             </Dot>
           </motion.div>
         </StartModal>
       ) : (
         <>
           <Up>
-            <Camera>
-              <Info>
-                <Timer>{formatTime(elapsedTime)}</Timer>
-              </Info>
-            </Camera>
+            {selectedInterviewType.showCamera === false ? (
+              <VideoContainer>
+                {selectedInterviewType.showCamera === false ? (
+                  // 비디오 면접에 대한 내용을 표시
+                  <p>비디오 면접 내용을 여기에 추가하세요.</p>
+                ) : (
+                  // 다른 면접 유형에 대한 내용을 표시
+                  <p>다른 면접 유형에 대한 내용을 여기에 추가하세요.</p>
+                )}
+              </VideoContainer>
+            ) : (
+              <Camera elapsedTime={elapsedTime} children={undefined} />
+            )}
+            {/* showVideoComponent가 true인 경우에만 렌더링 */}
           </Up>
+
           <Down>
             {questions.map((question, index) => (
               <Q

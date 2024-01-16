@@ -347,16 +347,6 @@ const DeleteButton = styled.button`
   text-decoration: underline;
 `;
 
-const PlusIcon = styled.div`
-  width: 30%;
-  aspect-ratio: 1;
-  background-image: url(${plus_icon});
-  background-size: cover;
-  opacity: 0.2;
-  margin-top: 20px;
-  font-weight: 100;
-`;
-
 type Interview = {
   id: number;
   title: string;
@@ -384,7 +374,7 @@ function Mypage() {
 
       // 여기에서 필요한 동작을 수행하고 페이지 이동
       console.log(`면접 결과: ${interviewResult}`);
-      navigate(`/interviews/${id}`); // 해당 페이지로 이동
+      navigate(`/result/${id}`); // 해당 페이지로 이동
     } catch (error) {
       console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
     }
