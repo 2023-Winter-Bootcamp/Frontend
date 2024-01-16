@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -39,7 +39,7 @@ const ProfileBox = styled.div`
 
 const ProfileImage = styled.div`
   border-radius: 50%;
-  background-image: url('https://ifh.cc/g/bHznLB.png');
+  background-image: url("https://ifh.cc/g/bHznLB.png");
   background-position: center;
   border: none;
   aspect-ratio: 1;
@@ -356,7 +356,7 @@ const Resultpage = () => {
   const audioRefs = useRef<HTMLAudioElement[]>([]);
 
   const { id } = useParams();
-
+  
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
     newIsPlayingList[index] = !newIsPlayingList[index];
@@ -406,7 +406,7 @@ const Resultpage = () => {
           audioRef.pause();
         }
 
-        audioRef.addEventListener('ended', () => {
+        audioRef.addEventListener("ended", () => {
           // 오디오 재생이 끝나면 버튼을 다시 play 상태로 변경
           const newIsPlayingList = [...isPlayingList];
           newIsPlayingList[index] = false;
@@ -424,7 +424,7 @@ const Resultpage = () => {
         console.error('면접 데이터를 가져오는 중 에러 발생:', error)
       );
   }, []);
-
+  
   return (
     <>
       {interviewData && (
@@ -446,12 +446,12 @@ const Resultpage = () => {
                   <TextBox3>
                     <Text3>{interviewData.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names.join(', ')}
+                      {interviewData.interview_type_names.join(", ")}
                     </Text3>
                     <Text3>{interviewData.position}</Text3>
                     <Text3>{interviewData.style}</Text3>
                     <Text3>{interviewData.resume}</Text3>
-                    <Text3>{interviewData.repo_names.join(', ')}</Text3>
+                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
                 </TextBox1>
               </ProfileInfo>

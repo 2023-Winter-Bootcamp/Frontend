@@ -10,18 +10,18 @@ import Resultpage from './Resultpage';
 
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path='/' element={<Main />} />
-          <Route path='/mypage' element={<Mypage />} />
-          <Route path='/choose' element={<Choose />} />
-          <Route path='/interview/:id' element={<Interview />} />
-          <Route path='/result/:id' element={<Resultpage />} />
-        </Routes>
-        <Footer />
-      </Layout>
-    </Router>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="/choose" element={<Choose />} />
+            <Route path="/interview/:id" element={<Interview />} />
+            <Route path="/result/:id" element={<Resultpage />} />
+          </Routes>
+          <Footer />
+        </Layout>
+      </Router>
   );
 }
 

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -160,8 +160,8 @@ const Button = styled.button<{ isSelected: boolean }>`
   font-size: 14px;
   width: 200px;
   height: 54px;
-  background-color: ${(props) => (props.isSelected ? '#1a1a1a' : 'white')};
-  color: ${(props) => (props.isSelected ? 'white' : '#1a1a1a')};
+  background-color: ${(props) => (props.isSelected ? "#1a1a1a" : "white")};
+  color: ${(props) => (props.isSelected ? "white" : "#1a1a1a")};
   border: 1px solid white;
   border-bottom: 1px solid #1a1a1a;
   margin: 0 5px;
@@ -173,146 +173,147 @@ const Button = styled.button<{ isSelected: boolean }>`
 `;
 
 const Container2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
-  margin-top: 20px;
-`;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  `;
 
-const Container3 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
-  margin-top: 20px;
-`;
+  const Container3 = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+  `;
 
-const Container4 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  @media screen and (max-width: 768px) {
-  }
+  const Container4 = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @media screen and (max-width: 768px) {
+    }
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
 
-  @media screen and (min-width: 1024px) {
-  }
-`;
+    @media screen and (min-width: 1024px) {
+    }
+  `;
 
-const ResumeContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-right: 80px;
-  width: 100%;
-  max-width: 530px;
-  margin: 0 auto;
-  @media screen and (max-width: 769px) {
-    margin-left: 15%;
-  }
+  const ResumeContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-right: 80px;
+    width: 100%;
+    max-width: 530px;
+    margin: 0 auto;
+    @media screen and (max-width: 769px) {
+      margin-left: 15%;
+    }
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+      margin-left: 29%;
+    }
+
+    @media screen and (min-width: 1024px) {
+      margin-left: 29%;
+    }
+  `;
+
+  const ResumeBox = styled.div<{ isSelected: boolean }>`
+    width: 249px;
+    height: 345px;
+    background-color: white;
+    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 60px;
+    margin-right: 10px;
+
+    border: ${(props) =>
+      props.isSelected ? "2px solid black" : "2px solid #ffffff"};
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid black;
+    }
+  `;
+
+  const TextWrapper2 = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    height: 90px;
+  `;
+
+  const Text2 = styled.div`
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 40px;
     margin-left: 29%;
-  }
 
-  @media screen and (min-width: 1024px) {
-    margin-left: 29%;
-  }
-`;
+    @media screen and (max-width: 769px) {
+      margin-left: 15%;
+    }
 
-const ResumeBox = styled.div<{ isSelected: boolean }>`
-  width: 249px;
-  height: 345px;
-  background-color: white;
-  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-  margin-bottom: 60px;
-  margin-right: 10px;
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
 
-  border: ${(props) =>
-    props.isSelected ? '2px solid black' : '2px solid #ffffff'};
-  cursor: pointer;
+    @media screen and (min-width: 1024px) {
+    }
+  `;
 
-  &:hover {
-    border: 2px solid black;
-  }
-`;
+  const RepoContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 630px;
+    margin: 0 auto;
+    margin-bottom: 80px;
+    @media screen and (max-width: 769px) {
+      margin-left: 14%;
+    }
 
-const TextWrapper2 = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  height: 90px;
-`;
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+      margin-left: 28%;
+    }
 
-const Text2 = styled.div`
-  font-size: 28px;
-  font-weight: bold;
-  margin-top: 40px;
-  margin-left: 29%;
+    @media screen and (min-width: 1024px) {
+      margin-left: 29%;
+    }
+  `;
 
-  @media screen and (max-width: 769px) {
-    margin-left: 15%;
-  }
+  const Repo = styled.div<{ isSelected: boolean }>`
+    width: 308px;
+    height: 130px;
+    background-color: white;
+    border-radius: 10px;
+    margin-left: 5px;
+    border: ${(props) =>
+      props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
+    cursor: pointer;
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
+    &:hover {
+      border: 2px solid black;
+    }
+    @media screen and (max-width: 769px) {
+    }
 
-  @media screen and (min-width: 1024px) {
-  }
-`;
+    @media screen and (min-width: 769px) and (max-width: 1023px) {
+    }
 
-const RepoContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 630px;
-  margin: 0 auto;
-  margin-bottom: 80px;
-  @media screen and (max-width: 769px) {
-    margin-left: 14%;
-  }
+    @media screen and (min-width: 1024px) {
+    }
+  `;
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 28%;
-  }
-
-  @media screen and (min-width: 1024px) {
-    margin-left: 29%;
-  }
-`;
-
-const Repo = styled.div<{ isSelected: boolean }>`
-  width: 308px;
-  height: 130px;
-  background-color: white;
-  border-radius: 10px;
-  margin-left: 5px;
-  border: ${(props) =>
-    props.isSelected ? '2px solid black' : '2px solid #e7e7e7'};
-  cursor: pointer;
-
-  &:hover {
-    border: 2px solid black;
-  }
-  @media screen and (max-width: 769px) {
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
-
-  @media screen and (min-width: 1024px) {
-  }
-`;
-
-const Reponame = styled.div`
-  color: #7a7a7a;
-  font-size: 18px;
-  font-weight: 500;
-  margin-left: 20px;
-  margin-top: 15px;
-`;
+  const Reponame = styled.div`
+    color: #7a7a7a;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 20px;
+    margin-top: 15px;
+  `;
+  
 
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
@@ -322,11 +323,11 @@ function Choose() {
   const [selectedInterviewType, setSelectedInterviewType] = useState<
     string | null
   >(null);
+  const [startClicked, setStartClicked] = useState(false);
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
+  const [id,setId] = useState('1'); //사용자 아이디
   const [title, setTitle] = useState<string>('');
-
-  const [startClicked, setStartClicked] = useState(false);
 
   useEffect(() => {
     const isAllSelected =
@@ -428,7 +429,7 @@ function Choose() {
   };
 
   const Start = styled.button`
-    background-color: ${startClicked ? '#1a1a1a' : '#cacaca'};
+    background-color: ${startClicked ? "#1a1a1a" : "#cacaca"};
     color: #fff;
     font-weight: bold;
     font-size: 14px;
@@ -444,9 +445,10 @@ function Choose() {
     cursor: pointer;
 
     &:hover {
-      background-color: ${startClicked ? '#1a1a1a' : '#1a1a1a'};
+      background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
     }
   `;
+  
 
   return (
     <>
@@ -565,7 +567,7 @@ function Choose() {
           </Repo>
         </RepoContainer>
       </Container4>
-      <Start onClick={createInterview}>면접시작</Start>
+      <Start onClick={createInterview}>선택 완료</Start>
     </>
   );
 }
