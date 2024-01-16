@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import githubLogin from "./githubLogin";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const HeaderContainer = styled.div`
   @media screen and (max-width: 768px) {
@@ -84,7 +84,7 @@ const NavItem = styled(Link)`
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 2px;
@@ -116,7 +116,7 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 2px;
@@ -135,16 +135,52 @@ const MotionNavItem = styled(motion(NavItem))`
 `;
 
 function Header() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get(
+          'http://localhost:8000/users/status/',
+          {
+            withCredentials: true,
+          }
+        );
+        if (response.data.status === 'logged_in') {
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   const handleGithubLogin = () => {
-    // 깃허브 로그인 버튼 클릭 시 실행되는 함수
-    githubLogin(); // Axios를 사용한 API 호출
-    // API 호출 후 로직을 추가해야 합니다.
+    const GITHUB_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
+    window.localStorage.setItem('githubLogin', 'inProgress');
+    window.location.assign(GITHUB_LOGIN_URL);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/users/logout/', {
+        withCredentials: true,
+      });
+      console.log(response.status);
+      window.location.href = '/';
+      setIsLoggedIn(false);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <HeaderContainer>
       <Logo
-        to="/"
+        to='/'
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -153,24 +189,36 @@ function Header() {
       </Logo>
       <Navigationbar>
         <MotionNavItem
-          to="/mypage"
+          to='/mypage'
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
         >
           마이페이지
         </MotionNavItem>
+        {isLoggedIn ? (
+          <MotionNavItem
+            to='/'
+            onClick={handleLogout}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+          >
+            로그아웃
+          </MotionNavItem>
+        ) : (
+          <MotionNavItem
+            to='/'
+            onClick={handleGithubLogin} // 깃허브 로그인 함수 실행
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+          >
+            로그인
+          </MotionNavItem>
+        )}
         <MotionNavItem
-          to="/"
-          onClick={handleGithubLogin} // 깃허브 로그인 함수 실행
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
-        >
-          로그인
-        </MotionNavItem>
-        <MotionNavItem
-          to="/"
+          to='/'
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
@@ -178,7 +226,7 @@ function Header() {
           이력서
         </MotionNavItem>
         <MotionNavItem
-          to="/choose"
+          to='/choose'
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
@@ -186,7 +234,7 @@ function Header() {
           면접
         </MotionNavItem>
         <MotionNavItem
-          to="/"
+          to='/'
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
