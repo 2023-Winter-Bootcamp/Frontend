@@ -1,12 +1,12 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import Main from "./Mainpage";
-import Mypage from "./Mypage";
-import Choose from "./Choosepage";
-import Interview from "./Interviewpage";
-import Footer from "./components/Footer";
-import Resultpage from "./Resultpage";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Main from './Mainpage';
+import Mypage from './Mypage';
+import Choose from './Choosepage';
+import Interview from './Interviewpage';
+import Footer from './components/Footer';
+import Resultpage from './Resultpage';
 
 function App() {
   return (
