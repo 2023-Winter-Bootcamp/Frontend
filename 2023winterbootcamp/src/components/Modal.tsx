@@ -4,19 +4,34 @@ import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
   onClose: () => void;
+  onRegister: (title: string) => void;
 }
+
+const ModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
 
 const ModalWrapper = styled.div`
   position: absolute;
-  top: 29%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 400px;
-  height: 220px;
+  height: 180px;
   background-color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 1000;
 `;
 
 const TextWrapper = styled.div`
@@ -28,42 +43,45 @@ const TextWrapper = styled.div`
 `;
 
 const Button = styled.div`
-  width: 270px;
-  height: 26px;
-  background-color: #1a1a1a;
-  color: #fff;
+  width: 80px;
+  height: 20px;
+  color: #1a1a1a;
   font-weight: bold;
   font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 20px;
+  margin-left: 290px;
   border: none;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
 `;
 
 const Input = styled.input`
-  width: 300px;
+  width: 325px;
   height: 40px;
   border: none;
-  border-bottom: 0.7px solid #1a1a1a;
   outline: none;
+  margin-top: -15px;
   margin-bottom: 10px;
+  font-size: 16px;
   &::placeholder {
     color: #c1c1c1;
+  }
+  /* 엔터 키 처리 */
+  &:focus {
+    outline: none;
   }
 `;
 
 const Text = styled.div`
   margin-bottom: 20px;
-  margin-top: -10px;
+  margin-top: 5px;
+  font-weight: 500;
+  font-size: 20px;
+  margin-left: -200px;
 `;
-
-interface ModalProps {
-  onClose: () => void;
-  onRegister: (title: string) => void; // onRegister 프로퍼티 추가
-}
 
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
   ({ onClose, onRegister }, ref) => {
@@ -75,23 +93,38 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         return;
       }
 
-      onRegister(title); // 콜백 함수 호출
+      onRegister(title);
       onClose();
       navigate("/mypage");
     };
 
+    const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    };
+
+    const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleRegisterClick();
+      }
+    };
+
     return (
-      <ModalWrapper ref={ref}>
-        <TextWrapper>
-          <Text>이력서가 등록되었습니다. 제목을 입력해주세요</Text>
-          <Input
-            placeholder="이력서 제목을 입력해주세요."
-            value={title}
-            onChange={(e) => setTitle(e.target.value)} // 제목 변경 핸들러
-          />
-          <Button onClick={handleRegisterClick}>등록</Button>
-        </TextWrapper>
-      </ModalWrapper>
+      <ModalBackground onClick={handleModalClick}>
+        <ModalWrapper ref={ref}>
+          <TextWrapper>
+            <Text>이력서 이름 등록</Text>
+            <Input
+              placeholder="이력서 제목을 입력해주세요."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyPress={handleInputKeyPress} // 엔터 키 처리
+            />
+            <Button onClick={handleRegisterClick}>등록</Button>
+          </TextWrapper>
+        </ModalWrapper>
+      </ModalBackground>
     );
   }
 );
