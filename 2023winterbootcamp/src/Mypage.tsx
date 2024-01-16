@@ -275,6 +275,7 @@ const InterviewContainer = styled.div`
   height: 353px;
   background-color: #1a1a1a;
   overflow-x: auto;
+  overflow-y: hidden;
 `;
 
 const InterviewContainer2 = styled.div`
@@ -305,8 +306,8 @@ const Text4 = styled.div`
   align-items: center;
 `;
 
-const InterviewBox = styled.div`
-  width: 1200px;
+const InterviewBox = styled.div<{ boxWidth: number }>`
+  width: ${(props) => props.boxWidth}px;
   height: inherit;
   display: flex;
   overflow-x: auto;
@@ -315,11 +316,10 @@ const InterviewBox = styled.div`
 `;
 
 const InterviewWrapper = styled.div`
-  width: 500px;
+  width: 1500px;
   height: 255px;
   border-radius: 20px;
   margin-right: 20px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background: url(${interview_image});
   background-position: center;
   background-size: cover;
@@ -477,7 +477,7 @@ function Mypage() {
       <Container>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
-          <ScrollContainer len={resumeList.length}>
+          <ScrollContainer len={interviewList.length}>
             <ResumePreview1 $pre_image_url="" {...getRootProps()}>
               <input type="file" {...getInputProps()} />
               <Text7>
@@ -516,8 +516,8 @@ function Mypage() {
       <Text2>나의 면접</Text2>
       <InterviewContainer>
         <InterviewContainer2>
-          <ScrollContainer len={resumeList.length}>
-            <InterviewBox>
+          <ScrollContainer len={interviewList.length}>
+            <InterviewBox boxWidth={interviewList.length * 400}>
               {interviewList.length ? (
                 interviewList.map((item, idx) => {
                   return (
