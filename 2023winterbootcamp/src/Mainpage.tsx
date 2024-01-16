@@ -373,6 +373,7 @@ const ImageBox3 = styled.div`
     width: 22vw;
   }
 `;
+
 const ImageBoxText = styled.div`
   width: 100%;
   height: 90px;
@@ -387,6 +388,7 @@ const ImageBoxText = styled.div`
     padding: 0;
   }
 `;
+
 const ImageBoxText2 = styled.div`
   width: 100%;
   height: 90px;
@@ -405,6 +407,7 @@ const ImageBoxText2 = styled.div`
     height: 90px;
   }
 `;
+
 const ImageBoxText3 = styled.div`
   width: 100%;
   height: 70px;
@@ -421,9 +424,11 @@ const ImageBoxText3 = styled.div`
     height: 60px;
   }
 `;
+
 interface ImageProps {
   imageurl: string;
 }
+
 const ImageBoxImage = styled.div<ImageProps>`
   aspect-ratio: 1 / 1.15;
   background-image: url(${(props) => props.imageurl});
