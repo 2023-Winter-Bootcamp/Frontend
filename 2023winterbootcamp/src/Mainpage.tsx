@@ -1,19 +1,19 @@
-import React, { useState, useRef } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import {
   motion,
   animate,
   useScroll,
   useMotionValueEvent,
   useAnimationControls,
-} from "framer-motion";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
-import Modal from "./components/Modal";
+} from 'framer-motion';
+import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
+import Modal from './components/Modal';
 
 const Container = styled.div`
-  background-image: url("https://ifh.cc/g/9wn5LW.jpg");
+  background-image: url('https://ifh.cc/g/9wn5LW.jpg');
   width: 100%;
   height: 120vh;
   display: flex;
@@ -262,7 +262,7 @@ const Text8 = styled.div`
 `;
 
 const Image2 = styled.div`
-  background-image: url("https://ifh.cc/g/Y5bZkt.jpg");
+  background-image: url('https://ifh.cc/g/Y5bZkt.jpg');
   background-size: cover;
   background-position: center;
   margin-bottom: 20px;
@@ -510,20 +510,20 @@ function Main() {
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
       const file = new FormData();
-      file.append("file", selectedFile);
-      const user_id = "1";
-      file.append("user_id", user_id);
-      file.append("title", title);
+      file.append('file', selectedFile);
+      const user_id = '1';
+      file.append('user_id', user_id);
+      file.append('title', title);
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/resumes/create",
+          'http://localhost:8000/api/resumes/create',
           file
         );
-        console.log("File uploaded successfully!", response.data);
+        console.log('File uploaded successfully!', response.data);
         setIsModalOpen(false);
       } catch (error) {
-        console.error("Error uploading file:", error);
+        console.error('Error uploading file:', error);
       }
     }
   };
@@ -549,20 +549,20 @@ function Main() {
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest >= 400 && !isUp) {
       setIsUp(true);
-      const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "20%" }, { duration: 0.8 });
+      const box = document.getElementById('page2container');
+      animate(box as HTMLElement, { top: '20%' }, { duration: 0.8 });
     } else if (latest < 370 && isUp) {
       setIsUp(false);
-      const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "100%" }, { duration: 0.5 });
+      const box = document.getElementById('page2container');
+      animate(box as HTMLElement, { top: '100%' }, { duration: 0.5 });
     }
   });
 
   const handleAIInterviewClick = () => {
-    navigate("/choose");
+    navigate('/choose');
   };
 
   const [isDone, setIsDone] = useState([false, false, false]);
@@ -570,9 +570,9 @@ function Main() {
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest < 400) {
-      const scroll = document.getElementById("scrollContent") as HTMLDivElement;
+      const scroll = document.getElementById('scrollContent') as HTMLDivElement;
       scroll.style.top = `-${latest * 2}px`;
     }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
@@ -609,11 +609,32 @@ function Main() {
     }, 100);
   });
 
+  useEffect(() => {
+    const githubLoginStatus = window.localStorage.getItem('githubLogin');
+
+    if (githubLoginStatus === 'inProgress') {
+      // GitHub 로그인이 진행 중이었다면 API 요청을 수행
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('http://localhost:8000/users/', {
+            withCredentials: true,
+          });
+          console.log(response.data);
+        } catch (error) {
+          console.error('API 요청 중 오류 발생:', error);
+        }
+      };
+
+      fetchData();
+      window.localStorage.removeItem('githubLogin'); // 상태 초기화
+    }
+  }, []);
+
   return (
     <>
       <Container>
         <ScrollWrapper>
-          <ScrollContent id="scrollContent">
+          <ScrollContent id='scrollContent'>
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -641,8 +662,8 @@ function Main() {
               transition={{ duration: 2.5, delay: 2.5 }}
             >
               <Image
-                src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                alt="GitHub Logo"
+                src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
+                alt='GitHub Logo'
               />
             </motion.div>
             <ButtonWrapper>
@@ -654,8 +675,8 @@ function Main() {
                 <Button>
                   <ButtonContent>
                     <ButtonImage
-                      src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                      alt="GitHub Logo"
+                      src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
+                      alt='GitHub Logo'
                     />
                     내 깃허브
                   </ButtonContent>
@@ -678,8 +699,8 @@ function Main() {
                   <Button onClick={handleModalClose}>
                     <ButtonContent>
                       <ButtonImage
-                        src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                        alt="Document Icon"
+                        src='https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png'
+                        alt='Document Icon'
                       />
                       이력서 업로드
                     </ButtonContent>
@@ -702,7 +723,7 @@ function Main() {
             </TextField>
           </ScrollContent>
         </ScrollWrapper>
-        <Page2Container id="page2container">
+        <Page2Container id='page2container'>
           <Page2
             initial={{ opacity: 0, y: 50 }}
             animate={control1}
@@ -737,7 +758,7 @@ function Main() {
                 면접 종류, 포지션, 면접 방식, <br />
                 이력서 선택 등 다양한 옵션
               </ImageBoxText>
-              <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
+              <ImageBoxImage imageurl='https://ifh.cc/g/QKjM80.png' />
             </ImageBox>
           </motion.div>
           <motion.div
@@ -747,7 +768,7 @@ function Main() {
           >
             <ImageBox2>
               <ImageBoxText2>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText2>
-              <ImageBoxImage2 imageurl="https://ifh.cc/g/LG1kHy.png" />
+              <ImageBoxImage2 imageurl='https://ifh.cc/g/LG1kHy.png' />
             </ImageBox2>
           </motion.div>
           <motion.div
@@ -757,7 +778,7 @@ function Main() {
           >
             <ImageBox3>
               <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
-              <ImageBoxImage3 imageurl="https://ifh.cc/g/vgbofK.jpg" />
+              <ImageBoxImage3 imageurl='https://ifh.cc/g/vgbofK.jpg' />
             </ImageBox3>
           </motion.div>
         </ImageContainer>
