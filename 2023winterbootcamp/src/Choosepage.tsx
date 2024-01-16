@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import LoadingModal from "./components/LoadingModal";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -409,6 +410,7 @@ function Choose() {
 
   const createInterview = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.post(
         'http://localhost:8000/api/interviews/create/',
         {
@@ -426,6 +428,7 @@ function Choose() {
     } catch (e) {
       console.log(e);
     }
+    setIsLoading(false);
   };
 
   const Start = styled.button`
@@ -449,6 +452,7 @@ function Choose() {
     }
   `;
   
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -568,6 +572,9 @@ function Choose() {
         </RepoContainer>
       </Container4>
       <Start onClick={createInterview}>선택 완료</Start>
+      {
+        isLoading ? <LoadingModal/> : null
+      }
     </>
   );
 }
