@@ -3,10 +3,12 @@ import styled, { keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
-import { motion } from "framer-motion";
 import Camera from "./components/Camera";
 import { useRecoilValue } from "recoil";
 import { interviewTypeState } from "./Recoil";
+import { motion, useAnimation } from "framer-motion";
+import nextIcon from "./images/next_question.png";
+import stopIcon from "./images/stop_recording.png";
 
 const Up = styled.div`
   width: 100%;
@@ -88,6 +90,7 @@ const Next = styled.button`
   background: none;
   cursor: pointer;
   margin-bottom: 30px;
+  visibility: hidden;
 `;
 
 const StyledNextImage = styled.img`
@@ -295,7 +298,7 @@ function Interviewpage() {
   }, [id]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
+  const btnRef = useRef<HTMLButtonElement | null>(null);
   //처음 페이지 로딩된 후, 다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
   /* useEffect(() => {
     if(!isInterviewStart) return;
@@ -306,7 +309,7 @@ function Interviewpage() {
     try {
       const response = await axios({
         method: "post",
-        url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCcoFgHo5jVFT5H5zF2wldTDZkgHiOmvvg",
+        url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
         headers: {},
         data: {
           voice: {
@@ -346,14 +349,22 @@ function Interviewpage() {
   };
 
   const handleNextButtonClick = () => {
-    // 다음 질문이 있는지 확인
-    if (currentQuestionIndex < questions.length) {
-      // 다음 질문의 인덱스로 업데이트
-      setQuestionId(questions[currentQuestionIndex].id);
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // 마지막 질문이었다면 결과 페이지로 이동
-      navigate("/result/" + id);
+    if (recorderControls.isRecording) {
+      recorderControls.stopRecording();
+      console.log("녹음 중지");
+    }
+    if (!recorderControls.isRecording && recorderControls.recordingBlob) {
+      addAudioElement(recorderControls.recordingBlob);
+      console.log("녹음본 전송");
+      // 다음 질문이 있는지 확인
+      if (currentQuestionIndex < questions.length) {
+        // 다음 질문의 인덱스로 업데이트
+        setQuestionId(questions[currentQuestionIndex].id);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        // 마지막 질문이었다면 결과 페이지로 이동
+        navigate("/result/" + id);
+      }
     }
   };
 
@@ -367,14 +378,13 @@ function Interviewpage() {
     } catch (e) {
       console.error(e);
     }
-    handleNextButtonClick();
   };
 
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
-      // 음성 면접 또는 텍스트 면접인 경우에만 처리
-    }, 2000);
+      btnRef.current?.style.setProperty('visibility','visible');
+    }, 1000);
   };
 
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -493,20 +503,9 @@ function Interviewpage() {
               </Q>
             ))}
             <RecordBox>
-              <div>
-                <AudioRecorder
-                  onRecordingComplete={(blob) => addAudioElement(blob)}
-                  recorderControls={recorderControls}
-                  showVisualizer={true}
-                />
-              </div>
-              <Next onClick={handleNextButtonClick}>
+              <Next onClick={handleNextButtonClick} ref={btnRef}>
                 <StyledNextImage
-                  src={
-                    currentQuestionIndex === questions.length - 1
-                      ? "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                      : "https://i.postimg.cc/5yNzdTCP/2024-01-04-3-15-41.png"
-                  }
+                  src={recorderControls.isRecording ? stopIcon : nextIcon}
                   alt="next"
                 />
               </Next>
