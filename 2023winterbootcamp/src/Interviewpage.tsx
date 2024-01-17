@@ -9,6 +9,7 @@ import { interviewTypeState } from "./Recoil";
 import { motion } from "framer-motion";
 import nextIcon from "./images/nextbutton.png";
 import recordIcon from "./images/recordbutton.png";
+import LoadingModal from "./components/LoadingModal";
 
 const Up = styled.div`
   width: 100%;
@@ -244,6 +245,7 @@ function Interviewpage() {
   const selectedInterviewType = useRecoilValue(interviewTypeState);
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   //질문 관련
   const [question, setQuestion] = useState<Question[]>([]);
@@ -360,6 +362,7 @@ function Interviewpage() {
     file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
+      setIsLoading(true);
       //음성파일 보낸 후 서버에서 새로운 질문을 받아옴
       const response = await axios.post(
         `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
@@ -369,6 +372,7 @@ function Interviewpage() {
       /* setQuestion(response.data.content);
       setQuestionType(response.data.type_name);
       setQuestionId(response.data.id); */
+      setIsLoading(false);
       endInterview();
     } catch (e) {
       console.error(e);
@@ -514,6 +518,7 @@ function Interviewpage() {
           </Down>
         </>
       )}
+      {isLoading ? <LoadingModal /> : null}
       <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
     </>
   );
