@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import plus_icon from "./images/plus_icon.png";
 import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
 
@@ -404,7 +403,7 @@ function Mypage() {
 
       // 여기에서 필요한 동작을 수행하고 페이지 이동
       console.log(`면접 결과: ${interviewResult}`);
-      navigate(`/interviews/${id}`); // 해당 페이지로 이동
+      navigate(`/result/${id}`); // 해당 페이지로 이동
     } catch (error) {
       console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
     }
@@ -473,6 +472,7 @@ function Mypage() {
     resumeList.forEach(async (item, idx) => {
       if (item.id === id) {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const response = await axios.delete(
             `http://localhost:8000/api/resumes/delete/${id}`
           );

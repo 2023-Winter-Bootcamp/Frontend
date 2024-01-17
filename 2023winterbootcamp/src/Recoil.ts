@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import { recoilPersist } from 'recoil-persist';
+
 const { persistAtom } = recoilPersist();
 
 export const interviewTypeState = atom({
@@ -8,7 +9,6 @@ export const interviewTypeState = atom({
     showCamera: true,
   },
 });
-
 export type githubLoginInfoType = {
     html_url: string;
     id: number;
@@ -29,3 +29,4 @@ export const repoListState = atom<RepoType[]>({
   key: "repoListState",
   effects_UNSTABLE: [persistAtom],
 })
+

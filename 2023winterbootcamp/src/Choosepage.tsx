@@ -5,6 +5,7 @@ import axios from "axios";
 import LoadingModal from "./components/LoadingModal";
 import { githubLoginInfoState, repoListState } from "./Recoil";
 import { useRecoilState, useRecoilValue } from "recoil";
+import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -318,11 +319,22 @@ const Reponame = styled.div`
   text-overflow: ellipsis;
 `;
 
+const VideoContainer = styled.div`
+  width: 100%;
+  max-width: 2000px;
+  height: 500px;
+  border: 1px solid black;
+`;
+
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [selectedResume, setSelectedResume] = useState<number | null>(null);
+  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
+  const [title, setTitle] = useState<string>("");
+
   const [selectedInterviewType, setSelectedInterviewType] = useState<
     string | null
   >(null);
@@ -331,6 +343,7 @@ function Choose() {
   const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
   const githubLoginInfo = useRecoilValue(githubLoginInfoState);
   const [title, setTitle] = useState<string>("");
+  const [, setInterviewType] = useRecoilState(interviewTypeState);
 
   useEffect(() => {
     const isAllSelected =
@@ -377,6 +390,11 @@ function Choose() {
     setSelectedInterviewType((prevSelected) =>
       prevSelected === buttonName ? null : buttonName
     );
+    if (buttonName === "video") {
+      setInterviewType({ showCamera: true });
+    } else {
+      setInterviewType({ showCamera: false });
+    }
   };
 
   const navigate = useNavigate();
@@ -411,9 +429,12 @@ function Choose() {
     setTitle(e.target.value);
   };
 
+  const [showVideoComponent, setShowVideoComponent] = useState(false);
+
   const createInterview = async () => {
     try {
       setIsLoading(true);
+
       const response = await axios.post(
         "http://localhost:8000/api/interviews/create/",
         {
@@ -426,12 +447,20 @@ function Choose() {
           type_names: selectedMultiButtons,
         }
       );
+
       handleStartClick(response.data.id);
       console.log(response.data);
+
+      // 음성 면접 또는 텍스트 면접인 경우에만 처리
+      if (selectedInterviewType !== "video") {
+        setShowVideoComponent(false);
+      }
     } catch (e) {
       console.log(e);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const Start = styled.button`
@@ -454,7 +483,8 @@ function Choose() {
       background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
     }
   `;
-
+  
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
   return (
