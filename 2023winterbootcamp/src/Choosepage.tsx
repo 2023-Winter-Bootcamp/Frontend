@@ -319,22 +319,32 @@ const Reponame = styled.div`
   text-overflow: ellipsis;
 `;
 
-const VideoContainer = styled.div`
-  width: 100%;
-  max-width: 2000px;
-  height: 500px;
-  border: 1px solid black;
-`;
+const Start = styled.button<{startClicked : boolean }>`
+    background-color: ${props => props.startClicked ? "#1a1a1a" : "#cacaca"};
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    width: 200px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 100px;
+    margin-left: 70%;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: ${props => props.startClicked ? "#1a1a1a" : "#1a1a1a"};
+    }
+  `;
 
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
-  const [selectedResume, setSelectedResume] = useState<number | null>(null);
-  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
-  const [title, setTitle] = useState<string>("");
-
   const [selectedInterviewType, setSelectedInterviewType] = useState<
     string | null
   >(null);
@@ -447,48 +457,20 @@ function Choose() {
           type_names: selectedMultiButtons,
         }
       );
-
-      await axios.post(
-        `http://localhost:8000/api/interviews/${response.data.id}/questions/create/`
-      );
-
       handleStartClick(response.data.id);
       console.log(response.data);
-
       // 음성 면접 또는 텍스트 면접인 경우에만 처리
       if (selectedInterviewType !== "video") {
         setShowVideoComponent(false);
       }
     } catch (e) {
       console.log(e);
-      setIsLoading(false);
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
-  const Start = styled.button`
-    background-color: ${startClicked ? "#1a1a1a" : "#cacaca"};
-    color: #fff;
-    font-weight: bold;
-    font-size: 14px;
-    width: 200px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 20px;
-    margin-bottom: 100px;
-    margin-left: 70%;
-    border: none;
-    cursor: pointer;
-
-    &:hover {
-      background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
-    }
-  `;
   
-  const [isLoading, setIsLoading] = useState(false);
+  
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
   return (
@@ -617,7 +599,7 @@ function Choose() {
             )}
           </RepoContainer>
         </Container4>
-        <Start onClick={createInterview}>선택 완료</Start>
+        <Start startClicked={startClicked}onClick={createInterview}>선택 완료</Start>
         {isLoading ? <LoadingModal /> : null}
       </Suspense>
     </>

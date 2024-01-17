@@ -383,17 +383,6 @@ const Resultpage = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (interviewData) {
-  //     audioRefs.current = Array(interviewData.questions.length)
-  //       .fill(null)
-  //       .map(
-  //         (_, index) =>
-  //           (audioRefs.current[index] ??= document.createElement("audio"))
-  //       );
-  //   }
-  // }, [interviewData]);
-
   useEffect(() => {
     isPlayingList.forEach((isPlaying, index) => {
       const audioRef = audioRefs.current[index];

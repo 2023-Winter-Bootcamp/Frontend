@@ -248,7 +248,7 @@ function Interviewpage() {
       axios
         .get(`http://localhost:8000/api/interviews/${id}/questions/`)
         .then((response) => {
-          console.log(response.data.qusetions);
+          console.log(response.data.questions);
           setQuestions(response.data.questions);
           setQuestionId(response.data.questions[currentQuestionIndex - 1].id);
         })
@@ -305,9 +305,6 @@ function Interviewpage() {
         },
       });
 
-      // 여기서 response를 사용하여 로그를 출력하거나 다른 작업을 수행할 수 있습니다.
-      console.log("Audio data response:", response);
-
       const base64String = response.data.audioContent;
       const audioBlob = base64ToBlob(base64String);
       if (audioRef.current && audioBlob !== undefined) {
@@ -356,6 +353,10 @@ function Interviewpage() {
     file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
+      const response = await axios.post(
+        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
+        file
+      );
     } catch (e) {
       console.error(e);
     }
