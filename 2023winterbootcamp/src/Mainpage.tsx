@@ -234,7 +234,7 @@ const Text6 = styled.div`
   @media screen and (min-width: 1024px) {
     color: black;
     font-weight: bold;
-    font-size: 34px;
+    font-size: 31px;
     margin-left: 10px;
   }
 `;
