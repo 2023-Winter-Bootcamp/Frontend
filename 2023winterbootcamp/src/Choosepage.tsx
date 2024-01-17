@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingModal from "./components/LoadingModal";
 import { useRecoilState } from "recoil";
-import { interviewTypeState } from "./components/Recoil";
+import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -338,7 +338,7 @@ function Choose() {
   >(null);
   const [startClicked, setStartClicked] = useState(false);
 
-  const [interviewType, setInterviewType] = useRecoilState(interviewTypeState);
+  const [, setInterviewType] = useRecoilState(interviewTypeState);
 
   useEffect(() => {
     const isAllSelected =

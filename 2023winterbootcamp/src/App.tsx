@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { RecoilRoot } from "recoil"; // RecoilRoot 추가
+import { RecoilRoot } from "recoil";
 import Layout from "./components/Layout";
 import Main from "./Mainpage";
 import Mypage from "./Mypage";
@@ -12,8 +12,6 @@ import Resultpage from "./Resultpage";
 function App() {
   return (
     <RecoilRoot>
-      {" "}
-      {/* RecoilRoot로 애플리케이션 감싸기 */}
       <Router>
         <Layout>
           <Routes>

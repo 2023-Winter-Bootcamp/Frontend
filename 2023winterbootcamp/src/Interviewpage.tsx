@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
 import { motion } from "framer-motion";
 import Camera from "./components/Camera";
 import { useRecoilValue } from "recoil";
-import { interviewTypeState } from "./components/Recoil";
+import { interviewTypeState } from "./Recoil";
 
 const Up = styled.div`
   width: 100%;
@@ -46,7 +46,7 @@ const Down = styled.div`
   box-sizing: border-box;
   margin-left: 50.3%;
   transform: translateX(-50%);
-  margin-top: 130px;
+  margin-top: 20px;
   margin-bottom: 50px;
 `;
 
@@ -97,7 +97,7 @@ const StyledNextImage = styled.img`
 
 const RecordBox = styled.div`
   width: 100%;
-  height: 60px;
+  height: 300px;
   display: flex;
   justify-content: center;
 `;
@@ -171,10 +171,74 @@ const Dot = styled(motion.div)`
   margin-top: 10px;
 `;
 
+const spin3D = keyframes`
+  from {
+    transform: rotate3d(.5, .5, .5, 360deg);
+  }
+  to {
+    transform: rotate3d(0deg);
+  }
+`;
+
 const VideoContainer = styled.div`
-  width: 2000px;
-  height: 500px;
-  background-color: gray;
+  min-height: 400px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  //border: 1px solid lightgray;
+`;
+
+// Common styles
+const commonStyle = `
+  width: 150px;
+  height: 150px;
+  padding: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+`;
+
+// Styled components
+
+interface LeoBorderProps {
+  color: string;
+  gradientColor: string;
+  animationDuration: number;
+}
+
+const SpinnerBox = styled.div`
+  width: 670px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
+const LeoBorder = styled.div<LeoBorderProps>`
+  position: absolute;
+  ${commonStyle}
+  background: ${(props) => props.color};
+  background: linear-gradient(
+    0deg,
+    rgba(${(props) => props.gradientColor}, 0.1) 33%,
+    rgba(${(props) => props.gradientColor}, 1) 100%
+  );
+  animation: ${spin3D} ${(props) => props.animationDuration}s linear 0s infinite;
+`;
+
+interface LeoCoreProps {
+  backgroundColor: string;
+}
+
+const LeoCore = styled.div<LeoCoreProps>`
+  ${commonStyle}
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => props.backgroundColor};
 `;
 
 export interface Question {
@@ -209,6 +273,7 @@ function Interviewpage() {
         });
     }
     console.log(selectedInterviewType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -226,6 +291,7 @@ function Interviewpage() {
         audioElement.removeEventListener("ended", handleEnded);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -298,10 +364,6 @@ function Interviewpage() {
     file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
-        file
-      );
     } catch (e) {
       console.error(e);
     }
@@ -334,18 +396,6 @@ function Interviewpage() {
 
   const startStopwatch = () => {
     setIsRunning(true);
-  };
-
-  const formatTime = (timeInSeconds: number) => {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
-    const seconds = timeInSeconds % 60;
-
-    const formattedHours = String(hours).padStart(2, "0");
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(seconds).padStart(2, "0");
-
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
   const interviewStart = () => {
@@ -407,18 +457,26 @@ function Interviewpage() {
           <Up>
             {selectedInterviewType.showCamera === false ? (
               <VideoContainer>
-                {selectedInterviewType.showCamera === false ? (
-                  // 비디오 면접에 대한 내용을 표시
-                  <p>비디오 면접 내용을 여기에 추가하세요.</p>
-                ) : (
-                  // 다른 면접 유형에 대한 내용을 표시
-                  <p>다른 면접 유형에 대한 내용을 여기에 추가하세요.</p>
-                )}
+                <SpinnerBox>
+                  <LeoBorder
+                    color="rgb(102, 102, 102)"
+                    gradientColor="102, 102, 102"
+                    animationDuration={1.8}
+                  >
+                    <LeoCore backgroundColor="#191919aa" />
+                  </LeoBorder>
+                  <LeoBorder
+                    color="rgb(255, 215, 244)"
+                    gradientColor="255, 215, 244"
+                    animationDuration={2.2}
+                  >
+                    <LeoCore backgroundColor="#bebebeaa" />
+                  </LeoBorder>
+                </SpinnerBox>
               </VideoContainer>
             ) : (
               <Camera elapsedTime={elapsedTime} children={undefined} />
             )}
-            {/* showVideoComponent가 true인 경우에만 렌더링 */}
           </Up>
 
           <Down>
