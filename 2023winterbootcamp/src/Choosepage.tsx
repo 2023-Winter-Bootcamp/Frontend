@@ -433,7 +433,7 @@ function Choose() {
       response = await axios.post(
         "http://localhost:8000/api/interviews/create/",
         {
-          user: 1,
+          user: 2,
           title: title,
           position: selectedPosition,
           style: selectedInterviewType,
@@ -441,6 +441,10 @@ function Choose() {
           repo_names: selectedRepos,
           type_names: selectedMultiButtons,
         }
+      );
+
+      await axios.post(
+        `http://localhost:8000/api/interviews/${response.data.id}/questions/create/`
       );
 
       handleStartClick(response.data.id);
