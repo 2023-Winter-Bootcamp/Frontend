@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingModal from "./components/LoadingModal";
-import { useRecoilState } from "recoil";
+import { githubLoginInfoState, repoListState } from "./Recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
@@ -269,12 +270,14 @@ const Text2 = styled.div`
 const RepoContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  max-width: 630px;
+  width: 45%;
+  min-width: 500px;
   margin: 0 auto;
   margin-bottom: 80px;
+  flex-wrap: wrap;
+  gap: 20px 2%;
   @media screen and (max-width: 769px) {
-    margin-left: 14%;
+    margin-left: 15%;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -287,11 +290,10 @@ const RepoContainer = styled.div`
 `;
 
 const Repo = styled.div<{ isSelected: boolean }>`
-  width: 308px;
+  width: 45%;
   height: 130px;
   background-color: white;
   border-radius: 10px;
-  margin-left: 5px;
   border: ${(props) =>
     props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
   cursor: pointer;
@@ -299,22 +301,22 @@ const Repo = styled.div<{ isSelected: boolean }>`
   &:hover {
     border: 2px solid black;
   }
-  @media screen and (max-width: 769px) {
-  }
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
-
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: 1400px) {
+    width: 31%;
   }
 `;
 
 const Reponame = styled.div`
+  width: 80%;
   color: #7a7a7a;
   font-size: 18px;
   font-weight: 500;
   margin-left: 20px;
   margin-top: 15px;
+  overflow-wrap: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const VideoContainer = styled.div`
@@ -337,7 +339,10 @@ function Choose() {
     string | null
   >(null);
   const [startClicked, setStartClicked] = useState(false);
-
+  const [selectedResume, setSelectedResume] = useState<number | null>(null);
+  const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
+  const githubLoginInfo = useRecoilValue(githubLoginInfoState);
+  const [title, setTitle] = useState<string>("");
   const [, setInterviewType] = useRecoilState(interviewTypeState);
 
   useEffect(() => {
@@ -350,6 +355,7 @@ function Choose() {
       title !== "";
 
     setStartClicked(isAllSelected);
+    
   }, [
     selectedMultiButtons,
     selectedPosition,
@@ -406,14 +412,14 @@ function Choose() {
     }
   };
 
-  const handleRepoSelect = (index: number) => {
-    const selectedIndex = selectedRepos.indexOf(index);
-    let updatedSelectedRepos: number[];
+  const handleRepoSelect = (repoName: string) => {
+    const selectedIndex = selectedRepos.indexOf(repoName);
+    let updatedSelectedRepos: string[];
 
     if (selectedIndex === -1) {
-      updatedSelectedRepos = [...selectedRepos, index];
+      updatedSelectedRepos = [...selectedRepos, repoName];
     } else {
-      updatedSelectedRepos = selectedRepos.filter((i) => i !== index);
+      updatedSelectedRepos = selectedRepos.filter((name) => name !== repoName);
     }
 
     setSelectedRepos(updatedSelectedRepos);
@@ -428,12 +434,11 @@ function Choose() {
   const createInterview = async () => {
     try {
       setIsLoading(true);
-      let response;
 
-      response = await axios.post(
+      const response = await axios.post(
         "http://localhost:8000/api/interviews/create/",
         {
-          user: 2,
+          user: githubLoginInfo.id,
           title: title,
           position: selectedPosition,
           style: selectedInterviewType,
@@ -482,137 +487,139 @@ function Choose() {
       background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
     }
   `;
-
+  
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const repoList = useRecoilValue(repoListState);
   return (
     <>
-      <Container>
-        <TextWrapper>
-          <Text>면접 제목</Text>
-        </TextWrapper>
-        <Input placeholder="" onChange={handleChange}></Input>
-      </Container>
-      <Container1>
-        <TextWrapper1>
-          <Text1>면접 종류</Text1>
-        </TextWrapper1>
-        <ButtonsContainer>
-          <Button
-            isSelected={selectedMultiButtons.includes("project")}
-            onClick={() => handleMultiButtonClick("project")}
-          >
-            프로젝트
-          </Button>
-          <Button
-            isSelected={selectedMultiButtons.includes("cs")}
-            onClick={() => handleMultiButtonClick("cs")}
-          >
-            CS 질문
-          </Button>
-          <Button
-            isSelected={selectedMultiButtons.includes("personality")}
-            onClick={() => handleMultiButtonClick("personality")}
-          >
-            인성 면접
-          </Button>
-        </ButtonsContainer>
-      </Container1>
-      <Container2>
-        <TextWrapper1>
-          <Text1>포지션</Text1>
-        </TextWrapper1>
-        <ButtonsContainer>
-          <Button
-            isSelected={selectedPosition === "frontend"}
-            onClick={() => handlePositionClick("frontend")}
-          >
-            Frontend
-          </Button>
-          <Button
-            isSelected={selectedPosition === "backend"}
-            onClick={() => handlePositionClick("backend")}
-          >
-            Backend
-          </Button>
-          <Button
-            isSelected={selectedPosition === "fullstack"}
-            onClick={() => handlePositionClick("fullstack")}
-          >
-            Fullstack
-          </Button>
-        </ButtonsContainer>
-      </Container2>
-      <Container3>
-        <TextWrapper1>
-          <Text1>면접 방식</Text1>
-        </TextWrapper1>
-        <ButtonsContainer>
-          <Button
-            isSelected={selectedInterviewType === "video"}
-            onClick={() => handleInterviewTypeClick("video")}
-          >
-            화상 면접
-          </Button>
-          <Button
-            isSelected={selectedInterviewType === "voice"}
-            onClick={() => handleInterviewTypeClick("voice")}
-          >
-            음성 면접
-          </Button>
-          <Button
-            isSelected={selectedInterviewType === "text"}
-            onClick={() => handleInterviewTypeClick("text")}
-          >
-            텍스트 면접
-          </Button>
-        </ButtonsContainer>
-      </Container3>
-      <Container4>
-        <TextWrapper2>
-          <Text2>이력서</Text2>
-        </TextWrapper2>
-        <ResumeContainer>
-          <ResumeBox
-            isSelected={selectedResume === 1}
-            onClick={() => handleResumeSelect(1)}
-          />
-          <ResumeBox
-            isSelected={selectedResume === 2}
-            onClick={() => handleResumeSelect(2)}
-          />
-        </ResumeContainer>
-      </Container4>
-      <Container4>
-        <TextWrapper2>
-          <Text2>Github reposiotries</Text2>
-        </TextWrapper2>
-        <RepoContainer>
-          <Repo
-            isSelected={selectedRepos.includes(0)}
-            onClick={() => handleRepoSelect(0)}
-          >
-            <Reponame>repository1</Reponame>
-          </Repo>
-          <Repo
-            isSelected={selectedRepos.includes(1)}
-            onClick={() => handleRepoSelect(1)}
-          >
-            <Reponame>repository2</Reponame>
-          </Repo>
-        </RepoContainer>
-      </Container4>
-      <Start onClick={createInterview}>선택 완료</Start>
-      {showVideoComponent ? (
-        <VideoContainer>
-          {selectedInterviewType === "video" ? (
-            <p>비디오 면접 내용을 여기에 추가하세요.</p>
-          ) : (
-            <p>다른 면접 유형에 대한 내용을 여기에 추가하세요.</p>
-          )}
-        </VideoContainer>
-      ) : null}
-      {isLoading ? <LoadingModal /> : null}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Container>
+          <TextWrapper>
+            <Text>면접 제목</Text>
+          </TextWrapper>
+          <Input placeholder="" onChange={handleChange}></Input>
+        </Container>
+        <Container1>
+          <TextWrapper1>
+            <Text1>면접 종류</Text1>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              isSelected={selectedMultiButtons.includes("project")}
+              onClick={() => handleMultiButtonClick("project")}
+            >
+              프로젝트
+            </Button>
+            <Button
+              isSelected={selectedMultiButtons.includes("cs")}
+              onClick={() => handleMultiButtonClick("cs")}
+            >
+              CS 질문
+            </Button>
+            <Button
+              isSelected={selectedMultiButtons.includes("personality")}
+              onClick={() => handleMultiButtonClick("personality")}
+            >
+              인성 면접
+            </Button>
+          </ButtonsContainer>
+        </Container1>
+        <Container2>
+          <TextWrapper1>
+            <Text1>포지션</Text1>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              isSelected={selectedPosition === "frontend"}
+              onClick={() => handlePositionClick("frontend")}
+            >
+              Frontend
+            </Button>
+            <Button
+              isSelected={selectedPosition === "backend"}
+              onClick={() => handlePositionClick("backend")}
+            >
+              Backend
+            </Button>
+            <Button
+              isSelected={selectedPosition === "fullstack"}
+              onClick={() => handlePositionClick("fullstack")}
+            >
+              Fullstack
+            </Button>
+          </ButtonsContainer>
+        </Container2>
+        <Container3>
+          <TextWrapper1>
+            <Text1>면접 방식</Text1>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              isSelected={selectedInterviewType === "video"}
+              onClick={() => handleInterviewTypeClick("video")}
+            >
+              화상 면접
+            </Button>
+            <Button
+              isSelected={selectedInterviewType === "voice"}
+              onClick={() => handleInterviewTypeClick("voice")}
+            >
+              음성 면접
+            </Button>
+            <Button
+              isSelected={selectedInterviewType === "text"}
+              onClick={() => handleInterviewTypeClick("text")}
+            >
+              텍스트 면접
+            </Button>
+          </ButtonsContainer>
+        </Container3>
+        <Container4>
+          <TextWrapper2>
+            <Text2>이력서</Text2>
+          </TextWrapper2>
+          <ResumeContainer>
+            <ResumeBox
+              isSelected={selectedResume === 1}
+              onClick={() => handleResumeSelect(1)}
+            />
+            <ResumeBox
+              isSelected={selectedResume === 2}
+              onClick={() => handleResumeSelect(2)}
+            />
+          </ResumeContainer>
+        </Container4>
+        <Container4>
+          <TextWrapper2>
+            <Text2>Github reposiotries</Text2>
+          </TextWrapper2>
+          <RepoContainer>
+            {repoList.length !== 0 ? (
+              repoList.map((repo, idx) => {
+                return (
+                  <Repo
+                    key={idx}
+                    isSelected={selectedRepos.includes(repo.repo_name)}
+                    onClick={() => handleRepoSelect(repo.repo_name)}
+                  >
+                    <Reponame>{repo.repo_name}</Reponame>
+                  </Repo>
+                );
+              })
+            ) : (
+              <Repo
+                isSelected={selectedRepos.includes("")}
+                onClick={() => handleRepoSelect("")}
+              >
+                <Reponame>repository가 없습니다.</Reponame>
+              </Repo>
+            )}
+          </RepoContainer>
+        </Container4>
+        <Start onClick={createInterview}>선택 완료</Start>
+        {isLoading ? <LoadingModal /> : null}
+      </Suspense>
     </>
   );
 }
