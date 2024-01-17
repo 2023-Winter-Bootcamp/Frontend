@@ -70,8 +70,6 @@ const Next = styled.button`
   background: none;
   cursor: pointer;
   visibility: hidden;
-  position: relative;
-  left: 300px;
 `;
 
 const StyledNextImage = styled.img`
@@ -83,7 +81,8 @@ const RecordBox = styled.div`
   width: 100%;
   height: 300px;
   display: flex;
-  justify-content: center;
+  justify-content: end;
+  align-items: center;
 `;
 
 const StartModal = styled.div`
@@ -225,6 +224,14 @@ const LeoCore = styled.div<LeoCoreProps>`
   background-color: ${(props) => props.backgroundColor};
 `;
 
+const InstructionText = styled.div`
+  width: auto;
+  height: 16px;
+  font-size: 16px;
+  color: #909090;
+  visibility: hidden;
+`;
+
 export interface Question {
   id: number;
   type_name: string;
@@ -232,16 +239,29 @@ export interface Question {
 }
 
 function Interviewpage() {
-  // const [buttonImage, setButtonImage] = useState(
-  //   "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
-  // );
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
-  const [questionId, setQuestionId] = useState<number>(0);
+  //인터뷰 관련
   const [isInterviewStart, setIsInterviewStart] = useState(false);
+  const selectedInterviewType = useRecoilValue(interviewTypeState);
   const { id } = useParams();
   const navigate = useNavigate();
-  const selectedInterviewType = useRecoilValue(interviewTypeState);
+
+  //질문 관련
+  const [question, setQuestion] = useState<Question[]>([]);
+  const [questionId, setQuestionId] = useState<number>(0);
+  const [questionType, setQuestionType] = useState<string>("");
+
+  //음성녹음 관련
+  const recorderControls = useAudioRecorder();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const instRef = useRef<HTMLDivElement | null>(null);
+  const [instText, setInstText] = useState("");
+
+  //스탑워치 관련
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  //면접화면이 처음 렌더링될 때 질문정보 수신
   useEffect(() => {
     window.scrollTo(0, 0);
     if (id) {
@@ -249,8 +269,8 @@ function Interviewpage() {
         .get(`http://localhost:8000/api/interviews/${id}/questions/`)
         .then((response) => {
           console.log(response.data.questions);
-          setQuestions(response.data.questions);
-          setQuestionId(response.data.questions[currentQuestionIndex - 1].id);
+          setQuestion(response.data.questions);
+          setQuestionId(response.data.questions[0].id);
         })
         .catch((error) => {
           console.error("Error fetching questions:", error);
@@ -260,6 +280,7 @@ function Interviewpage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  //질문 음성이 종료됐을 때 녹음 시작해주는 이벤트함수 등록
   useEffect(() => {
     const audioElement = audioRef.current;
     const handleEnded = () => {
@@ -275,17 +296,9 @@ function Interviewpage() {
         audioElement.removeEventListener("ended", handleEnded);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const btnRef = useRef<HTMLButtonElement | null>(null);
-  //처음 페이지 로딩된 후, 다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
-  /* useEffect(() => {
-    if(!isInterviewStart) return;
-    getQ2AudioData();
-  }, [isInterviewStart, currentQuestionIndex]); */
-
+  //질문 내용 TTS변환 후 음성파일 실행 메소드
   const getQ2AudioData = async () => {
     try {
       const response = await axios({
@@ -297,7 +310,7 @@ function Interviewpage() {
             languageCode: "ko-KR",
           },
           input: {
-            text: `${questions[currentQuestionIndex - 1].content}`,
+            text: `${question[0].content}`,
           },
           audioConfig: {
             audioEncoding: "mp3",
@@ -316,6 +329,7 @@ function Interviewpage() {
     }
   };
 
+  //TTS로 받은 음성파일을 Blob파일로 변환해주는 메소드
   const base64ToBlob = (base64: string) => {
     const byteCharacters = atob(base64);
     const byteNumbers = Array.from(byteCharacters).map((char) =>
@@ -326,52 +340,65 @@ function Interviewpage() {
     return blob;
   };
 
+  //버튼을 눌렀을 때, 녹음 중지 or 질문초기화
   const handleNextButtonClick = () => {
     if (recorderControls.isRecording) {
       recorderControls.stopRecording();
       console.log("녹음 중지");
+      setInstText("다음 질문 준비가 완료됐다면 버튼을 눌러주세요");
     }
     if (!recorderControls.isRecording && recorderControls.recordingBlob) {
-      addAudioElement(recorderControls.recordingBlob);
-      console.log("녹음본 전송");
-      // 다음 질문이 있는지 확인
-      if (currentQuestionIndex < questions.length) {
-        // 다음 질문의 인덱스로 업데이트
-        setQuestionId(questions[currentQuestionIndex].id);
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      } else {
-        // 마지막 질문이었다면 결과 페이지로 이동
-        navigate("/result/" + id);
-      }
+      getQuestion(recorderControls.recordingBlob);
+      console.log("녹음파일 전송 & 다음 질문 설정");
+      //TODO: 녹음 종료 기능 추가해야함
     }
   };
 
-  const recorderControls = useAudioRecorder();
-
-  const addAudioElement = async (blob: Blob) => {
+  // 음성 파일 보내고 질문 받아오는 메소드
+  const getQuestion = async (blob: Blob) => {
     const file = new FormData();
     file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
+      //음성파일 보낸 후 서버에서 새로운 질문을 받아옴
       const response = await axios.post(
         `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
         file
       );
+      // TODO: 다음 질문 정보가 왔을 때 질문 정보 초기화(예상 data)
+      /* setQuestion(response.data.content);
+      setQuestionType(response.data.type_name);
+      setQuestionId(response.data.id); */
+      endInterview();
     } catch (e) {
       console.error(e);
     }
   };
 
+  //인터뷰 종료 메소드
+  const endInterview = () => {
+    navigate("/result/" + id);
+  };
+
+  //녹음 시작 메소드
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
       btnRef.current?.style.setProperty("visibility", "visible");
+      instRef.current?.style.setProperty("visibility", "visible");
+      setInstText("답변이 완료되면 버튼을 눌러주세요");
     }, 1000);
   };
 
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+  //다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
+  useEffect(() => {
+    if (!isInterviewStart) return;
+    getQ2AudioData();
+    btnRef.current?.style.setProperty("visibility", "hidden");
+    instRef.current?.style.setProperty("visibility", "hidden");
+  }, [question]);
 
+  //스탑워치 시작 기능
   useEffect(() => {
     let interval: NodeJS.Timer;
 
@@ -471,19 +498,12 @@ function Interviewpage() {
             )}
           </Up>
           <Down>
-            {questions.map((question, index) => (
-              <Q
-                key={index}
-                style={{
-                  display:
-                    index + 1 === currentQuestionIndex ? "block" : "none",
-                }}
-              >
-                <QuestionText>{question.type_name}</QuestionText>
-                <ContentText>{question.content}</ContentText>
-              </Q>
-            ))}
+            <Q>
+              <QuestionText>{question[0].type_name}</QuestionText>
+              <ContentText>{question[0].content}</ContentText>
+            </Q>
             <RecordBox>
+              <InstructionText ref={instRef}>{instText}</InstructionText>
               <Next onClick={handleNextButtonClick} ref={btnRef}>
                 <StyledNextImage
                   src={recorderControls.isRecording ? recordIcon : nextIcon}
@@ -494,7 +514,6 @@ function Interviewpage() {
           </Down>
         </>
       )}
-
       <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
     </>
   );
