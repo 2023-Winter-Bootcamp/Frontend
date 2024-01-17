@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import { useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
 import Camera from "./components/Camera";
 import { useRecoilValue } from "recoil";
 import { interviewTypeState } from "./Recoil";
-import { motion, useAnimation } from "framer-motion";
-import nextIcon from "./images/next_question.png";
-import stopIcon from "./images/stop_recording.png";
+import { motion } from "framer-motion";
+import nextIcon from "./images/nextbutton.png";
+import recordIcon from "./images/recordbutton.png";
 
 const Up = styled.div`
   width: 100%;
@@ -20,25 +20,6 @@ const Up = styled.div`
   position: relative;
 `;
 
-// const Info = styled.div`
-//   width: 50px;
-//   height: 50px;
-//   margin-left: 15px;
-//   margin-top: 15px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: start;
-//   align-items: center;
-// `;
-
-// const Timer = styled.div`
-//   color: white;
-//   font-size: 20px;
-//   margin-left: 20px;
-//   z-index: 9999;
-//   position: absolute;
-// `;
-
 const Down = styled.div`
   width: 740px;
   height: 300px;
@@ -48,7 +29,7 @@ const Down = styled.div`
   box-sizing: border-box;
   margin-left: 50.3%;
   transform: translateX(-50%);
-  margin-top: 20px;
+  margin-top: 120px;
   margin-bottom: 50px;
 `;
 
@@ -56,7 +37,6 @@ const Q = styled.div`
   width: 90%;
   height: 220px;
   margin: 0 auto;
-  //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
 `;
 
 const QuestionText = styled.div`
@@ -89,8 +69,9 @@ const Next = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  margin-bottom: 30px;
   visibility: hidden;
+  position: relative;
+  left: 300px;
 `;
 
 const StyledNextImage = styled.img`
@@ -309,7 +290,7 @@ function Interviewpage() {
     try {
       const response = await axios({
         method: "post",
-        url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
+        url: `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.REACT_APP_TTS_KEY}`,
         headers: {},
         data: {
           voice: {
@@ -383,7 +364,7 @@ function Interviewpage() {
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
-      btnRef.current?.style.setProperty('visibility','visible');
+      btnRef.current?.style.setProperty("visibility", "visible");
     }, 1000);
   };
 
@@ -488,7 +469,6 @@ function Interviewpage() {
               <Camera elapsedTime={elapsedTime} children={undefined} />
             )}
           </Up>
-
           <Down>
             {questions.map((question, index) => (
               <Q
@@ -505,7 +485,7 @@ function Interviewpage() {
             <RecordBox>
               <Next onClick={handleNextButtonClick} ref={btnRef}>
                 <StyledNextImage
-                  src={recorderControls.isRecording ? stopIcon : nextIcon}
+                  src={recorderControls.isRecording ? recordIcon : nextIcon}
                   alt="next"
                 />
               </Next>

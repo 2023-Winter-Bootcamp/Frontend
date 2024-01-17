@@ -448,6 +448,10 @@ function Choose() {
         }
       );
 
+      await axios.post(
+        `http://localhost:8000/api/interviews/${response.data.id}/questions/create/`
+      );
+
       handleStartClick(response.data.id);
       console.log(response.data);
 
