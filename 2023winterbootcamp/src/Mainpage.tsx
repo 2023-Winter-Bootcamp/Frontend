@@ -1,19 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  startTransition,
+  Suspense,
+} from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import {
   motion,
   animate,
   useScroll,
   useMotionValueEvent,
   useAnimationControls,
-} from 'framer-motion';
-import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
-import Modal from './components/Modal';
+} from "framer-motion";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import Modal from "./components/Modal";
+import LoadingModal from "./components/LoadingModal";
+import { RepoType, githubLoginInfoState, repoListState } from "./Recoil";
+import { GitHubRepo } from "./components/githubLogin";
+import { useSetRecoilState } from "recoil";
 
 const Container = styled.div`
-  background-image: url('https://ifh.cc/g/9wn5LW.jpg');
+  background-image: url("https://ifh.cc/g/9wn5LW.jpg");
   width: 100%;
   height: 120vh;
   display: flex;
@@ -262,7 +272,7 @@ const Text8 = styled.div`
 `;
 
 const Image2 = styled.div`
-  background-image: url('https://ifh.cc/g/Y5bZkt.jpg');
+  background-image: url("https://ifh.cc/g/Y5bZkt.jpg");
   background-size: cover;
   background-position: center;
   margin-bottom: 20px;
@@ -506,24 +516,26 @@ function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const setRepoListState = useSetRecoilState(repoListState);
+  const setGithubInfo = useSetRecoilState(githubLoginInfoState);
 
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
       const file = new FormData();
-      file.append('file', selectedFile);
-      const user_id = '1';
-      file.append('user_id', user_id);
-      file.append('title', title);
+      file.append("file", selectedFile);
+      const user_id = "1";
+      file.append("user_id", user_id);
+      file.append("title", title);
 
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/resumes/create',
+          "http://localhost:8000/api/resumes/create",
           file
         );
-        console.log('File uploaded successfully!', response.data);
+        console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
       } catch (error) {
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
       }
     }
   };
@@ -549,20 +561,20 @@ function Main() {
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
 
-  useMotionValueEvent(scrollY, 'change', (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest >= 400 && !isUp) {
       setIsUp(true);
-      const box = document.getElementById('page2container');
-      animate(box as HTMLElement, { top: '20%' }, { duration: 0.8 });
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "20%" }, { duration: 0.8 });
     } else if (latest < 370 && isUp) {
       setIsUp(false);
-      const box = document.getElementById('page2container');
-      animate(box as HTMLElement, { top: '100%' }, { duration: 0.5 });
+      const box = document.getElementById("page2container");
+      animate(box as HTMLElement, { top: "100%" }, { duration: 0.5 });
     }
   });
 
   const handleAIInterviewClick = () => {
-    navigate('/choose');
+    navigate("/choose");
   };
 
   const [isDone, setIsDone] = useState([false, false, false]);
@@ -570,9 +582,9 @@ function Main() {
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
-  useMotionValueEvent(scrollY, 'change', (latest) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest < 400) {
-      const scroll = document.getElementById('scrollContent') as HTMLDivElement;
+      const scroll = document.getElementById("scrollContent") as HTMLDivElement;
       scroll.style.top = `-${latest * 2}px`;
     }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
@@ -610,190 +622,207 @@ function Main() {
   });
 
   useEffect(() => {
-    const githubLoginStatus = window.localStorage.getItem('githubLogin');
-
-    if (githubLoginStatus === 'inProgress') {
-      // GitHub 로그인이 진행 중이었다면 API 요청을 수행
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('http://localhost:8000/users/', {
-            withCredentials: true,
-          });
-          console.log(response.data);
-        } catch (error) {
-          console.error('API 요청 중 오류 발생:', error);
-        }
-      };
-
-      fetchData();
-      window.localStorage.removeItem('githubLogin'); // 상태 초기화
+    const githubLoginStatus = window.localStorage.getItem("githubLogin");
+    if (githubLoginStatus === "inProgress") {
+      startTransition(()=>{
+        const fetchData = async () => {
+          try {
+            const response = await axios.get("http://localhost:8000/users/", {
+              withCredentials: true,
+            });
+            console.log(response.data);
+            const response2 = await axios.get(`${response.data.repos_url}`)
+            console.log(response2.data);
+            let tmpRepoList : RepoType[]= [];
+            (response2.data as GitHubRepo[]).forEach(element => {
+              if(element.fork === false){
+                tmpRepoList.push({id: element.id, repo_name: element.name})
+              }
+            });
+            console.log(tmpRepoList);
+            setGithubInfo(response.data);
+            setRepoListState(tmpRepoList);
+            
+          } catch (error) {
+            console.error("API 요청 중 오류 발생:", error);
+          }
+        };
+  
+        fetchData();
+        window.localStorage.removeItem("githubLogin"); // 상태 초기화
+        // GitHub 로그인이 진행 중이었다면 API 요청을 수행
+      })
     }
   }, []);
-
+  
   return (
-    <>
-      <Container>
-        <ScrollWrapper>
-          <ScrollContent id='scrollContent'>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-            >
-              <Text1>깃허브를 이용한 AI면접</Text1>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 2, delay: 1 }}
-            >
-              <Text2>깃허브 기반 AI면접. teamA입니다.</Text2>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 2, delay: 1.5 }}
-            >
-              <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 2.5, delay: 2.5 }}
-            >
-              <Image
-                src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
-                alt='GitHub Logo'
-              />
-            </motion.div>
-            <ButtonWrapper>
+    <Suspense fallback={<LoadingModal/>}>
+      <>
+        <Container>
+          <ScrollWrapper>
+            <ScrollContent id="scrollContent">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1 }}
+                transition={{ duration: 1 }}
               >
-                <Button>
-                  <ButtonContent>
-                    <ButtonImage
-                      src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
-                      alt='GitHub Logo'
-                    />
-                    내 깃허브
-                  </ButtonContent>
-                </Button>
+                <Text1>깃허브를 이용한 AI면접</Text1>
               </motion.div>
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1 }}
+                transition={{ duration: 2, delay: 1 }}
               >
-                <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+                <Text2>깃허브 기반 AI면접. teamA입니다.</Text2>
               </motion.div>
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 2, delay: 1.5 }}
+              >
+                <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 2.5, delay: 2.5 }}
+              >
+                <Image
+                  src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                  alt="GitHub Logo"
+                />
+              </motion.div>
+              <ButtonWrapper>
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 1 }}
                 >
-                  <Button onClick={handleModalClose}>
+                  <Button>
                     <ButtonContent>
                       <ButtonImage
-                        src='https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png'
-                        alt='Document Icon'
+                        src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                        alt="GitHub Logo"
                       />
-                      이력서 업로드
+                      내 깃허브
                     </ButtonContent>
                   </Button>
                 </motion.div>
-              </div>
-              {isModalOpen && (
-                <Modal
-                  ref={modalRef}
-                  onClose={handleModalClose}
-                  onRegister={handleModalRegister}
-                />
-              )}
-            </ButtonWrapper>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 1 }}
+                >
+                  <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+                </motion.div>
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1 }}
+                  >
+                    <Button onClick={handleModalClose}>
+                      <ButtonContent>
+                        <ButtonImage
+                          src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                          alt="Document Icon"
+                        />
+                        이력서 업로드
+                      </ButtonContent>
+                    </Button>
+                  </motion.div>
+                </div>
+                {isModalOpen && (
+                  <Modal
+                    ref={modalRef}
+                    onClose={handleModalClose}
+                    onRegister={handleModalRegister}
+                  />
+                )}
+              </ButtonWrapper>
 
-            <TextField>
-              <Text4>깃허브 연동</Text4>
-              <Text4>개발자 필수 면접 플랫폼</Text4>
-              <Text5>teamA.</Text5>
-            </TextField>
-          </ScrollContent>
-        </ScrollWrapper>
-        <Page2Container id='page2container'>
-          <Page2
-            initial={{ opacity: 0, y: 50 }}
-            animate={control1}
-            transition={{ duration: 1, delay: 0.25 }}
-          >
-            <TextComponents2>
-              <TextComponents>
-                <Textb>
-                  <Text6>GitHub 계정과</Text6>
-                  <Text6>이력서만 제출하세요</Text6>
-                </Textb>
-              </TextComponents>
-              <Text8>
-                이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
-                지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트 경험,
-                협업 능력 등을 정확하게 평가하여 나만의 면접을 제공합니다
-              </Text8>
-            </TextComponents2>
-            <Image2 />
-          </Page2>
-        </Page2Container>
-      </Container>
-      <Container1>
-        <ImageContainer>
+              <TextField>
+                <Text4>깃허브 연동</Text4>
+                <Text4>개발자 필수 면접 플랫폼</Text4>
+                <Text5>teamA.</Text5>
+              </TextField>
+            </ScrollContent>
+          </ScrollWrapper>
+          <Page2Container id="page2container">
+            <Page2
+              initial={{ opacity: 0, y: 50 }}
+              animate={control1}
+              transition={{ duration: 1, delay: 0.25 }}
+            >
+              <TextComponents2>
+                <TextComponents>
+                  <Textb>
+                    <Text6>GitHub 계정과</Text6>
+                    <Text6>이력서만 제출하세요</Text6>
+                  </Textb>
+                </TextComponents>
+                <Text8>
+                  이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
+                  지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트 경험,
+                  협업 능력 등을 정확하게 평가하여 나만의 면접을 제공합니다
+                </Text8>
+              </TextComponents2>
+              <Image2 />
+            </Page2>
+          </Page2Container>
+        </Container>
+        <Container1>
+          <ImageContainer>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={control2}
+              transition={{ duration: 1, delay: 0.2 }}
+            >
+              <ImageBox>
+                <ImageBoxText>
+                  면접 종류, 포지션, 면접 방식, <br />
+                  이력서 선택 등 다양한 옵션
+                </ImageBoxText>
+                <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
+              </ImageBox>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={control2}
+              transition={{ duration: 1, delay: 0.5 }}
+            >
+              <ImageBox2>
+                <ImageBoxText2>
+                  실시간 화상 면접, 음성 텍스트 변환
+                </ImageBoxText2>
+                <ImageBoxImage2 imageurl="https://ifh.cc/g/LG1kHy.png" />
+              </ImageBox2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={control2}
+              transition={{ duration: 1, delay: 0.8 }}
+            >
+              <ImageBox3>
+                <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
+                <ImageBoxImage3 imageurl="https://ifh.cc/g/vgbofK.jpg" />
+              </ImageBox3>
+            </motion.div>
+          </ImageContainer>
+        </Container1>
+        <MiddleContainer />
+        <Container2>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={control2}
-            transition={{ duration: 1, delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={control3}
+            transition={{ duration: 1 }}
           >
-            <ImageBox>
-              <ImageBoxText>
-                면접 종류, 포지션, 면접 방식, <br />
-                이력서 선택 등 다양한 옵션
-              </ImageBoxText>
-              <ImageBoxImage imageurl='https://ifh.cc/g/QKjM80.png' />
-            </ImageBox>
+            teamA.와 함께 개발자 커리어 준비를 시작해보세요
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={control2}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            <ImageBox2>
-              <ImageBoxText2>실시간 화상 면접, 음성 텍스트 변환</ImageBoxText2>
-              <ImageBoxImage2 imageurl='https://ifh.cc/g/LG1kHy.png' />
-            </ImageBox2>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={control2}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            <ImageBox3>
-              <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
-              <ImageBoxImage3 imageurl='https://ifh.cc/g/vgbofK.jpg' />
-            </ImageBox3>
-          </motion.div>
-        </ImageContainer>
-      </Container1>
-      <MiddleContainer />
-      <Container2>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={control3}
-          transition={{ duration: 1 }}
-        >
-          teamA.와 함께 개발자 커리어 준비를 시작해보세요
-        </motion.div>
-      </Container2>
-    </>
+        </Container2>
+      </>
+    </Suspense>
   );
 }
 
