@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingModal from "./components/LoadingModal";
+import { useRecoilState } from "recoil";
+import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -174,161 +176,169 @@ const Button = styled.button<{ isSelected: boolean }>`
 `;
 
 const Container2 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  `;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+`;
 
-  const Container3 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  `;
+const Container3 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
+`;
 
-  const Container4 = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    @media screen and (max-width: 768px) {
-    }
+const Container4 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media screen and (max-width: 768px) {
+  }
 
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
 
-    @media screen and (min-width: 1024px) {
-    }
-  `;
+  @media screen and (min-width: 1024px) {
+  }
+`;
 
-  const ResumeContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-right: 80px;
-    width: 100%;
-    max-width: 530px;
-    margin: 0 auto;
-    @media screen and (max-width: 769px) {
-      margin-left: 15%;
-    }
+const ResumeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-right: 80px;
+  width: 100%;
+  max-width: 530px;
+  margin: 0 auto;
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
 
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-      margin-left: 29%;
-    }
-
-    @media screen and (min-width: 1024px) {
-      margin-left: 29%;
-    }
-  `;
-
-  const ResumeBox = styled.div<{ isSelected: boolean }>`
-    width: 249px;
-    height: 345px;
-    background-color: white;
-    box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-    margin-bottom: 60px;
-    margin-right: 10px;
-
-    border: ${(props) =>
-      props.isSelected ? "2px solid black" : "2px solid #ffffff"};
-    cursor: pointer;
-
-    &:hover {
-      border: 2px solid black;
-    }
-  `;
-
-  const TextWrapper2 = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    height: 90px;
-  `;
-
-  const Text2 = styled.div`
-    font-size: 28px;
-    font-weight: bold;
-    margin-top: 40px;
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
     margin-left: 29%;
+  }
 
-    @media screen and (max-width: 769px) {
-      margin-left: 15%;
-    }
+  @media screen and (min-width: 1024px) {
+    margin-left: 29%;
+  }
+`;
 
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
+const ResumeBox = styled.div<{ isSelected: boolean }>`
+  width: 249px;
+  height: 345px;
+  background-color: white;
+  box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 60px;
+  margin-right: 10px;
 
-    @media screen and (min-width: 1024px) {
-    }
-  `;
+  border: ${(props) =>
+    props.isSelected ? "2px solid black" : "2px solid #ffffff"};
+  cursor: pointer;
 
-  const RepoContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 630px;
-    margin: 0 auto;
-    margin-bottom: 80px;
-    @media screen and (max-width: 769px) {
-      margin-left: 14%;
-    }
+  &:hover {
+    border: 2px solid black;
+  }
+`;
 
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-      margin-left: 28%;
-    }
+const TextWrapper2 = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  height: 90px;
+`;
 
-    @media screen and (min-width: 1024px) {
-      margin-left: 29%;
-    }
-  `;
+const Text2 = styled.div`
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 40px;
+  margin-left: 29%;
 
-  const Repo = styled.div<{ isSelected: boolean }>`
-    width: 308px;
-    height: 130px;
-    background-color: white;
-    border-radius: 10px;
-    margin-left: 5px;
-    border: ${(props) =>
-      props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
-    cursor: pointer;
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
 
-    &:hover {
-      border: 2px solid black;
-    }
-    @media screen and (max-width: 769px) {
-    }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
 
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-    }
+  @media screen and (min-width: 1024px) {
+  }
+`;
 
-    @media screen and (min-width: 1024px) {
-    }
-  `;
+const RepoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 630px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+  @media screen and (max-width: 769px) {
+    margin-left: 14%;
+  }
 
-  const Reponame = styled.div`
-    color: #7a7a7a;
-    font-size: 18px;
-    font-weight: 500;
-    margin-left: 20px;
-    margin-top: 15px;
-  `;
-  
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 28%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 29%;
+  }
+`;
+
+const Repo = styled.div<{ isSelected: boolean }>`
+  width: 308px;
+  height: 130px;
+  background-color: white;
+  border-radius: 10px;
+  margin-left: 5px;
+  border: ${(props) =>
+    props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid black;
+  }
+  @media screen and (max-width: 769px) {
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+const Reponame = styled.div`
+  color: #7a7a7a;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 20px;
+  margin-top: 15px;
+`;
+
+const VideoContainer = styled.div`
+  width: 100%;
+  max-width: 2000px;
+  height: 500px;
+  border: 1px solid black;
+`;
 
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [selectedResume, setSelectedResume] = useState<number | null>(null);
+  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
+  const [title, setTitle] = useState<string>("");
+
   const [selectedInterviewType, setSelectedInterviewType] = useState<
     string | null
   >(null);
   const [startClicked, setStartClicked] = useState(false);
-  const [selectedResume, setSelectedResume] = useState<number | null>(null);
-  const [selectedRepos, setSelectedRepos] = useState<number[]>([]);
-  const [id,setId] = useState('1'); //사용자 아이디
-  const [title, setTitle] = useState<string>('');
+
+  const [, setInterviewType] = useRecoilState(interviewTypeState);
 
   useEffect(() => {
     const isAllSelected =
@@ -337,7 +347,7 @@ function Choose() {
       selectedInterviewType !== null &&
       selectedResume !== null &&
       selectedRepos.length > 0 &&
-      title !== '';
+      title !== "";
 
     setStartClicked(isAllSelected);
   }, [
@@ -374,13 +384,18 @@ function Choose() {
     setSelectedInterviewType((prevSelected) =>
       prevSelected === buttonName ? null : buttonName
     );
+    if (buttonName === "video") {
+      setInterviewType({ showCamera: true });
+    } else {
+      setInterviewType({ showCamera: false });
+    }
   };
 
   const navigate = useNavigate();
 
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate('/interview/' + id);
+    navigate("/interview/" + id);
   };
 
   const handleResumeSelect = (index: number) => {
@@ -408,11 +423,15 @@ function Choose() {
     setTitle(e.target.value);
   };
 
+  const [showVideoComponent, setShowVideoComponent] = useState(false);
+
   const createInterview = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        'http://localhost:8000/api/interviews/create/',
+      let response;
+
+      response = await axios.post(
+        "http://localhost:8000/api/interviews/create/",
         {
           user: 1,
           title: title,
@@ -423,12 +442,20 @@ function Choose() {
           type_names: selectedMultiButtons,
         }
       );
+
       handleStartClick(response.data.id);
       console.log(response.data);
+
+      // 음성 면접 또는 텍스트 면접인 경우에만 처리
+      if (selectedInterviewType !== "video") {
+        setShowVideoComponent(false);
+      }
     } catch (e) {
       console.log(e);
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const Start = styled.button`
@@ -451,7 +478,7 @@ function Choose() {
       background-color: ${startClicked ? "#1a1a1a" : "#1a1a1a"};
     }
   `;
-  
+
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -460,7 +487,7 @@ function Choose() {
         <TextWrapper>
           <Text>면접 제목</Text>
         </TextWrapper>
-        <Input placeholder='' onChange={handleChange}></Input>
+        <Input placeholder="" onChange={handleChange}></Input>
       </Container>
       <Container1>
         <TextWrapper1>
@@ -468,20 +495,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedMultiButtons.includes('project')}
-            onClick={() => handleMultiButtonClick('project')}
+            isSelected={selectedMultiButtons.includes("project")}
+            onClick={() => handleMultiButtonClick("project")}
           >
             프로젝트
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes('cs')}
-            onClick={() => handleMultiButtonClick('cs')}
+            isSelected={selectedMultiButtons.includes("cs")}
+            onClick={() => handleMultiButtonClick("cs")}
           >
             CS 질문
           </Button>
           <Button
-            isSelected={selectedMultiButtons.includes('personality')}
-            onClick={() => handleMultiButtonClick('personality')}
+            isSelected={selectedMultiButtons.includes("personality")}
+            onClick={() => handleMultiButtonClick("personality")}
           >
             인성 면접
           </Button>
@@ -493,20 +520,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedPosition === 'frontend'}
-            onClick={() => handlePositionClick('frontend')}
+            isSelected={selectedPosition === "frontend"}
+            onClick={() => handlePositionClick("frontend")}
           >
             Frontend
           </Button>
           <Button
-            isSelected={selectedPosition === 'backend'}
-            onClick={() => handlePositionClick('backend')}
+            isSelected={selectedPosition === "backend"}
+            onClick={() => handlePositionClick("backend")}
           >
             Backend
           </Button>
           <Button
-            isSelected={selectedPosition === 'fullstack'}
-            onClick={() => handlePositionClick('fullstack')}
+            isSelected={selectedPosition === "fullstack"}
+            onClick={() => handlePositionClick("fullstack")}
           >
             Fullstack
           </Button>
@@ -518,20 +545,20 @@ function Choose() {
         </TextWrapper1>
         <ButtonsContainer>
           <Button
-            isSelected={selectedInterviewType === 'video'}
-            onClick={() => handleInterviewTypeClick('video')}
+            isSelected={selectedInterviewType === "video"}
+            onClick={() => handleInterviewTypeClick("video")}
           >
             화상 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === 'voice'}
-            onClick={() => handleInterviewTypeClick('voice')}
+            isSelected={selectedInterviewType === "voice"}
+            onClick={() => handleInterviewTypeClick("voice")}
           >
             음성 면접
           </Button>
           <Button
-            isSelected={selectedInterviewType === 'text'}
-            onClick={() => handleInterviewTypeClick('text')}
+            isSelected={selectedInterviewType === "text"}
+            onClick={() => handleInterviewTypeClick("text")}
           >
             텍스트 면접
           </Button>
@@ -572,9 +599,16 @@ function Choose() {
         </RepoContainer>
       </Container4>
       <Start onClick={createInterview}>선택 완료</Start>
-      {
-        isLoading ? <LoadingModal/> : null
-      }
+      {showVideoComponent ? (
+        <VideoContainer>
+          {selectedInterviewType === "video" ? (
+            <p>비디오 면접 내용을 여기에 추가하세요.</p>
+          ) : (
+            <p>다른 면접 유형에 대한 내용을 여기에 추가하세요.</p>
+          )}
+        </VideoContainer>
+      ) : null}
+      {isLoading ? <LoadingModal /> : null}
     </>
   );
 }

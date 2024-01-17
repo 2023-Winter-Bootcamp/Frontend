@@ -3,6 +3,9 @@ import styled, { keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
+import Camera from "./components/Camera";
+import { useRecoilValue } from "recoil";
+import { interviewTypeState } from "./Recoil";
 import { motion, useAnimation } from "framer-motion";
 import nextIcon from "./images/next_question.png";
 import stopIcon from "./images/stop_recording.png";
@@ -14,56 +17,45 @@ const Up = styled.div`
   margin-top: 50px;
   display: flex;
   justify-content: center;
+  position: relative;
 `;
 
-const Camera = styled.div`
-  width: 60%;
-  max-width: 700px;
-  min-width: 400px;
-  height: 400px;
-  background-image: url("https://i.postimg.cc/QdcMWgKq/Rectangle-23.png");
-  background-position: center;
-  background-size: cover;
-`;
+// const Info = styled.div`
+//   width: 50px;
+//   height: 50px;
+//   margin-left: 15px;
+//   margin-top: 15px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: start;
+//   align-items: center;
+// `;
 
-const Info = styled.div`
-  width: 50px;
-  height: 50px;
-  margin-left: 15px;
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-`;
-
-const Timer = styled.div`
-  color: white;
-  font-size: 20px;
-  margin-left: 20px;
-`;
+// const Timer = styled.div`
+//   color: white;
+//   font-size: 20px;
+//   margin-left: 20px;
+//   z-index: 9999;
+//   position: absolute;
+// `;
 
 const Down = styled.div`
-  width: 60%;
-  max-width: 800px;
+  width: 740px;
   height: 300px;
-  background-color: #f6f6f6;
-  border-radius: 20px;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  margin-left: 50%;
+  margin-left: 50.3%;
   transform: translateX(-50%);
-  margin-top: 50px;
+  margin-top: 20px;
   margin-bottom: 50px;
-  padding: 20px;
 `;
 
 const Q = styled.div`
   width: 90%;
   height: 220px;
   margin: 0 auto;
-
   //background-color: white; 간격 맞추기 위한 거니까 무시해도 됨
 `;
 
@@ -108,7 +100,7 @@ const StyledNextImage = styled.img`
 
 const RecordBox = styled.div`
   width: 100%;
-  height: 60px;
+  height: 300px;
   display: flex;
   justify-content: center;
 `;
@@ -182,25 +174,74 @@ const Dot = styled(motion.div)`
   margin-top: 10px;
 `;
 
-const Button = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
-  cursor: pointer;
+const spin3D = keyframes`
+  from {
+    transform: rotate3d(.5, .5, .5, 360deg);
+  }
+  to {
+    transform: rotate3d(0deg);
+  }
 `;
 
-const StyledButtonImage = styled.img`
-  width: 25px;
-  height: 25px;
-  @media screen and (max-width: 768px) {
-    width: 20px;
-    height: 20px;
-  }
+const VideoContainer = styled.div`
+  min-height: 400px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  //border: 1px solid lightgray;
+`;
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 20px;
-    height: 20px;
-  }
+// Common styles
+const commonStyle = `
+  width: 150px;
+  height: 150px;
+  padding: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+`;
+
+// Styled components
+
+interface LeoBorderProps {
+  color: string;
+  gradientColor: string;
+  animationDuration: number;
+}
+
+const SpinnerBox = styled.div`
+  width: 670px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+`;
+
+const LeoBorder = styled.div<LeoBorderProps>`
+  position: absolute;
+  ${commonStyle}
+  background: ${(props) => props.color};
+  background: linear-gradient(
+    0deg,
+    rgba(${(props) => props.gradientColor}, 0.1) 33%,
+    rgba(${(props) => props.gradientColor}, 1) 100%
+  );
+  animation: ${spin3D} ${(props) => props.animationDuration}s linear 0s infinite;
+`;
+
+interface LeoCoreProps {
+  backgroundColor: string;
+}
+
+const LeoCore = styled.div<LeoCoreProps>`
+  ${commonStyle}
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => props.backgroundColor};
 `;
 
 export interface Question {
@@ -210,16 +251,16 @@ export interface Question {
 }
 
 function Interviewpage() {
-  const [buttonImage, setButtonImage] = useState(
-    "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
-  );
+  // const [buttonImage, setButtonImage] = useState(
+  //   "https://i.postimg.cc/9F5kxyNS/2024-01-04-2-23-04.png"
+  // );
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [questionId, setQuestionId] = useState<number>(0);
   const [isInterviewStart, setIsInterviewStart] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const selectedInterviewType = useRecoilValue(interviewTypeState);
   useEffect(() => {
     window.scrollTo(0, 0);
     if (id) {
@@ -234,6 +275,8 @@ function Interviewpage() {
           console.error("Error fetching questions:", error);
         });
     }
+    console.log(selectedInterviewType);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -251,6 +294,7 @@ function Interviewpage() {
         audioElement.removeEventListener("ended", handleEnded);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -262,28 +306,35 @@ function Interviewpage() {
   }, [isInterviewStart, currentQuestionIndex]); */
 
   const getQ2AudioData = async () => {
-    console.log(questions);
-    const response = await axios({
-      method: "post",
-      url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyCcoFgHo5jVFT5H5zF2wldTDZkgHiOmvvg",
-      headers: {},
-      data: {
-        voice: {
-          languageCode: "ko-KR",
+    try {
+      const response = await axios({
+        method: "post",
+        url: "https://texttospeech.googleapis.com/v1/text:synthesize?key=",
+        headers: {},
+        data: {
+          voice: {
+            languageCode: "ko-KR",
+          },
+          input: {
+            text: `${questions[currentQuestionIndex - 1].content}`,
+          },
+          audioConfig: {
+            audioEncoding: "mp3",
+          },
         },
-        input: {
-          text: `${questions[currentQuestionIndex - 1].content}`,
-        },
-        audioConfig: {
-          audioEncoding: "mp3",
-        },
-      },
-    });
-    const base64String = response.data.audioContent;
-    const audioBlob = base64ToBlob(base64String);
-    if (audioRef.current && audioBlob !== undefined) {
-      audioRef.current.src = URL.createObjectURL(audioBlob);
-      audioRef.current.play();
+      });
+
+      // 여기서 response를 사용하여 로그를 출력하거나 다른 작업을 수행할 수 있습니다.
+      console.log("Audio data response:", response);
+
+      const base64String = response.data.audioContent;
+      const audioBlob = base64ToBlob(base64String);
+      if (audioRef.current && audioBlob !== undefined) {
+        audioRef.current.src = URL.createObjectURL(audioBlob);
+        audioRef.current.play();
+      }
+    } catch (error) {
+      console.error("Error fetching audio data:", error);
     }
   };
 
@@ -324,15 +375,11 @@ function Interviewpage() {
     file.append("question", questionId.toString());
     file.append("record_url", blob);
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
-        file
-      );
     } catch (e) {
       console.error(e);
     }
   };
-  //질문 음성파일 실행 끝나면 1초 뒤 녹음 실행
+
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
@@ -359,18 +406,6 @@ function Interviewpage() {
 
   const startStopwatch = () => {
     setIsRunning(true);
-  };
-
-  const formatTime = (timeInSeconds: number) => {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
-    const seconds = timeInSeconds % 60;
-
-    const formattedHours = String(hours).padStart(2, "0");
-    const formattedMinutes = String(minutes).padStart(2, "0");
-    const formattedSeconds = String(seconds).padStart(2, "0");
-
-    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
   };
 
   const interviewStart = () => {
@@ -423,19 +458,37 @@ function Interviewpage() {
             <Dot variants={fadeIn}>
               *면접할 준비가 되셨다면,
               <br />
-              ‘면접 시작' 버튼을 눌러주세요!
+              면접 시작 버튼을 눌러주세요!
             </Dot>
           </motion.div>
         </StartModal>
       ) : (
         <>
           <Up>
-            <Camera>
-              <Info>
-                <Timer>{formatTime(elapsedTime)}</Timer>
-              </Info>
-            </Camera>
+            {selectedInterviewType.showCamera === false ? (
+              <VideoContainer>
+                <SpinnerBox>
+                  <LeoBorder
+                    color="rgb(102, 102, 102)"
+                    gradientColor="102, 102, 102"
+                    animationDuration={1.8}
+                  >
+                    <LeoCore backgroundColor="#191919aa" />
+                  </LeoBorder>
+                  <LeoBorder
+                    color="rgb(255, 215, 244)"
+                    gradientColor="255, 215, 244"
+                    animationDuration={2.2}
+                  >
+                    <LeoCore backgroundColor="#bebebeaa" />
+                  </LeoBorder>
+                </SpinnerBox>
+              </VideoContainer>
+            ) : (
+              <Camera elapsedTime={elapsedTime} children={undefined} />
+            )}
           </Up>
+
           <Down>
             {questions.map((question, index) => (
               <Q
