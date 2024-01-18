@@ -210,9 +210,9 @@ const ResumeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-right: 80px;
-  width: 100%;
-  max-width: 530px;
+  width: 615px;
   margin: 0 auto;
+  overflow-x: auto;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
   }
@@ -224,6 +224,13 @@ const ResumeContainer = styled.div`
   @media screen and (min-width: 1024px) {
     margin-left: 29%;
   }
+`;
+
+const ScrollContainer = styled.div<{ len: number }>`
+  width: ${(props) => props.len * 500}px;
+  height: 100%;
+  flex: 1;
+  display: flex;
 `;
 
 const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
@@ -242,7 +249,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
   margin-left: 5px;
   border-radius: 4px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
@@ -257,6 +264,7 @@ const TextWrapper2 = styled.div`
   display: flex;
   justify-content: flex-start;
   height: 90px;
+  margin-top: 20px;
 `;
 
 const Text2 = styled.div`
@@ -584,14 +592,16 @@ function Choose() {
             <Text2>이력서</Text2>
           </TextWrapper2>
           <ResumeContainer>
-            {resumeList.map((resume, index) => (
-              <ResumeBox
-                key={resume.id}
-                $pre_image_url={resume.pre_image_url}
-                $isSelected={selectedResume === resume.id}
-                onClick={() => handleResumeSelect(resume.id)}
-              />
-            ))}
+            <ScrollContainer len={resumeList.length}>
+              {resumeList.map((resume, index) => (
+                <ResumeBox
+                  key={resume.id}
+                  $pre_image_url={resume.pre_image_url}
+                  $isSelected={selectedResume === resume.id}
+                  onClick={() => handleResumeSelect(resume.id)}
+                />
+              ))}
+            </ScrollContainer>
           </ResumeContainer>
         </Container4>
         <Container4>
