@@ -8,25 +8,14 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  @media screen and (max-width: 768px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  @media screen and (min-width: 1024px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  margin-top: 10px;
+  height: 30px;
+  background-color: transparent;
+  width: 100%;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
+
 const Logo = styled(motion(Link))`
   @media screen and (max-width: 768px) {
     font-weight: bold;
@@ -35,6 +24,7 @@ const Logo = styled(motion(Link))`
     margin-left: 100px;
     text-decoration: none;
     color: black;
+    position: absolute;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-weight: bold;
@@ -51,12 +41,15 @@ const Logo = styled(motion(Link))`
     margin-left: 267px;
     text-decoration: none;
     color: black;
+    margin-top: 4px;
   }
 `;
+
 const Navigationbar = styled.div`
   @media screen and (max-width: 768px) {
     display: flex;
     gap: 20px;
+    margin-left: 60%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
@@ -65,7 +58,7 @@ const Navigationbar = styled.div`
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
-    margin-right: 150px;
+    margin-right: 200px;
     margin-top: -10px;
   }
 `;

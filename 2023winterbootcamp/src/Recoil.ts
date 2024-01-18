@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { recoilPersist } from 'recoil-persist';
+import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
@@ -10,23 +10,33 @@ export const interviewTypeState = atom({
   },
 });
 export type githubLoginInfoType = {
-    html_url: string;
-    id: number;
-    login_id: number;
-    repos_url: string;
-}
+  username: any;
+  html_url: string;
+  id: number;
+  login_id: number;
+  repos_url: string;
+};
 export const githubLoginInfoState = atom<githubLoginInfoType>({
-    key: "githubLoginInfoState",
-    effects_UNSTABLE: [persistAtom],
-})
+  key: "githubLoginInfoState",
+  effects_UNSTABLE: [persistAtom],
+});
 
 export type RepoType = {
-  id : number;
-  repo_name : string;
-}
+  id: number;
+  repo_name: string;
+};
 
 export const repoListState = atom<RepoType[]>({
   key: "repoListState",
   effects_UNSTABLE: [persistAtom],
-})
+});
 
+export type githubProfileType = {
+  name: string;
+  avatar_url: string;
+};
+
+export const githubProfileState = atom<githubProfileType>({
+  key: "gitgubProfileState",
+  effects_UNSTABLE: [persistAtom],
+});

@@ -18,7 +18,12 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import Modal from "./components/Modal";
 import LoadingModal from "./components/LoadingModal";
-import { RepoType, githubLoginInfoState, repoListState } from "./Recoil";
+import {
+  RepoType,
+  githubLoginInfoState,
+  githubProfileState,
+  repoListState,
+} from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
 import { useSetRecoilState, useRecoilState } from "recoil";
 
@@ -472,6 +477,7 @@ const ImageBoxImage2 = styled.div<ImageProps>`
     margin-top: 10%;
   }
 `;
+
 const ImageBoxImage3 = styled.img<ImageProps>`
   aspect-ratio: 1 / 1.34;
   background-image: url(${(props) => props.imageurl});
@@ -518,7 +524,7 @@ function Main() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const setRepoListState = useSetRecoilState(repoListState);
   const [githubInfo, setGithubInfo] = useRecoilState(githubLoginInfoState);
-
+  const setGithubProfile = useSetRecoilState(githubProfileState);
   const handleMyGitHubClick = () => {
     // 사용자의 GitHub 프로필로 이동합니다.
     window.open(githubInfo.html_url, "_blank");
@@ -647,6 +653,17 @@ function Main() {
             console.log(tmpRepoList);
             setGithubInfo(response.data);
             setRepoListState(tmpRepoList);
+            //유저 정보 저장
+            const gitUrlList = (response.data.html_url as string).split("/");
+            const gitId = gitUrlList[gitUrlList.length - 1];
+            const response3 = await axios.get(
+              `https://api.github.com/users/${gitId}`
+            );
+            console.log(response3);
+            setGithubProfile({
+              name: response3.data.name,
+              avatar_url: response3.data.avatar_url,
+            });
           } catch (error) {
             console.error("API 요청 중 오류 발생:", error);
           }
