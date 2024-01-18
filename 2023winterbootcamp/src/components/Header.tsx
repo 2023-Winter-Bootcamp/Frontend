@@ -1,29 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import axios from "axios";
 
 const HeaderContainer = styled.div`
-  @media screen and (max-width: 768px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  @media screen and (min-width: 1024px) {
-    background-color: white;
-    width: 100%;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  height: 30px;
+  background-color: transparent;
+  width: 100%;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
+
 const Logo = styled(motion(Link))`
   @media screen and (max-width: 768px) {
     font-weight: bold;
@@ -32,6 +24,7 @@ const Logo = styled(motion(Link))`
     margin-left: 100px;
     text-decoration: none;
     color: black;
+    position: absolute;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-weight: bold;
@@ -44,30 +37,29 @@ const Logo = styled(motion(Link))`
   @media screen and (min-width: 1024px) {
     font-weight: bold;
     font-size: 28px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     margin-left: 267px;
     text-decoration: none;
     color: black;
+    margin-top: 4px;
   }
 `;
+
 const Navigationbar = styled.div`
   @media screen and (max-width: 768px) {
     display: flex;
     gap: 20px;
-    margin-left: 100px;
-    margin-top: 30px;
+    margin-left: 60%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
-    margin-left: 200px;
-    margin-top: 30px;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
-    margin-left: 267px;
-    margin-top: 30px;
+    margin-right: 200px;
+    margin-top: -10px;
   }
 `;
 
@@ -84,7 +76,7 @@ const NavItem = styled(Link)`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -116,7 +108,7 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -137,17 +129,16 @@ const MotionNavItem = styled(motion(NavItem))`
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 로그인 상태 확인
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8000/users/status/',
+          "http://localhost:8000/users/status/",
           {
             withCredentials: true,
           }
         );
-        if (response.data.status === 'logged_in') {
+        if (response.data.status === "logged_in") {
           setIsLoggedIn(true);
         }
       } catch (e) {
@@ -160,17 +151,17 @@ function Header() {
 
   const handleGithubLogin = () => {
     const GITHUB_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
-    window.localStorage.setItem('githubLogin', 'inProgress');
+    window.localStorage.setItem("githubLogin", "inProgress");
     window.location.assign(GITHUB_LOGIN_URL);
   };
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/users/logout/', {
+      const response = await axios.get("http://localhost:8000/users/logout/", {
         withCredentials: true,
       });
       console.log(response.status);
-      window.location.href = '/';
+      window.location.href = "/";
       setIsLoggedIn(false);
     } catch (e) {
       console.log(e);
@@ -180,7 +171,7 @@ function Header() {
   return (
     <HeaderContainer>
       <Logo
-        to='/'
+        to="/"
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -189,7 +180,7 @@ function Header() {
       </Logo>
       <Navigationbar>
         <MotionNavItem
-          to='/mypage'
+          to="/mypage"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
@@ -198,7 +189,7 @@ function Header() {
         </MotionNavItem>
         {isLoggedIn ? (
           <MotionNavItem
-            to='/'
+            to="/"
             onClick={handleLogout}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -208,8 +199,8 @@ function Header() {
           </MotionNavItem>
         ) : (
           <MotionNavItem
-            to='/'
-            onClick={handleGithubLogin} // 깃허브 로그인 함수 실행
+            to="/"
+            onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.7 }}
@@ -217,30 +208,6 @@ function Header() {
             로그인
           </MotionNavItem>
         )}
-        <MotionNavItem
-          to='/'
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
-        >
-          이력서
-        </MotionNavItem>
-        <MotionNavItem
-          to='/choose'
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
-        >
-          면접
-        </MotionNavItem>
-        <MotionNavItem
-          to='/'
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
-        >
-          깃허브
-        </MotionNavItem>
       </Navigationbar>
     </HeaderContainer>
   );

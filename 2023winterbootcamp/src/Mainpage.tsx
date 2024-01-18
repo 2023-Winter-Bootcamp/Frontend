@@ -18,9 +18,14 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import Modal from "./components/Modal";
 import LoadingModal from "./components/LoadingModal";
-import { RepoType, githubLoginInfoState, repoListState } from "./Recoil";
+import {
+  RepoType,
+  githubLoginInfoState,
+  githubProfileState,
+  repoListState,
+} from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 
 const Container = styled.div`
   background-image: url("https://ifh.cc/g/9wn5LW.jpg");
@@ -472,6 +477,7 @@ const ImageBoxImage2 = styled.div<ImageProps>`
     margin-top: 10%;
   }
 `;
+
 const ImageBoxImage3 = styled.img<ImageProps>`
   aspect-ratio: 1 / 1.34;
   background-image: url(${(props) => props.imageurl});
@@ -517,7 +523,12 @@ function Main() {
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const setRepoListState = useSetRecoilState(repoListState);
-  const setGithubInfo = useSetRecoilState(githubLoginInfoState);
+  const [githubInfo, setGithubInfo] = useRecoilState(githubLoginInfoState);
+  const setGithubProfile = useSetRecoilState(githubProfileState);
+  const handleMyGitHubClick = () => {
+    // 사용자의 GitHub 프로필로 이동합니다.
+    window.open(githubInfo.html_url, "_blank");
+  };
 
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
@@ -624,39 +635,49 @@ function Main() {
   useEffect(() => {
     const githubLoginStatus = window.localStorage.getItem("githubLogin");
     if (githubLoginStatus === "inProgress") {
-      startTransition(()=>{
+      startTransition(() => {
         const fetchData = async () => {
           try {
             const response = await axios.get("http://localhost:8000/users/", {
               withCredentials: true,
             });
             console.log(response.data);
-            const response2 = await axios.get(`${response.data.repos_url}`)
+            const response2 = await axios.get(`${response.data.repos_url}`);
             console.log(response2.data);
-            let tmpRepoList : RepoType[]= [];
-            (response2.data as GitHubRepo[]).forEach(element => {
-              if(element.fork === false){
-                tmpRepoList.push({id: element.id, repo_name: element.name})
+            let tmpRepoList: RepoType[] = [];
+            (response2.data as GitHubRepo[]).forEach((element) => {
+              if (element.fork === false) {
+                tmpRepoList.push({ id: element.id, repo_name: element.name });
               }
             });
             console.log(tmpRepoList);
             setGithubInfo(response.data);
             setRepoListState(tmpRepoList);
-            
+            //유저 정보 저장
+            const gitUrlList = (response.data.html_url as string).split("/");
+            const gitId = gitUrlList[gitUrlList.length - 1];
+            const response3 = await axios.get(
+              `https://api.github.com/users/${gitId}`
+            );
+            console.log(response3);
+            setGithubProfile({
+              name: response3.data.name,
+              avatar_url: response3.data.avatar_url,
+            });
           } catch (error) {
             console.error("API 요청 중 오류 발생:", error);
           }
         };
-  
+
         fetchData();
         window.localStorage.removeItem("githubLogin"); // 상태 초기화
         // GitHub 로그인이 진행 중이었다면 API 요청을 수행
-      })
+      });
     }
   }, []);
-  
+
   return (
-    <Suspense fallback={<LoadingModal/>}>
+    <Suspense fallback={<LoadingModal />}>
       <>
         <Container>
           <ScrollWrapper>
@@ -698,7 +719,7 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 1 }}
                 >
-                  <Button>
+                  <Button onClick={handleMyGitHubClick}>
                     <ButtonContent>
                       <ButtonImage
                         src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"

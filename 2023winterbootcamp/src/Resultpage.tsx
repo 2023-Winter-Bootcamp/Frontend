@@ -1,6 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Suspense,
+  startTransition,
+} from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { githubLoginInfoState, githubProfileState } from "./Recoil";
+import { useRecoilState } from "recoil";
+import axios from "axios";
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -37,9 +46,12 @@ const ProfileBox = styled.div`
   }
 `;
 
-const ProfileImage = styled.div`
+const ProfileImage = styled.div<{ avatarUrl?: string }>`
   border-radius: 50%;
-  background-image: url("https://ifh.cc/g/bHznLB.png");
+  background-image: ${(props) =>
+    props.avatarUrl
+      ? `url("${props.avatarUrl}")`
+      : 'url("https://ifh.cc/g/bHznLB.png")'};
   background-position: center;
   border: none;
   aspect-ratio: 1;
@@ -351,12 +363,11 @@ const Resultpage = () => {
   const [interviewData, setInterviewData] = useState<InterviewData | null>(
     null
   );
+
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
-
   const audioRefs = useRef<HTMLAudioElement[]>([]);
-
   const { id } = useParams();
-  
+
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
     newIsPlayingList[index] = !newIsPlayingList[index];
@@ -405,24 +416,37 @@ const Resultpage = () => {
     });
   }, [isPlayingList]);
 
+  const [githubLoginInfo, setGithubLoginInfo] =
+    useRecoilState(githubLoginInfoState);
+  const [githubProfile, setGithubProfile] = useRecoilState(githubProfileState);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [gitName, setGitName] = useState("");
   useEffect(() => {
-    fetch(`http://localhost:8000/api/interviews/${id}/`)
-      .then((response) => response.json())
-      .then((data) => setInterviewData(data))
-      .catch((error) =>
-        console.error('면접 데이터를 가져오는 중 에러 발생:', error)
-      );
+    const fetchUserData = async () => {
+      try {
+        const gitId = githubLoginInfo.html_url.split("/").slice(-1)[0];
+        const response = await axios.get(
+          `https://api.github.com/users/${gitId}`
+        );
+        setAvatarUrl(response.data.avatar_url);
+        setGitName(response.data.name);
+      } catch (error) {
+        console.error("GitHub 사용자 정보를 가져오는 중 에러 발생:", error);
+      }
+    };
+
+    fetchUserData();
   }, []);
-  
+
   return (
     <>
       {interviewData && (
         <>
           <ProfileContainer>
             <ProfileBox>
-              <ProfileImage />
+              <ProfileImage avatarUrl={avatarUrl} />
               <ProfileInfo>
-                <Text1>안나경</Text1>
+                <Text1>{gitName}</Text1>
                 <TextBox1>
                   <TextBox2>
                     <Text2>면접 제목</Text2>
