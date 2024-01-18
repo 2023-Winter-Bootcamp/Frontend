@@ -272,16 +272,13 @@ const Text2 = styled.div`
   font-weight: bold;
   margin-top: 40px;
   margin-left: 29%;
+`;
 
-  @media screen and (max-width: 769px) {
-    margin-left: 15%;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
-
-  @media screen and (min-width: 1024px) {
-  }
+const Text3 = styled.div`
+  color: lightgray;
+  font-size: 14px;
+  margin-top: 53px;
+  margin-left: 10px;
 `;
 
 const RepoContainer = styled.div`
@@ -515,6 +512,7 @@ function Choose() {
         <Container1>
           <TextWrapper1>
             <Text1>면접 종류</Text1>
+            <Text3>복수 선택이 가능합니다.</Text3>
           </TextWrapper1>
           <ButtonsContainer>
             <Button
@@ -607,6 +605,7 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text2>Github reposiotries</Text2>
+            <Text3>복수 선택이 가능합니다.</Text3>
           </TextWrapper2>
           <RepoContainer>
             {repoList.length !== 0 ? (
