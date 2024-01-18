@@ -358,17 +358,20 @@ function Interviewpage() {
 
   // 음성 파일 보내고 질문 받아오는 메소드
   const getQuestion = async (blob: Blob) => {
+    if(!id) return;
     const file = new FormData();
-    file.append("question", questionId.toString());
+    file.append("question_id", questionId.toString());
+    file.append("interview_id", id as string);
     file.append("record_url", blob);
     try {
       setIsLoading(true);
-      //음성파일 보낸 후 서버에서 새로운 질문을 받아옴
+      //음성파일 보내는 기능
       const response = await axios.post(
-        `http://localhost:8000/api/interviews/questions/${questionId}/answers/create/`,
+        `http://localhost:8000/api/interviews/${parseInt(id)}/questions/${questionId}/process/`,
         file
       );
-      // TODO: 다음 질문 정보가 왔을 때 질문 정보 초기화(예상 data)
+      console.log(response.data);
+
       /* setQuestion(response.data.content);
       setQuestionType(response.data.type_name);
       setQuestionId(response.data.id); */

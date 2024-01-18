@@ -403,7 +403,7 @@ function Choose() {
     if (buttonName === "video") {
       setInterviewType({ showCamera: true });
     } else {
-      setInterviewType({ showCamera: false });
+      setInterviewType({ showCamera: false});
     }
   };
 
