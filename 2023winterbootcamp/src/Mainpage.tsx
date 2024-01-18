@@ -20,7 +20,7 @@ import Modal from "./components/Modal";
 import LoadingModal from "./components/LoadingModal";
 import { RepoType, githubLoginInfoState, repoListState } from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
-import { useSetRecoilState } from "recoil";
+import { useSetRecoilState, useRecoilState } from "recoil";
 
 const Container = styled.div`
   background-image: url("https://ifh.cc/g/9wn5LW.jpg");
@@ -517,7 +517,12 @@ function Main() {
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const setRepoListState = useSetRecoilState(repoListState);
-  const setGithubInfo = useSetRecoilState(githubLoginInfoState);
+  const [githubInfo, setGithubInfo] = useRecoilState(githubLoginInfoState);
+
+  const handleMyGitHubClick = () => {
+    // 사용자의 GitHub 프로필로 이동합니다.
+    window.open(githubInfo.html_url, "_blank");
+  };
 
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
@@ -624,39 +629,38 @@ function Main() {
   useEffect(() => {
     const githubLoginStatus = window.localStorage.getItem("githubLogin");
     if (githubLoginStatus === "inProgress") {
-      startTransition(()=>{
+      startTransition(() => {
         const fetchData = async () => {
           try {
             const response = await axios.get("http://localhost:8000/users/", {
               withCredentials: true,
             });
             console.log(response.data);
-            const response2 = await axios.get(`${response.data.repos_url}`)
+            const response2 = await axios.get(`${response.data.repos_url}`);
             console.log(response2.data);
-            let tmpRepoList : RepoType[]= [];
-            (response2.data as GitHubRepo[]).forEach(element => {
-              if(element.fork === false){
-                tmpRepoList.push({id: element.id, repo_name: element.name})
+            let tmpRepoList: RepoType[] = [];
+            (response2.data as GitHubRepo[]).forEach((element) => {
+              if (element.fork === false) {
+                tmpRepoList.push({ id: element.id, repo_name: element.name });
               }
             });
             console.log(tmpRepoList);
             setGithubInfo(response.data);
             setRepoListState(tmpRepoList);
-            
           } catch (error) {
             console.error("API 요청 중 오류 발생:", error);
           }
         };
-  
+
         fetchData();
         window.localStorage.removeItem("githubLogin"); // 상태 초기화
         // GitHub 로그인이 진행 중이었다면 API 요청을 수행
-      })
+      });
     }
   }, []);
-  
+
   return (
-    <Suspense fallback={<LoadingModal/>}>
+    <Suspense fallback={<LoadingModal />}>
       <>
         <Container>
           <ScrollWrapper>
@@ -698,7 +702,7 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1, delay: 1 }}
                 >
-                  <Button>
+                  <Button onClick={handleMyGitHubClick}>
                     <ButtonContent>
                       <ButtonImage
                         src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
