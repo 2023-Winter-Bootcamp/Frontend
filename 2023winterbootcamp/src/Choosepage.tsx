@@ -226,20 +226,29 @@ const ResumeContainer = styled.div`
   }
 `;
 
-const ResumeBox = styled.div<{ isSelected: boolean }>`
+const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   width: 249px;
   height: 345px;
-  background-color: white;
+  position: relative;
+  background-image: url(${(props) => props.$pre_image_url});
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
   box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
-  margin-bottom: 60px;
-  margin-right: 10px;
-
-  border: ${(props) =>
-    props.isSelected ? "2px solid black" : "2px solid #ffffff"};
+  margin-left: 5px;
+  border-radius: 4px;
+  margin-bottom: 40px;
   cursor: pointer;
+  border: ${(props) =>
+    props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
 
   &:hover {
-    border: 2px solid black;
+    border: 2px solid #000000;
   }
 `;
 
@@ -270,8 +279,7 @@ const Text2 = styled.div`
 const RepoContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 45%;
-  min-width: 500px;
+  width: 620px;
   margin: 0 auto;
   margin-bottom: 80px;
   flex-wrap: wrap;
@@ -290,7 +298,7 @@ const RepoContainer = styled.div`
 `;
 
 const Repo = styled.div<{ isSelected: boolean }>`
-  width: 45%;
+  width: 299px;
   height: 130px;
   background-color: white;
   border-radius: 10px;
@@ -303,7 +311,6 @@ const Repo = styled.div<{ isSelected: boolean }>`
   }
 
   @media screen and (min-width: 1400px) {
-    width: 31%;
   }
 `;
 
@@ -319,26 +326,27 @@ const Reponame = styled.div`
   text-overflow: ellipsis;
 `;
 
-const Start = styled.button<{startClicked : boolean }>`
-    background-color: ${props => props.startClicked ? "#1a1a1a" : "#cacaca"};
-    color: #fff;
-    font-weight: bold;
-    font-size: 14px;
-    width: 200px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 20px;
-    margin-bottom: 100px;
-    margin-left: 70%;
-    border: none;
-    cursor: pointer;
+const Start = styled.button<{ startClicked: boolean }>`
+  background-color: ${(props) => (props.startClicked ? "#1a1a1a" : "#cacaca")};
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  width: 200px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  margin-bottom: 100px;
+  margin-left: 70%;
+  border: none;
+  cursor: pointer;
 
-    &:hover {
-      background-color: ${props => props.startClicked ? "#1a1a1a" : "#1a1a1a"};
-    }
-  `;
+  &:hover {
+    background-color: ${(props) =>
+      props.startClicked ? "#1a1a1a" : "#1a1a1a"};
+  }
+`;
 
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
@@ -365,7 +373,6 @@ function Choose() {
       title !== "";
 
     setStartClicked(isAllSelected);
-    
   }, [
     selectedMultiButtons,
     selectedPosition,
@@ -414,12 +421,8 @@ function Choose() {
     navigate("/interview/" + id);
   };
 
-  const handleResumeSelect = (index: number) => {
-    if (selectedResume === index) {
-      setSelectedResume(null);
-    } else {
-      setSelectedResume(index);
-    }
+  const handleResumeSelect = (resumeId: number) => {
+    setSelectedResume(resumeId);
   };
 
   const handleRepoSelect = (repoName: string) => {
@@ -439,7 +442,7 @@ function Choose() {
     setTitle(e.target.value);
   };
 
-  const [showVideoComponent, setShowVideoComponent] = useState(false);
+  const [, setShowVideoComponent] = useState(false);
 
   const createInterview = async () => {
     try {
@@ -469,10 +472,29 @@ function Choose() {
     setIsLoading(false);
   };
 
-  
-  
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
+
+  interface Resume {
+    id: number;
+    pre_image_url: string;
+  }
+
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
+
+  useEffect(() => {
+    const getResumes = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/resumes/");
+        setResumeList(response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    getResumes();
+  }, []);
+
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -562,14 +584,14 @@ function Choose() {
             <Text2>이력서</Text2>
           </TextWrapper2>
           <ResumeContainer>
-            <ResumeBox
-              isSelected={selectedResume === 1}
-              onClick={() => handleResumeSelect(1)}
-            />
-            <ResumeBox
-              isSelected={selectedResume === 2}
-              onClick={() => handleResumeSelect(2)}
-            />
+            {resumeList.map((resume, index) => (
+              <ResumeBox
+                key={resume.id}
+                $pre_image_url={resume.pre_image_url}
+                $isSelected={selectedResume === resume.id}
+                onClick={() => handleResumeSelect(resume.id)}
+              />
+            ))}
           </ResumeContainer>
         </Container4>
         <Container4>
@@ -599,7 +621,9 @@ function Choose() {
             )}
           </RepoContainer>
         </Container4>
-        <Start startClicked={startClicked}onClick={createInterview}>선택 완료</Start>
+        <Start startClicked={startClicked} onClick={createInterview}>
+          선택 완료
+        </Start>
         {isLoading ? <LoadingModal /> : null}
       </Suspense>
     </>
