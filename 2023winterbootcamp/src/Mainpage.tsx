@@ -526,7 +526,7 @@ function Main() {
   const [githubInfo, setGithubInfo] = useRecoilState(githubLoginInfoState);
   const setGithubProfile = useSetRecoilState(githubProfileState);
   const handleMyGitHubClick = () => {
-    // 사용자의 GitHub 프로필로 이동합니다.
+    //사용자의 GitHub 프로필로 이동합니다.
     window.open(githubInfo.html_url, "_blank");
   };
 
