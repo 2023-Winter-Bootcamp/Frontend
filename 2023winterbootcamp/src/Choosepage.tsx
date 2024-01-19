@@ -352,22 +352,40 @@ const Start = styled.button<{ startClicked: boolean }>`
 `;
 
 const DropdownContainer = styled.div`
-  width: 1000px;
+  width: 100%;
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
   flex-direction: row;
-  margin-left: 430px;
   margin-bottom: 60px;
   margin-top: -10px;
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 29%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 29.2%;
+  }
 `;
 
 const DropdownWrapper = styled.div`
-  width: 200px;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  margin-right: 10px;
+  @media screen and (max-width: 769px) {
+    width: 24%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 17.5%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 14.2%;
+  }
 `;
 
 const DropdownLabel = styled.div`
@@ -376,7 +394,6 @@ const DropdownLabel = styled.div`
   color: #4e4e4e;
   margin-bottom: 4px;
   font-weight: 500;
-
   @media screen and (max-width: 769px) {
   }
 
@@ -391,18 +408,54 @@ const DropdownSelect1 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  @media screen and (max-width: 769px) {
+    width: 90%;
+    margin-right: 2px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 93%;
+    margin-right: 2px;
+  }
 `;
 
 const DropdownSelect2 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  @media screen and (max-width: 769px) {
+    width: 90%;
+    margin-right: 2px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 94%;
+  }
 `;
 
 const DropdownSelect3 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  @media screen and (max-width: 769px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 90%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 94%;
+  }
 `;
 
 function Choose() {
