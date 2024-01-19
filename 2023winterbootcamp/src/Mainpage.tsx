@@ -4,31 +4,31 @@ import React, {
   useEffect,
   startTransition,
   Suspense,
-} from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+} from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import {
   motion,
   animate,
   useScroll,
   useMotionValueEvent,
   useAnimationControls,
-} from "framer-motion";
-import { DropzoneInputProps, useDropzone } from "react-dropzone";
-import axios from "axios";
-import Modal from "./components/Modal";
-import LoadingModal from "./components/LoadingModal";
+} from 'framer-motion';
+import { DropzoneInputProps, useDropzone } from 'react-dropzone';
+import axios from 'axios';
+import Modal from './components/Modal';
+import LoadingModal from './components/LoadingModal';
 import {
   RepoType,
   githubLoginInfoState,
   githubProfileState,
   repoListState,
-} from "./Recoil";
-import { GitHubRepo } from "./components/githubLogin";
-import { useSetRecoilState, useRecoilState } from "recoil";
+} from './Recoil';
+import { GitHubRepo } from './components/githubLogin';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 
 const Container = styled.div`
-  background-image: url("https://ifh.cc/g/9wn5LW.jpg");
+  background-image: url('https://ifh.cc/g/9wn5LW.jpg');
   width: 100%;
   height: 120vh;
   display: flex;
@@ -277,7 +277,7 @@ const Text8 = styled.div`
 `;
 
 const Image2 = styled.div`
-  background-image: url("https://ifh.cc/g/Y5bZkt.jpg");
+  background-image: url('https://ifh.cc/g/Y5bZkt.jpg');
   background-size: cover;
   background-position: center;
   margin-bottom: 20px;
@@ -528,29 +528,29 @@ function Main() {
   const handleMyGitHubClick = () => {
     //사용자의 GitHub 프로필로 이동합니다.
     if (githubInfo.id === -1) {
-      window.alert("로그인이 필요한 기능입니다.");
+      window.alert('로그인이 필요한 기능입니다.');
       return;
     }
-    window.open(githubInfo.html_url, "_blank");
+    window.open(githubInfo.html_url, '_blank');
   };
 
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
       const file = new FormData();
-      file.append("file", selectedFile);
-      const user_id = "1";
-      file.append("user_id", user_id);
-      file.append("title", title);
+      file.append('file', selectedFile);
+      const user_id = '1';
+      file.append('user_id', user_id);
+      file.append('title', title);
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/resumes/create",
+          'http://localhost:8000/api/resumes/create',
           file
         );
-        console.log("File uploaded successfully!", response.data);
+        console.log('File uploaded successfully!', response.data);
         setIsModalOpen(false);
       } catch (error) {
-        console.error("Error uploading file:", error);
+        console.error('Error uploading file:', error);
       }
     }
   };
@@ -570,7 +570,7 @@ function Main() {
 
   const handleModalClose = () => {
     if (githubInfo.id === -1) {
-      window.alert("로그인이 필요한 기능입니다.");
+      window.alert('로그인이 필요한 기능입니다.');
       return;
     }
     setIsModalOpen(false);
@@ -580,24 +580,24 @@ function Main() {
   const { scrollY } = useScroll();
   const [isUp, setIsUp] = useState(false);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest >= 400 && !isUp) {
       setIsUp(true);
-      const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "20%" }, { duration: 0.8 });
+      const box = document.getElementById('page2container');
+      animate(box as HTMLElement, { top: '20%' }, { duration: 0.8 });
     } else if (latest < 370 && isUp) {
       setIsUp(false);
-      const box = document.getElementById("page2container");
-      animate(box as HTMLElement, { top: "100%" }, { duration: 0.5 });
+      const box = document.getElementById('page2container');
+      animate(box as HTMLElement, { top: '100%' }, { duration: 0.5 });
     }
   });
 
   const handleAIInterviewClick = () => {
     if (githubInfo.id === -1) {
-      window.alert("로그인이 필요한 기능입니다.");
+      window.alert('로그인이 필요한 기능입니다.');
       return;
     }
-    navigate("/choose");
+    navigate('/choose');
   };
 
   const [isDone, setIsDone] = useState([false, false, false]);
@@ -605,9 +605,9 @@ function Main() {
   const control1 = useAnimationControls();
   const control2 = useAnimationControls();
   const control3 = useAnimationControls();
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     if (latest < 400) {
-      const scroll = document.getElementById("scrollContent") as HTMLDivElement;
+      const scroll = document.getElementById('scrollContent') as HTMLDivElement;
       scroll.style.top = `-${latest * 2}px`;
     }
     //쓰로틀링으로 0.1초마다 함수 실행하도록 제어
@@ -645,14 +645,17 @@ function Main() {
   });
 
   useEffect(() => {
-    const githubLoginStatus = window.localStorage.getItem("githubLogin");
-    if (githubLoginStatus === "inProgress") {
+    const githubLoginStatus = window.localStorage.getItem('githubLogin');
+    if (githubLoginStatus === 'inProgress') {
       startTransition(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get("http://localhost:8000/users/", {
-              withCredentials: true,
-            });
+            const response = await axios.get(
+              'http://localhost:8000/api/users/',
+              {
+                withCredentials: true,
+              }
+            );
             console.log(response.data);
             const response2 = await axios.get(`${response.data.repos_url}`);
             console.log(response2.data);
@@ -666,7 +669,7 @@ function Main() {
             setGithubInfo(response.data);
             setRepoListState(tmpRepoList);
             //유저 정보 저장
-            const gitUrlList = (response.data.html_url as string).split("/");
+            const gitUrlList = (response.data.html_url as string).split('/');
             const gitId = gitUrlList[gitUrlList.length - 1];
             const response3 = await axios.get(
               `https://api.github.com/users/${gitId}`
@@ -677,12 +680,12 @@ function Main() {
               avatar_url: response3.data.avatar_url,
             });
           } catch (error) {
-            console.error("API 요청 중 오류 발생:", error);
+            console.error('API 요청 중 오류 발생:', error);
           }
         };
 
         fetchData();
-        window.localStorage.removeItem("githubLogin"); // 상태 초기화
+        window.localStorage.removeItem('githubLogin'); // 상태 초기화
         // GitHub 로그인이 진행 중이었다면 API 요청을 수행
       });
     }
@@ -693,7 +696,7 @@ function Main() {
       <>
         <Container>
           <ScrollWrapper>
-            <ScrollContent id="scrollContent">
+            <ScrollContent id='scrollContent'>
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -721,8 +724,8 @@ function Main() {
                 transition={{ duration: 2.5, delay: 2.5 }}
               >
                 <Image
-                  src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                  alt="GitHub Logo"
+                  src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
+                  alt='GitHub Logo'
                 />
               </motion.div>
               <ButtonWrapper>
@@ -734,8 +737,8 @@ function Main() {
                   <Button onClick={handleMyGitHubClick}>
                     <ButtonContent>
                       <ButtonImage
-                        src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                        alt="GitHub Logo"
+                        src='https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png'
+                        alt='GitHub Logo'
                       />
                       내 깃허브
                     </ButtonContent>
@@ -770,7 +773,7 @@ function Main() {
               </TextField>
             </ScrollContent>
           </ScrollWrapper>
-          <Page2Container id="page2container">
+          <Page2Container id='page2container'>
             <Page2
               initial={{ opacity: 0, y: 50 }}
               animate={control1}
@@ -805,7 +808,7 @@ function Main() {
                   면접 종류, 포지션, 면접 방식, <br />
                   이력서 선택 등 다양한 옵션
                 </ImageBoxText>
-                <ImageBoxImage imageurl="https://ifh.cc/g/QKjM80.png" />
+                <ImageBoxImage imageurl='https://ifh.cc/g/QKjM80.png' />
               </ImageBox>
             </motion.div>
             <motion.div
@@ -817,7 +820,7 @@ function Main() {
                 <ImageBoxText2>
                   실시간 화상 면접, 음성 텍스트 변환
                 </ImageBoxText2>
-                <ImageBoxImage2 imageurl="https://ifh.cc/g/LG1kHy.png" />
+                <ImageBoxImage2 imageurl='https://ifh.cc/g/LG1kHy.png' />
               </ImageBox2>
             </motion.div>
             <motion.div
@@ -827,7 +830,7 @@ function Main() {
             >
               <ImageBox3>
                 <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
-                <ImageBoxImage3 imageurl="https://ifh.cc/g/vgbofK.jpg" />
+                <ImageBoxImage3 imageurl='https://ifh.cc/g/vgbofK.jpg' />
               </ImageBox3>
             </motion.div>
           </ImageContainer>
@@ -866,8 +869,8 @@ const ResumeButton = (props: ResumeModalProps) => {
           <Button onClick={props.handleModalClose}>
             <ButtonContent>
               <ButtonImage
-                src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                alt="Document Icon"
+                src='https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png'
+                alt='Document Icon'
               />
               이력서 업로드
             </ButtonContent>
@@ -885,8 +888,8 @@ const ResumeButton = (props: ResumeModalProps) => {
         <Button onClick={props.handleModalClose}>
           <ButtonContent>
             <ButtonImage
-              src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-              alt="Document Icon"
+              src='https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png'
+              alt='Document Icon'
             />
             이력서 업로드
           </ButtonContent>
