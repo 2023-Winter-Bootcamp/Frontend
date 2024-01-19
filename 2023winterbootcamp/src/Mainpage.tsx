@@ -38,7 +38,6 @@ const Container = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
-  padding: 20px;
 `;
 
 const ScrollWrapper = styled.div`
@@ -59,7 +58,7 @@ const ScrollContent = styled.div`
 const Text1 = styled.div`
   font-weight: bold;
   font-size: 40px;
-  margin-top: 100px;
+  margin-top: 120px;
   @media screen and (max-width: 768px) {
     font-size: 32px;
   }
@@ -302,7 +301,6 @@ const TextComponents2 = styled.div`
 
 const Container1 = styled.div`
   width: 100%;
-  padding: 20px;
   background: white;
   position: relative;
   display: flex;
@@ -502,7 +500,7 @@ const Container2 = styled.div`
   font-weight: 700;
   text-align: center;
   background: black;
-  padding: 300px 20px 20px 20px;
+  padding: 300px 0px 0px 0px;
 
   @media screen and (max-width: 1023px) {
     & div {
@@ -514,7 +512,6 @@ const Container2 = styled.div`
 const MiddleContainer = styled.div`
   width: 100%;
   height: 50vh;
-  padding: 20px;
   background: linear-gradient(#fff, #000);
 `;
 

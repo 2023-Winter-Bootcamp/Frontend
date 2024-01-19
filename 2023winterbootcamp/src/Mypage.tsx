@@ -8,9 +8,9 @@ import Modal from "./components/Modal";
 
 const Container = styled.div`
   width: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
   @media screen and (max-width: 768px) {
     height: 450px;
   }
@@ -31,7 +31,7 @@ const Text1 = styled.div`
   height: 35px;
   font-size: 28px;
   font-weight: 700;
-  margin-top: 40px;
+  margin-top: 60px;
   margin-bottom: 10px;
   @media screen and (max-width: 768px) {
     margin-left: 100px;
@@ -233,7 +233,7 @@ const Text2 = styled.div`
     height: 35px;
     font-size: 28px;
     font-weight: 700;
-    margin-left: 120px;
+    margin-left: 100px;
     margin-bottom: 10px;
   }
 
@@ -242,7 +242,7 @@ const Text2 = styled.div`
     height: 35px;
     font-size: 28px;
     font-weight: 700;
-    margin-left: 220px;
+    margin-left: 200px;
     margin-bottom: 10px;
   }
 
@@ -251,7 +251,7 @@ const Text2 = styled.div`
     height: 35px;
     font-size: 28px;
     font-weight: 700;
-    margin-left: 287px;
+    margin-left: 267px;
     margin-bottom: 10px;
   }
 `;
@@ -278,15 +278,15 @@ const InterviewContainer2 = styled.div`
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 210px;
+    margin-left: 190px;
   }
 
   @media screen and (min-width: 1024px) and (max-width: 1399px) {
-    margin-left: 277px;
+    margin-left: 257px;
   }
 
   @media screen and (min-width: 1400px) {
-    margin-left: 277px;
+    margin-left: 257px;
   }
 `;
 
