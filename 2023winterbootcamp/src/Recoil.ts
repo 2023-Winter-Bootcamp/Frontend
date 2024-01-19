@@ -45,7 +45,7 @@ export type githubProfileType = {
 };
 
 export const githubProfileState = atom<githubProfileType>({
-  key: "gitgubProfileState",
+  key: "githubProfileState",
   effects_UNSTABLE: [persistAtom],
   default: {
     name: 'userName',
