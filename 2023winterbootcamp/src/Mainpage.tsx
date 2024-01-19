@@ -14,7 +14,7 @@ import {
   useMotionValueEvent,
   useAnimationControls,
 } from "framer-motion";
-import { useDropzone } from "react-dropzone";
+import { DropzoneInputProps, useDropzone } from "react-dropzone";
 import axios from "axios";
 import Modal from "./components/Modal";
 import LoadingModal from "./components/LoadingModal";
@@ -524,6 +524,10 @@ function Main() {
   const setGithubProfile = useSetRecoilState(githubProfileState);
   const handleMyGitHubClick = () => {
     //사용자의 GitHub 프로필로 이동합니다.
+    if (githubInfo.id === -1) {
+      window.alert("로그인이 필요한 기능입니다.");
+      return;
+    }
     window.open(githubInfo.html_url, "_blank");
   };
 
@@ -562,6 +566,10 @@ function Main() {
   });
 
   const handleModalClose = () => {
+    if (githubInfo.id === -1) {
+      window.alert("로그인이 필요한 기능입니다.");
+      return;
+    }
     setIsModalOpen(false);
   };
 
@@ -582,6 +590,10 @@ function Main() {
   });
 
   const handleAIInterviewClick = () => {
+    if (githubInfo.id === -1) {
+      window.alert("로그인이 필요한 기능입니다.");
+      return;
+    }
     navigate("/choose");
   };
 
@@ -733,24 +745,12 @@ function Main() {
                 >
                   <Button onClick={handleAIInterviewClick}>AI 면접</Button>
                 </motion.div>
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 1 }}
-                  >
-                    <Button onClick={handleModalClose}>
-                      <ButtonContent>
-                        <ButtonImage
-                          src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                          alt="Document Icon"
-                        />
-                        이력서 업로드
-                      </ButtonContent>
-                    </Button>
-                  </motion.div>
-                </div>
+                <ResumeButton
+                  id={githubInfo.id}
+                  getRootProps={getRootProps}
+                  getInputProps={getInputProps}
+                  handleModalClose={handleModalClose}
+                />
                 {isModalOpen && (
                   <Modal
                     ref={modalRef}
@@ -843,5 +843,53 @@ function Main() {
     </Suspense>
   );
 }
+type ResumeModalProps = {
+  id: number;
+  getRootProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
+  getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
+  handleModalClose: () => void;
+};
 
+const ResumeButton = (props: ResumeModalProps) => {
+  if (props.id !== -1) {
+    return (
+      <div {...props.getRootProps()}>
+        <input {...props.getInputProps()} />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1 }}
+        >
+          <Button onClick={props.handleModalClose}>
+            <ButtonContent>
+              <ButtonImage
+                src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+                alt="Document Icon"
+              />
+              이력서 업로드
+            </ButtonContent>
+          </Button>
+        </motion.div>
+      </div>
+    );
+  } else {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <Button onClick={props.handleModalClose}>
+          <ButtonContent>
+            <ButtonImage
+              src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+              alt="Document Icon"
+            />
+            이력서 업로드
+          </ButtonContent>
+        </Button>
+      </motion.div>
+    );
+  }
+};
 export default Main;

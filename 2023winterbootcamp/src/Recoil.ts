@@ -25,7 +25,7 @@ export const githubLoginInfoState = atom<githubLoginInfoType>({
     id: -1,
     login_id: -1,
     repos_url: "https://api.github.com/users/userid",
-  },
+  }
 });
 
 export type RepoType = {

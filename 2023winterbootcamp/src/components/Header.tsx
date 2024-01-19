@@ -3,6 +3,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useResetRecoilState } from "recoil";
+import {
+  githubLoginInfoState,
+  githubProfileState,
+  repoListState,
+} from "../Recoil";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -155,6 +161,16 @@ function Header() {
     window.location.assign(GITHUB_LOGIN_URL);
   };
 
+  const infoReset = useResetRecoilState(githubLoginInfoState);
+  const profileReset = useResetRecoilState(githubProfileState);
+  const repoListReset = useResetRecoilState(repoListState);
+
+  const resetRecoilWhenLogout = () => {
+    infoReset(); // 호출해야 하는 함수로 수정
+    profileReset();
+    repoListReset();
+  };
+
   const handleLogout = async () => {
     try {
       const response = await axios.get("http://localhost:8000/users/logout/", {
@@ -163,6 +179,7 @@ function Header() {
       console.log(response.status);
       window.location.href = "/";
       setIsLoggedIn(false);
+      resetRecoilWhenLogout();
     } catch (e) {
       console.log(e);
     }
@@ -179,24 +196,26 @@ function Header() {
         teamA.
       </Logo>
       <Navigationbar>
-        <MotionNavItem
-          to="/mypage"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7 }}
-        >
-          마이페이지
-        </MotionNavItem>
         {isLoggedIn ? (
-          <MotionNavItem
-            to="/"
-            onClick={handleLogout}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.7 }}
-          >
-            로그아웃
-          </MotionNavItem>
+          <>
+            <MotionNavItem
+              to="/mypage"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+            >
+              마이페이지
+            </MotionNavItem>
+            <MotionNavItem
+              to="/"
+              onClick={handleLogout}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+            >
+              로그아웃
+            </MotionNavItem>
+          </>
         ) : (
           <MotionNavItem
             to="/"
