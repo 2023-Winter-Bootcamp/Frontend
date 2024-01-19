@@ -48,7 +48,7 @@ export const githubProfileState = atom<githubProfileType>({
   key: "githubProfileState",
   effects_UNSTABLE: [persistAtom],
   default: {
-    name: 'userName',
-    avatar_url: ''
-  }
+    name: "userName",
+    avatar_url: "",
+  },
 });

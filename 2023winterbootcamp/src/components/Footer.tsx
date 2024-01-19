@@ -5,22 +5,20 @@ const FooterContainer = styled.div`
   @media screen and (max-width: 768px) {
     width: 100%;
     height: 380px;
-    padding: 20px;
     background: #1a1a1a;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 100%;
     height: 380px;
-    padding: 20px;
     background: #1a1a1a;
   }
   @media screen and (min-width: 1024px) {
     width: 100%;
     height: 380px;
-    padding: 20px;
     background: #1a1a1a;
   }
 `;
+
 const TextBox = styled.div`
   @media screen and (max-width: 768px) {
     width: 252px;

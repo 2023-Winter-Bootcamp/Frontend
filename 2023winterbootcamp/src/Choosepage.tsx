@@ -163,7 +163,7 @@ const ButtonsContainer = styled.div`
 
 const Button = styled.button<{ isSelected: boolean }>`
   font-size: 14px;
-  width: 200px;
+  width: 300px;
   height: 54px;
   background-color: ${(props) => (props.isSelected ? '#1a1a1a' : 'white')};
   color: ${(props) => (props.isSelected ? 'white' : '#1a1a1a')};
