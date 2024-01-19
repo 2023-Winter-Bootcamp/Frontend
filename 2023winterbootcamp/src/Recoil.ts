@@ -19,6 +19,13 @@ export type githubLoginInfoType = {
 export const githubLoginInfoState = atom<githubLoginInfoType>({
   key: "githubLoginInfoState",
   effects_UNSTABLE: [persistAtom],
+  default: {
+    username: "userName",
+    html_url: "https://github.com/",
+    id: -1,
+    login_id: -1,
+    repos_url: "https://api.github.com/users/userid",
+  }
 });
 
 export type RepoType = {
@@ -29,6 +36,7 @@ export type RepoType = {
 export const repoListState = atom<RepoType[]>({
   key: "repoListState",
   effects_UNSTABLE: [persistAtom],
+  default: [],
 });
 
 export type githubProfileType = {
@@ -39,4 +47,8 @@ export type githubProfileType = {
 export const githubProfileState = atom<githubProfileType>({
   key: "gitgubProfileState",
   effects_UNSTABLE: [persistAtom],
+  default: {
+    name: 'userName',
+    avatar_url: ''
+  }
 });
