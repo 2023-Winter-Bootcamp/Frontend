@@ -16,6 +16,7 @@ import {
 } from 'framer-motion';
 import { DropzoneInputProps, useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import api from './baseURL/baseURL';
 import Modal from './components/Modal';
 import LoadingModal from './components/LoadingModal';
 import {
@@ -543,10 +544,7 @@ function Main() {
       file.append('title', title);
 
       try {
-        const response = await axios.post(
-          'http://localhost:8000/api/resumes/create',
-          file
-        );
+        const response = await api.post('resumes/create', file);
         console.log('File uploaded successfully!', response.data);
         setIsModalOpen(false);
       } catch (error) {
@@ -650,12 +648,9 @@ function Main() {
       startTransition(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get(
-              'http://localhost:8000/api/users/',
-              {
-                withCredentials: true,
-              }
-            );
+            const response = await api.get('users/', {
+              withCredentials: true,
+            });
             console.log(response.data);
             const response2 = await axios.get(`${response.data.repos_url}`);
             console.log(response2.data);

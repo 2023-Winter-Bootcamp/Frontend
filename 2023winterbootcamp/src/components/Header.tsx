@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import api from '../baseURL/baseURL';
 import { useResetRecoilState } from 'recoil';
 import {
   githubLoginInfoState,
@@ -138,12 +139,9 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get(
-          'http://localhost:8000/api/users/status/',
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await api.get('users/status/', {
+          withCredentials: true,
+        });
         if (response.data.status === 'logged_in') {
           setIsLoggedIn(true);
         }
@@ -173,12 +171,9 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:8000/api/users/logout/',
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.get('users/logout/', {
+        withCredentials: true,
+      });
       console.log(response.status);
       window.location.href = '/';
       setIsLoggedIn(false);

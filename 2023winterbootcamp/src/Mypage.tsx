@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import styled from "styled-components";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import interview_image from "./images/interview_image.jpg";
-import Modal from "./components/Modal";
+import React, { useEffect, useState, useRef } from 'react';
+import styled from 'styled-components';
+import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
+import api from './baseURL/baseURL';
+import { useNavigate } from 'react-router-dom';
+import interview_image from './images/interview_image.jpg';
+import Modal from './components/Modal';
 
 const Container = styled.div`
   width: 100%;
@@ -396,9 +397,7 @@ function Mypage() {
 
   const handleInterviewClick = async (id: number) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/interviews/${id}/`
-      );
+      const response = await api.get(`interviews/${id}/`);
       const interviewResult = response.data.title;
 
       // 여기에서 필요한 동작을 수행하고 페이지 이동
@@ -412,20 +411,17 @@ function Mypage() {
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
       const file = new FormData();
-      file.append("file", selectedFile);
-      const user_id = "1";
-      file.append("user_id", user_id);
-      file.append("title", title);
+      file.append('file', selectedFile);
+      const user_id = '1';
+      file.append('user_id', user_id);
+      file.append('title', title);
 
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/resumes/create",
-          file
-        );
-        console.log("File uploaded successfully!", response.data);
+        const response = await api.post('resumes/create', file);
+        console.log('File uploaded successfully!', response.data);
         setIsModalOpen(false);
       } catch (error) {
-        console.error("Error uploading file:", error);
+        console.error('Error uploading file:', error);
       }
     }
   };
@@ -452,7 +448,7 @@ function Mypage() {
 
   const getInterviewList = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/interviews/");
+      const response = await api.get('interviews/');
       setInterviewList(response.data);
     } catch (e) {
       console.error(e);
@@ -461,7 +457,7 @@ function Mypage() {
 
   const getResumes = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/resumes/");
+      const response = await api.get('resumes/');
       setResumeList(response.data);
     } catch (e) {
       console.error(e);
@@ -473,9 +469,7 @@ function Mypage() {
       if (item.id === id) {
         try {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const response = await axios.delete(
-            `http://localhost:8000/api/resumes/delete/${id}`
-          );
+          const response = await api.delete(`resumes/delete/${id}`);
           let cpyResumeList = [...resumeList];
           cpyResumeList.splice(idx, 1);
           setResumeList(cpyResumeList);
@@ -495,11 +489,11 @@ function Mypage() {
   const interviewConRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (interviewList.length === 0) {
-      scrollConRef.current?.style.setProperty("justify-content", "center");
-      interviewConRef.current?.style.setProperty("justify-content", "center");
+      scrollConRef.current?.style.setProperty('justify-content', 'center');
+      interviewConRef.current?.style.setProperty('justify-content', 'center');
     } else {
-      scrollConRef.current?.style.setProperty("justify-content", "start");
-      interviewConRef.current?.style.setProperty("justify-content", "start");
+      scrollConRef.current?.style.setProperty('justify-content', 'start');
+      interviewConRef.current?.style.setProperty('justify-content', 'start');
     }
   }, [interviewList]);
   return (
@@ -508,8 +502,8 @@ function Mypage() {
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview1 $pre_image_url="" {...getRootProps()}>
-              <input type="file" {...getInputProps()} />
+            <ResumePreview1 $pre_image_url='' {...getRootProps()}>
+              <input type='file' {...getInputProps()} />
               <Text7>
                 이 곳을 클릭해
                 <br />
