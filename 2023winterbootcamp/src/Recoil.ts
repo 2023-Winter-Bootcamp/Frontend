@@ -25,7 +25,7 @@ export const githubLoginInfoState = atom<githubLoginInfoType>({
     id: -1,
     login_id: -1,
     repos_url: "https://api.github.com/users/userid",
-  }
+  },
 });
 
 export type RepoType = {
@@ -50,5 +50,15 @@ export const githubProfileState = atom<githubProfileType>({
   default: {
     name: "userName",
     avatar_url: "",
+  },
+});
+
+// 면접 로직 바뀐 부분
+export const selectedQuestionCountsState = atom({
+  key: "selectedQuestionCounts",
+  default: {
+    project: 0,
+    cs: 0,
+    personality: 0,
   },
 });
