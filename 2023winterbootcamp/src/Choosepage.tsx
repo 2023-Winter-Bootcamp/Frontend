@@ -162,7 +162,7 @@ const ButtonsContainer = styled.div`
 
 const Button = styled.button<{ isSelected: boolean }>`
   font-size: 14px;
-  width: 200px;
+  width: 300px;
   height: 54px;
   background-color: ${(props) => (props.isSelected ? "#1a1a1a" : "white")};
   color: ${(props) => (props.isSelected ? "white" : "#1a1a1a")};
@@ -415,7 +415,7 @@ function Choose() {
     if (buttonName === "video") {
       setInterviewType({ showCamera: true });
     } else {
-      setInterviewType({ showCamera: false});
+      setInterviewType({ showCamera: false });
     }
   };
 
@@ -576,12 +576,6 @@ function Choose() {
               onClick={() => handleInterviewTypeClick("voice")}
             >
               음성 면접
-            </Button>
-            <Button
-              isSelected={selectedInterviewType === "text"}
-              onClick={() => handleInterviewTypeClick("text")}
-            >
-              텍스트 면접
             </Button>
           </ButtonsContainer>
         </Container3>
