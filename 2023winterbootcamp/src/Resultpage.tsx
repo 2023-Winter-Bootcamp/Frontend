@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { githubLoginInfoState, githubProfileState } from './Recoil';
-import { useRecoilState } from 'recoil';
+import { githubLoginInfoState, githubProfileState, interviewResultState } from './Recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import axios from 'axios';
 import api from './baseURL/baseURL';
 
@@ -361,9 +361,7 @@ interface InterviewData {
 }
 
 const Resultpage = () => {
-  const [interviewData, setInterviewData] = useState<InterviewData | null>(
-    null
-  );
+  const interviewData = useRecoilValue(interviewResultState);
 
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
   const audioRefs = useRef<HTMLAudioElement[]>([]);

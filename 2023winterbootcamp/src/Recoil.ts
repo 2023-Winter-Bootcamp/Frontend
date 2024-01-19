@@ -53,6 +53,42 @@ export const githubProfileState = atom<githubProfileType>({
   },
 });
 
+type InterviewQuestion = {
+  type_name: string;
+  content: string;
+};
+
+type InterviewAnswer = {
+  content: string;
+  record_url: string;
+};
+
+export type InterviewResultType = {
+  title: string;
+  interview_type_names: string[];
+  position: string;
+  style: string;
+  resume: number;
+  repo_names: string[];
+  questions: InterviewQuestion[];
+  answers: InterviewAnswer[];
+};
+
+export const interviewResultState = atom<InterviewResultType>({
+  key : 'interviewResultState',
+  default : {
+    title : '',
+    interview_type_names: [''],
+    position: '',
+    style: '',
+    resume: -1,
+    repo_names: [''],
+    questions: [],
+    answers: [],
+  },
+  effects_UNSTABLE : [persistAtom],
+})
+
 // 면접 로직 바뀐 부분
 export const selectedQuestionCountsState = atom({
   key: "selectedQuestionCounts",
