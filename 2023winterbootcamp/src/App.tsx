@@ -8,6 +8,7 @@ import Choose from "./Choosepage";
 import Interview from "./Interviewpage";
 import Footer from "./components/Footer";
 import Resultpage from "./Resultpage";
+import Endpage from "./Endpage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/choose" element={<Choose />} />
             <Route path="/interview/:id" element={<Interview />} />
+            <Route path="/end/:id" element={<Endpage interview_name="삼성전자 2022 하반기 3급"/>} />
             <Route path="/result/:id" element={<Resultpage />} />
           </Routes>
           <Footer />
