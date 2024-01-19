@@ -166,7 +166,7 @@ function Header() {
   const repoListReset = useResetRecoilState(repoListState);
 
   const resetRecoilWhenLogout = () => {
-    infoReset(); // 호출해야 하는 함수로 수정
+    infoReset();
     profileReset();
     repoListReset();
   };

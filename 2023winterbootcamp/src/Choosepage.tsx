@@ -354,6 +354,10 @@ const Start = styled.button<{ startClicked: boolean }>`
 `;
 
 function Choose() {
+  const [projectQuestionsCount, setProjectQuestionsCount] = useState(0);
+  const [csQuestionsCount, setCsQuestionsCount] = useState(0);
+  const [personalityQuestionsCount, setPersonalityQuestionsCount] = useState(0);
+
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
