@@ -1,10 +1,10 @@
-import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
+import { atom } from 'recoil';
+import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
 
 export const interviewTypeState = atom({
-  key: "interviewTypeState",
+  key: 'interviewTypeState',
   default: {
     showCamera: true,
   },
@@ -17,14 +17,14 @@ export type githubLoginInfoType = {
   repos_url: string;
 };
 export const githubLoginInfoState = atom<githubLoginInfoType>({
-  key: "githubLoginInfoState",
+  key: 'githubLoginInfoState',
   effects_UNSTABLE: [persistAtom],
   default: {
-    username: "userName",
-    html_url: "https://github.com/",
+    username: 'userName',
+    html_url: 'https://github.com/',
     id: -1,
     login_id: -1,
-    repos_url: "https://api.github.com/users/userid",
+    repos_url: 'https://api.github.com/users/userid',
   },
 });
 
@@ -34,7 +34,7 @@ export type RepoType = {
 };
 
 export const repoListState = atom<RepoType[]>({
-  key: "repoListState",
+  key: 'repoListState',
   effects_UNSTABLE: [persistAtom],
   default: [],
 });
@@ -44,12 +44,21 @@ export type githubProfileType = {
   avatar_url: string;
 };
 
+export type QuestionType = 'project' | 'cs' | 'personality';
+
+export type currentQuestionStateType = {
+  currentType: string;
+  counts: {
+    [key in QuestionType]: number;
+  };
+};
+
 export const githubProfileState = atom<githubProfileType>({
-  key: "githubProfileState",
+  key: 'githubProfileState',
   effects_UNSTABLE: [persistAtom],
   default: {
-    name: "userName",
-    avatar_url: "",
+    name: 'userName',
+    avatar_url: '',
   },
 });
 
@@ -75,9 +84,9 @@ export type InterviewResultType = {
 };
 
 export const interviewResultState = atom<InterviewResultType>({
-  key : 'interviewResultState',
-  default : {
-    title : '',
+  key: 'interviewResultState',
+  default: {
+    title: '',
     interview_type_names: [''],
     position: '',
     style: '',
@@ -86,15 +95,18 @@ export const interviewResultState = atom<InterviewResultType>({
     questions: [],
     answers: [],
   },
-  effects_UNSTABLE : [persistAtom],
-})
+  effects_UNSTABLE: [persistAtom],
+});
 
-// 면접 로직 바뀐 부분
-export const selectedQuestionCountsState = atom({
-  key: "selectedQuestionCounts",
+// 현재 question 상태
+export const currentQuestionState = atom<currentQuestionStateType>({
+  key: 'currentQuestionState',
   default: {
-    project: 0,
-    cs: 0,
-    personality: 0,
+    currentType: 'project', // 현재 질문 타입
+    counts: {
+      project: 0,
+      cs: 0,
+      personality: 0,
+    },
   },
 });

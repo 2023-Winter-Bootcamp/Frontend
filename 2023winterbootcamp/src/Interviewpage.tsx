@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
-import { useAudioRecorder } from "react-audio-voice-recorder";
-import axios from "axios";
-import api from "./baseURL/baseURL";
-import Camera from "./components/Camera";
-import { useRecoilValue } from "recoil";
-import { interviewTypeState } from "./Recoil";
-import { motion } from "framer-motion";
-import nextIcon from "./images/nextbutton.png";
-import recordIcon from "./images/recordbutton.png";
-import LoadingModal from "./components/LoadingModal";
-import { useRecoilState } from "recoil";
-import { selectedQuestionCountsState } from "./Recoil";
+import React, { useState, useEffect, useRef } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useAudioRecorder } from 'react-audio-voice-recorder';
+import axios from 'axios';
+import api from './baseURL/baseURL';
+import Camera from './components/Camera';
+import { useRecoilValue } from 'recoil';
+import {
+  interviewTypeState,
+  currentQuestionState,
+  currentQuestionStateType,
+  QuestionType,
+} from './Recoil';
+import { motion } from 'framer-motion';
+import nextIcon from './images/nextbutton.png';
+import recordIcon from './images/recordbutton.png';
+import LoadingModal from './components/LoadingModal';
+import { useRecoilState } from 'recoil';
 
 const Up = styled.div`
   width: 100%;
@@ -246,24 +250,22 @@ function Interviewpage() {
   //인터뷰 관련
   const [isInterviewStart, setIsInterviewStart] = useState(false);
   const selectedInterviewType = useRecoilValue(interviewTypeState);
-  const { id } = useParams();
+  const { id } = useParams(); // 면접 ID
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedQuestionCounts, setSelectedQuestionCounts] = useRecoilState(
-    selectedQuestionCountsState
-  );
 
   //질문 관련
   const [question, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
-  const [questionType, setQuestionType] = useState<string>("");
+  const [questionState, setQuestionState] =
+    useRecoilState(currentQuestionState);
 
   //음성녹음 관련
   const recorderControls = useAudioRecorder();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const instRef = useRef<HTMLDivElement | null>(null);
-  const [instText, setInstText] = useState("");
+  const [instText, setInstText] = useState('');
 
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -281,7 +283,7 @@ function Interviewpage() {
           setQuestionId(response.data.questions[0].id);
         })
         .catch((error) => {
-          console.error("Error fetching questions:", error);
+          console.error('Error fetching questions:', error);
         });
     }
     console.log(selectedInterviewType);
@@ -296,12 +298,12 @@ function Interviewpage() {
     };
 
     if (audioElement) {
-      audioElement.addEventListener("ended", handleEnded);
+      audioElement.addEventListener('ended', handleEnded);
     }
 
     return () => {
       if (audioElement) {
-        audioElement.removeEventListener("ended", handleEnded);
+        audioElement.removeEventListener('ended', handleEnded);
       }
     };
   }, [id]);
@@ -310,18 +312,18 @@ function Interviewpage() {
   const getQ2AudioData = async () => {
     try {
       const response = await axios({
-        method: "post",
+        method: 'post',
         url: `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.REACT_APP_TTS_KEY}`,
         headers: {},
         data: {
           voice: {
-            languageCode: "ko-KR",
+            languageCode: 'ko-KR',
           },
           input: {
             text: `${question[0].content}`,
           },
           audioConfig: {
-            audioEncoding: "mp3",
+            audioEncoding: 'mp3',
           },
         },
       });
@@ -333,7 +335,7 @@ function Interviewpage() {
         audioRef.current.play();
       }
     } catch (error) {
-      console.error("Error fetching audio data:", error);
+      console.error('Error fetching audio data:', error);
     }
   };
 
@@ -344,7 +346,7 @@ function Interviewpage() {
       char.charCodeAt(0)
     );
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "audio/mp3" });
+    const blob = new Blob([byteArray], { type: 'audio/mp3' });
     return blob;
   };
 
@@ -352,12 +354,12 @@ function Interviewpage() {
   const handleNextButtonClick = () => {
     if (recorderControls.isRecording) {
       recorderControls.stopRecording();
-      console.log("녹음 중지");
-      setInstText("다음 질문 준비가 완료됐다면 버튼을 눌러주세요");
+      console.log('녹음 중지');
+      setInstText('다음 질문 준비가 완료됐다면 버튼을 눌러주세요');
     }
     if (!recorderControls.isRecording && recorderControls.recordingBlob) {
       getQuestion(recorderControls.recordingBlob);
-      console.log("녹음파일 전송 & 다음 질문 설정");
+      console.log('녹음파일 전송 & 다음 질문 설정');
       //TODO: 녹음 종료 기능 추가해야함
     }
   };
@@ -366,9 +368,10 @@ function Interviewpage() {
   const getQuestion = async (blob: Blob) => {
     if (!id) return;
     const file = new FormData();
-    file.append("question_id", questionId.toString());
-    file.append("interview_id", id as string);
-    file.append("record_url", blob);
+    file.append('question_id', questionId.toString());
+    file.append('interview_id', id as string);
+    file.append('record_url', blob);
+    file.append('question_type', questionState.currentType);
     try {
       setIsLoading(true);
       //음성파일 보내는 기능
@@ -377,29 +380,87 @@ function Interviewpage() {
         file
       );
       console.log(response.data);
+      updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
+      setIsLoading(false);
 
+      // 필요한 경우 인터뷰 종료
+      if (shouldEndInterview()) {
+        endInterview(blob);
+      }
       /* setQuestion(response.data.content);
       setQuestionType(response.data.type_name);
       setQuestionId(response.data.id); */
-      setIsLoading(false);
-      endInterview();
+      // endInterview();
     } catch (e) {
       console.error(e);
     }
   };
 
+  // 현재 question_type의 count 차감 및 다음 question_type으로 변경
+  const updateQuestionState = () => {
+    setQuestionState((prevState: currentQuestionStateType) => {
+      const currentType = prevState.currentType as QuestionType;
+      const currentCounts = prevState.counts[currentType];
+      let nextType = prevState.currentType;
+
+      // 현재 question_type의 count가 0이면 다음 question_type으로 변경
+      if (currentCounts === 1) {
+        nextType = getNextQuestionType(currentType);
+      }
+
+      return {
+        ...prevState,
+        currentType: nextType,
+        counts: {
+          ...prevState.counts,
+          [currentType]: Math.max(0, currentCounts - 1),
+        },
+      };
+    });
+  };
+
+  // 다음 question_type을 결정
+  const getNextQuestionType = (currentType: QuestionType) => {
+    if (currentType === 'project') {
+      return 'cs';
+    } else if (currentType === 'cs') {
+      return 'personality';
+    } else {
+      return 'project'; // 다 끝나면 default로 다시 설정함
+    }
+  };
+
+  // 인터뷰 종료를 결정하는 함수
+  const shouldEndInterview = () => {
+    const { counts } = questionState;
+    return counts.project === 0 && counts.cs === 0 && counts.personality === 0;
+  };
+
   //인터뷰 종료 메소드
-  const endInterview = () => {
-    navigate("/result/" + id);
+  const endInterview = async (blob: Blob) => {
+    if (!id) return;
+    const file = new FormData();
+    file.append('question', questionId.toString());
+    file.append('record_url', blob);
+    try {
+      const response = await api.post(
+        `interviews/questions/${questionId}/answers/create/`,
+        file
+      );
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+    navigate('/result/' + id);
   };
 
   //녹음 시작 메소드
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
-      btnRef.current?.style.setProperty("visibility", "visible");
-      instRef.current?.style.setProperty("visibility", "visible");
-      setInstText("답변이 완료되면 버튼을 눌러주세요");
+      btnRef.current?.style.setProperty('visibility', 'visible');
+      instRef.current?.style.setProperty('visibility', 'visible');
+      setInstText('답변이 완료되면 버튼을 눌러주세요');
     }, 1000);
   };
 
@@ -407,8 +468,8 @@ function Interviewpage() {
   useEffect(() => {
     if (!isInterviewStart) return;
     getQ2AudioData();
-    btnRef.current?.style.setProperty("visibility", "hidden");
-    instRef.current?.style.setProperty("visibility", "hidden");
+    btnRef.current?.style.setProperty('visibility', 'hidden');
+    instRef.current?.style.setProperty('visibility', 'hidden');
   }, [question]);
 
   //스탑워치 시작 기능
@@ -436,59 +497,47 @@ function Interviewpage() {
     startStopwatch();
   };
 
-  // Choosepage에서 선택된 질문의 개수를 Recoil 상태에 업데이트하는 함수
-  const updateSelectedQuestionCounts = (
-    counts:
-      | { project: number; cs: number; personality: number }
-      | ((currVal: { project: number; cs: number; personality: number }) => {
-          project: number;
-          cs: number;
-          personality: number;
-        })
-  ) => {
-    setSelectedQuestionCounts(counts);
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (id) {
+      const questionType = getQuestionType(questionState.counts);
+
       // 선택한 질문 개수에 따라 해당하는 종류의 질문 가져오기
-      const questionType = getQuestionType(selectedQuestionCounts);
-      api
-        .get(`interviews/${id}/questions/`, { params: { type: questionType } })
-        .then((response) => {
-          console.log(response.data.questions);
+      const fetchQuestions = async () => {
+        try {
+          const response = await api.get(`interviews/${id}/questions/`, {
+            params: { type: questionType },
+          });
+          console.log(response.data);
           setQuestion(response.data.questions);
           setQuestionId(response.data.questions[0].id);
-        })
-        .catch((error) => {
-          console.error("Error fetching questions:", error);
-        });
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      fetchQuestions();
     }
     console.log(selectedInterviewType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, selectedQuestionCounts]);
+  }, [id, questionState.counts]);
 
   // 선택한 질문 개수에 따라 해당하는 종류의 질문 타입 반환
   const getQuestionType = (counts: {
-    project: any;
-    cs: any;
-    personality: any;
+    project: number;
+    cs: number;
+    personality: number;
   }) => {
-    const total = counts.project + counts.cs + counts.personality;
-
-    if (total > 0) {
-      if (counts.project > 0) {
-        return "project";
-      } else if (counts.cs > 0) {
-        return "cs";
-      } else if (counts.personality > 0) {
-        return "personality";
-      }
+    if (counts.project > 0) {
+      return 'project';
+    } else if (counts.cs > 0) {
+      return 'cs';
+    } else if (counts.personality > 0) {
+      return 'personality';
     }
 
     // total이 0이거나 다른 처리해야 할 상황에 따라 설정
-    return "";
+    return '';
   };
 
   return (
@@ -503,8 +552,8 @@ function Interviewpage() {
             <TextContent
               isInterviewStart={isInterviewStart}
               variants={fadeIn}
-              initial="hidden"
-              animate="visible"
+              initial='hidden'
+              animate='visible'
             >
               <AnswerPoint>답변포인트</AnswerPoint>
               <PointText>
@@ -546,18 +595,18 @@ function Interviewpage() {
               <VideoContainer>
                 <SpinnerBox>
                   <LeoBorder
-                    color="rgb(102, 102, 102)"
-                    gradientColor="102, 102, 102"
+                    color='rgb(102, 102, 102)'
+                    gradientColor='102, 102, 102'
                     animationDuration={1.8}
                   >
-                    <LeoCore backgroundColor="#191919aa" />
+                    <LeoCore backgroundColor='#191919aa' />
                   </LeoBorder>
                   <LeoBorder
-                    color="rgb(255, 215, 244)"
-                    gradientColor="255, 215, 244"
+                    color='rgb(255, 215, 244)'
+                    gradientColor='255, 215, 244'
                     animationDuration={2.2}
                   >
-                    <LeoCore backgroundColor="#bebebeaa" />
+                    <LeoCore backgroundColor='#bebebeaa' />
                   </LeoBorder>
                 </SpinnerBox>
               </VideoContainer>
@@ -575,7 +624,7 @@ function Interviewpage() {
               <Next onClick={handleNextButtonClick} ref={btnRef}>
                 <StyledNextImage
                   src={recorderControls.isRecording ? recordIcon : nextIcon}
-                  alt="next"
+                  alt='next'
                 />
               </Next>
             </RecordBox>
@@ -583,7 +632,7 @@ function Interviewpage() {
         </>
       )}
       {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
+      <audio ref={audioRef} style={{ display: 'none' }} preload='auto' />
     </>
   );
 }

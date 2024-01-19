@@ -1,12 +1,17 @@
-import React, { useEffect, useState, Suspense } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import api from "./baseURL/baseURL";
-import LoadingModal from "./components/LoadingModal";
-import { githubLoginInfoState, repoListState } from "./Recoil";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { interviewTypeState } from "./Recoil";
+import React, { useEffect, useState, Suspense } from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import api from './baseURL/baseURL';
+import LoadingModal from './components/LoadingModal';
+import {
+  githubLoginInfoState,
+  repoListState,
+  currentQuestionState,
+  currentQuestionStateType,
+} from './Recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { interviewTypeState } from './Recoil';
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -162,8 +167,8 @@ const Button = styled.button<{ isSelected: boolean }>`
   font-size: 14px;
   width: 300px;
   height: 54px;
-  background-color: ${(props) => (props.isSelected ? "#1a1a1a" : "white")};
-  color: ${(props) => (props.isSelected ? "white" : "#1a1a1a")};
+  background-color: ${(props) => (props.isSelected ? '#1a1a1a' : 'white')};
+  color: ${(props) => (props.isSelected ? 'white' : '#1a1a1a')};
   border: 1px solid white;
   border-bottom: 1px solid #1a1a1a;
   margin: 0 5px;
@@ -250,7 +255,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   margin-bottom: 20px;
   cursor: pointer;
   border: ${(props) =>
-    props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
+    props.$isSelected ? '2px solid black' : '2px solid #ffffff'};
 
   &:hover {
     border: 2px solid #000000;
@@ -306,7 +311,7 @@ const Repo = styled.div<{ isSelected: boolean }>`
   background-color: white;
   border-radius: 10px;
   border: ${(props) =>
-    props.isSelected ? "2px solid black" : "2px solid #e7e7e7"};
+    props.isSelected ? '2px solid black' : '2px solid #e7e7e7'};
   cursor: pointer;
 
   &:hover {
@@ -330,7 +335,7 @@ const Reponame = styled.div`
 `;
 
 const Start = styled.button<{ startClicked: boolean }>`
-  background-color: ${(props) => (props.startClicked ? "#1a1a1a" : "#cacaca")};
+  background-color: ${(props) => (props.startClicked ? '#1a1a1a' : '#cacaca')};
   color: #fff;
   font-weight: bold;
   font-size: 14px;
@@ -347,7 +352,7 @@ const Start = styled.button<{ startClicked: boolean }>`
 
   &:hover {
     background-color: ${(props) =>
-      props.startClicked ? "#1a1a1a" : "#1a1a1a"};
+      props.startClicked ? '#1a1a1a' : '#1a1a1a'};
   }
 `;
 
@@ -357,7 +362,7 @@ const DropdownContainer = styled.div`
   align-items: center;
   margin-bottom: 40px;
   flex-direction: row;
-  margin-left: 430px;
+  /* margin-left: 430px; */
   margin-bottom: 60px;
   margin-top: -10px;
 `;
@@ -405,7 +410,13 @@ const DropdownSelect3 = styled.select`
   border-radius: 4px;
 `;
 
+interface Resume {
+  id: number;
+  pre_image_url: string;
+}
+
 function Choose() {
+  const navigate = useNavigate();
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
@@ -417,9 +428,50 @@ function Choose() {
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
   const githubLoginInfo = useRecoilValue(githubLoginInfoState);
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
   const [, setInterviewType] = useRecoilState(interviewTypeState);
+  const [, setShowVideoComponent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const repoList = useRecoilValue(repoListState);
+  const [resumeList, setResumeList] = useState<Resume[]>([]);
 
+  // question_type 관련 state
+  const [projectCount, setProjectCount] = useState(0);
+  const [csCount, setCsCount] = useState(0);
+  const [personalityCount, setPersonalityCount] = useState(0);
+  const [questionState, setQuestionState] =
+    useRecoilState(currentQuestionState);
+
+  // question_type 관련 함수
+  const handleProjectCountChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setProjectCount(parseInt(e.target.value));
+  };
+  const handleCsCountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCsCount(parseInt(e.target.value));
+  };
+  const handlePersonalityCountChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setPersonalityCount(parseInt(e.target.value));
+  };
+
+  // question_type의 count가 바뀔때마다 실행
+  useEffect(() => {
+    setQuestionState((prevState) => ({
+      ...prevState,
+      counts: {
+        project: projectCount,
+        cs: csCount,
+        personality: personalityCount,
+      },
+    }));
+    console.log(questionState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectCount, csCount, personalityCount]);
+
+  // 모든 칸이 입력돼야 면접을 시작할 수 있음
   useEffect(() => {
     const isAllSelected =
       selectedMultiButtons.length > 0 &&
@@ -427,7 +479,7 @@ function Choose() {
       selectedInterviewType !== null &&
       selectedResume !== null &&
       selectedRepos.length > 0 &&
-      title !== "";
+      title !== '';
 
     setStartClicked(isAllSelected);
   }, [
@@ -439,6 +491,12 @@ function Choose() {
     title,
   ]);
 
+  // 면접 제목 Change 이벤트 함수
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  // question_type 중복 선택 클릭 이벤트 함수
   const handleMultiButtonClick = (buttonName: string) => {
     const selectedIndex = selectedMultiButtons.indexOf(buttonName);
     let updatedSelectedButtons: string[];
@@ -454,34 +512,31 @@ function Choose() {
     setSelectedMultiButtons(updatedSelectedButtons);
   };
 
+  // position 클릭 이벤트 함수
   const handlePositionClick = (buttonName: string) => {
     setSelectedPosition((prevSelected) =>
       prevSelected === buttonName ? null : buttonName
     );
   };
 
+  // interview_type 클릭 이벤트 함수
   const handleInterviewTypeClick = (buttonName: string) => {
     setSelectedInterviewType((prevSelected) =>
       prevSelected === buttonName ? null : buttonName
     );
-    if (buttonName === "video") {
+    if (buttonName === 'video') {
       setInterviewType({ showCamera: true });
     } else {
       setInterviewType({ showCamera: false });
     }
   };
 
-  const navigate = useNavigate();
-
-  const handleStartClick = (id: number) => {
-    setStartClicked(true);
-    navigate("/interview/" + id);
-  };
-
+  // 이력서 선택 클릭 이벤트 함수
   const handleResumeSelect = (resumeId: number) => {
     setSelectedResume(resumeId);
   };
 
+  // Repository 선택 클릭 이벤트 함수
   const handleRepoSelect = (repoName: string) => {
     const selectedIndex = selectedRepos.indexOf(repoName);
     let updatedSelectedRepos: string[];
@@ -495,17 +550,17 @@ function Choose() {
     setSelectedRepos(updatedSelectedRepos);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+  // 선택 완료 버튼 클릭 이벤트 함수 (다음 페이지로 이동)
+  const handleStartClick = (id: number) => {
+    setStartClicked(true);
+    navigate('/interview/' + id);
   };
 
-  const [, setShowVideoComponent] = useState(false);
-
+  // 면접 생성 API 함수
   const createInterview = async () => {
     try {
       setIsLoading(true);
-
-      const response = await api.post("interviews/create/", {
+      const response = await api.post('interviews/create/', {
         user: githubLoginInfo.id,
         title: title,
         position: selectedPosition,
@@ -517,7 +572,7 @@ function Choose() {
       handleStartClick(response.data.id);
       console.log(response.data);
       // 음성 면접인 경우에만 처리
-      if (selectedInterviewType !== "video") {
+      if (selectedInterviewType !== 'video') {
         setShowVideoComponent(false);
       }
     } catch (e) {
@@ -526,20 +581,11 @@ function Choose() {
     setIsLoading(false);
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-  const repoList = useRecoilValue(repoListState);
-
-  interface Resume {
-    id: number;
-    pre_image_url: string;
-  }
-
-  const [resumeList, setResumeList] = useState<Resume[]>([]);
-
+  // 이력서 목록 조회 API
   useEffect(() => {
     const getResumes = async () => {
       try {
-        const response = await api.get("resumes/");
+        const response = await api.get('resumes/');
         setResumeList(response.data);
       } catch (e) {
         console.error(e);
@@ -549,49 +595,8 @@ function Choose() {
     getResumes();
   }, []);
 
-  const [selectedQuestionCounts, setSelectedQuestionCounts] = useState({
-    project: 0,
-    cs: 0,
-    personality: 0,
-    total: 0,
-  });
-
-  // 갱신 함수 수정
-  const updateSelectedQuestionCounts = async () => {
-    const projectCount = selectedMultiButtons.filter(
-      (button) => button === "project"
-    ).length;
-    const csCount = selectedMultiButtons.filter(
-      (button) => button === "cs"
-    ).length;
-    const personalityCount = selectedMultiButtons.filter(
-      (button) => button === "personality"
-    ).length;
-
-    const total = projectCount + csCount + personalityCount;
-
-    setSelectedQuestionCounts({
-      project: projectCount,
-      cs: csCount,
-      personality: personalityCount,
-      total: total,
-    });
-
-    try {
-      const response = await api.post("interviews/<int:id>/questions/create/", {
-        project: projectCount,
-        cs: csCount,
-        personality: personalityCount,
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    updateSelectedQuestionCounts();
-  }, [selectedMultiButtons]);
+  // 드롭다운 메뉴 만드는 Array
+  const options = Array.from({ length: 6 }, (_, index) => index);
 
   return (
     <>
@@ -600,7 +605,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder="" onChange={handleChange}></Input>
+          <Input placeholder='' onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
@@ -609,20 +614,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedMultiButtons.includes("project")}
-              onClick={() => handleMultiButtonClick("project")}
+              isSelected={selectedMultiButtons.includes('project')}
+              onClick={() => handleMultiButtonClick('project')}
             >
               프로젝트
             </Button>
             <Button
-              isSelected={selectedMultiButtons.includes("cs")}
-              onClick={() => handleMultiButtonClick("cs")}
+              isSelected={selectedMultiButtons.includes('cs')}
+              onClick={() => handleMultiButtonClick('cs')}
             >
               CS 질문
             </Button>
             <Button
-              isSelected={selectedMultiButtons.includes("personality")}
-              onClick={() => handleMultiButtonClick("personality")}
+              isSelected={selectedMultiButtons.includes('personality')}
+              onClick={() => handleMultiButtonClick('personality')}
             >
               인성 면접
             </Button>
@@ -632,35 +637,43 @@ function Choose() {
           <DropdownWrapper>
             <DropdownLabel>Project Label</DropdownLabel>
             <DropdownSelect1
-              disabled={!selectedMultiButtons.includes("project")}
+              value={projectCount}
+              disabled={!selectedMultiButtons.includes('project')}
+              onChange={handleProjectCountChange}
             >
-              <option value="Select-option...">1</option>
-              <option value="Select-option...">2</option>
-              <option value="Select-option...">3</option>
-              <option value="Select-option...">4</option>
-              <option value="Select-option...">5</option>
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </DropdownSelect1>
           </DropdownWrapper>
           <DropdownWrapper>
             <DropdownLabel>CS Label</DropdownLabel>
-            <DropdownSelect2 disabled={!selectedMultiButtons.includes("cs")}>
-              <option value="Select-option...">1</option>
-              <option value="Select-option...">2</option>
-              <option value="Select-option...">3</option>
-              <option value="Select-option...">4</option>
-              <option value="Select-option...">5</option>
+            <DropdownSelect2
+              value={csCount}
+              disabled={!selectedMultiButtons.includes('cs')}
+              onChange={handleCsCountChange}
+            >
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </DropdownSelect2>
           </DropdownWrapper>
           <DropdownWrapper>
             <DropdownLabel>Personality Label</DropdownLabel>
             <DropdownSelect3
-              disabled={!selectedMultiButtons.includes("personality")}
+              value={personalityCount}
+              disabled={!selectedMultiButtons.includes('personality')}
+              onChange={handlePersonalityCountChange}
             >
-              <option value="Select-option...">1</option>
-              <option value="Select-option...">2</option>
-              <option value="Select-option...">3</option>
-              <option value="Select-option...">4</option>
-              <option value="Select-option...">5</option>
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
             </DropdownSelect3>
           </DropdownWrapper>
         </DropdownContainer>
@@ -670,20 +683,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedPosition === "frontend"}
-              onClick={() => handlePositionClick("frontend")}
+              isSelected={selectedPosition === 'frontend'}
+              onClick={() => handlePositionClick('frontend')}
             >
               Frontend
             </Button>
             <Button
-              isSelected={selectedPosition === "backend"}
-              onClick={() => handlePositionClick("backend")}
+              isSelected={selectedPosition === 'backend'}
+              onClick={() => handlePositionClick('backend')}
             >
               Backend
             </Button>
             <Button
-              isSelected={selectedPosition === "fullstack"}
-              onClick={() => handlePositionClick("fullstack")}
+              isSelected={selectedPosition === 'fullstack'}
+              onClick={() => handlePositionClick('fullstack')}
             >
               Fullstack
             </Button>
@@ -695,20 +708,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedInterviewType === "video"}
-              onClick={() => handleInterviewTypeClick("video")}
+              isSelected={selectedInterviewType === 'video'}
+              onClick={() => handleInterviewTypeClick('video')}
             >
               화상 면접
             </Button>
             <Button
-              isSelected={selectedInterviewType === "voice"}
-              onClick={() => handleInterviewTypeClick("voice")}
+              isSelected={selectedInterviewType === 'voice'}
+              onClick={() => handleInterviewTypeClick('voice')}
             >
               음성 면접
             </Button>
             <Button
-              isSelected={selectedInterviewType === "text"}
-              onClick={() => handleInterviewTypeClick("text")}
+              isSelected={selectedInterviewType === 'text'}
+              onClick={() => handleInterviewTypeClick('text')}
             >
               텍스트 면접
             </Button>
@@ -751,8 +764,8 @@ function Choose() {
               })
             ) : (
               <Repo
-                isSelected={selectedRepos.includes("")}
-                onClick={() => handleRepoSelect("")}
+                isSelected={selectedRepos.includes('')}
+                onClick={() => handleRepoSelect('')}
               >
                 <Reponame>repository가 없습니다.</Reponame>
               </Repo>
