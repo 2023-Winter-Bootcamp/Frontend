@@ -4,12 +4,13 @@ import React, {
   useRef,
   Suspense,
   startTransition,
-} from "react";
-import { useParams } from "react-router-dom";
-import styled from "styled-components";
-import { githubLoginInfoState, githubProfileState } from "./Recoil";
-import { useRecoilState } from "recoil";
-import axios from "axios";
+} from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { githubLoginInfoState, githubProfileState } from './Recoil';
+import { useRecoilState } from 'recoil';
+import axios from 'axios';
+import api from './baseURL/baseURL';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -406,7 +407,7 @@ const Resultpage = () => {
           audioRef.pause();
         }
 
-        audioRef.addEventListener("ended", () => {
+        audioRef.addEventListener('ended', () => {
           // 오디오 재생이 끝나면 버튼을 다시 play 상태로 변경
           const newIsPlayingList = [...isPlayingList];
           newIsPlayingList[index] = false;
@@ -419,19 +420,19 @@ const Resultpage = () => {
   const [githubLoginInfo, setGithubLoginInfo] =
     useRecoilState(githubLoginInfoState);
   const [githubProfile, setGithubProfile] = useRecoilState(githubProfileState);
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [gitName, setGitName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [gitName, setGitName] = useState('');
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const gitId = githubLoginInfo.html_url.split("/").slice(-1)[0];
+        const gitId = githubLoginInfo.html_url.split('/').slice(-1)[0];
         const response = await axios.get(
           `https://api.github.com/users/${gitId}`
         );
         setAvatarUrl(response.data.avatar_url);
         setGitName(response.data.name);
       } catch (error) {
-        console.error("GitHub 사용자 정보를 가져오는 중 에러 발생:", error);
+        console.error('GitHub 사용자 정보를 가져오는 중 에러 발생:', error);
       }
     };
 
@@ -459,12 +460,12 @@ const Resultpage = () => {
                   <TextBox3>
                     <Text3>{interviewData.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names.join(", ")}
+                      {interviewData.interview_type_names.join(', ')}
                     </Text3>
                     <Text3>{interviewData.position}</Text3>
                     <Text3>{interviewData.style}</Text3>
                     <Text3>{interviewData.resume}</Text3>
-                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
+                    <Text3>{interviewData.repo_names.join(', ')}</Text3>
                   </TextBox3>
                 </TextBox1>
               </ProfileInfo>

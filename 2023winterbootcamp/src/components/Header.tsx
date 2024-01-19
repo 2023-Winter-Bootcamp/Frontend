@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import axios from "axios";
-import { useResetRecoilState } from "recoil";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+import api from '../baseURL/baseURL';
+import { useResetRecoilState } from 'recoil';
 import {
   githubLoginInfoState,
   githubProfileState,
   repoListState,
-} from "../Recoil";
+} from '../Recoil';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -82,7 +83,7 @@ const NavItem = styled(Link)`
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 2px;
@@ -114,7 +115,7 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     width: 100%;
     height: 2px;
@@ -138,13 +139,10 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/users/status/",
-          {
-            withCredentials: true,
-          }
-        );
-        if (response.data.status === "logged_in") {
+        const response = await api.get('users/status/', {
+          withCredentials: true,
+        });
+        if (response.data.status === 'logged_in') {
           setIsLoggedIn(true);
         }
       } catch (e) {
@@ -157,7 +155,7 @@ function Header() {
 
   const handleGithubLogin = () => {
     const GITHUB_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
-    window.localStorage.setItem("githubLogin", "inProgress");
+    window.localStorage.setItem('githubLogin', 'inProgress');
     window.location.assign(GITHUB_LOGIN_URL);
   };
 
@@ -173,11 +171,11 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/users/logout/", {
+      const response = await api.get('users/logout/', {
         withCredentials: true,
       });
       console.log(response.status);
-      window.location.href = "/";
+      window.location.href = '/';
       setIsLoggedIn(false);
       resetRecoilWhenLogout();
     } catch (e) {
@@ -188,7 +186,7 @@ function Header() {
   return (
     <HeaderContainer>
       <Logo
-        to="/"
+        to='/'
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -199,7 +197,7 @@ function Header() {
         {isLoggedIn ? (
           <>
             <MotionNavItem
-              to="/mypage"
+              to='/mypage'
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.7 }}
@@ -207,7 +205,7 @@ function Header() {
               마이페이지
             </MotionNavItem>
             <MotionNavItem
-              to="/"
+              to='/'
               onClick={handleLogout}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -218,7 +216,7 @@ function Header() {
           </>
         ) : (
           <MotionNavItem
-            to="/"
+            to='/'
             onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
