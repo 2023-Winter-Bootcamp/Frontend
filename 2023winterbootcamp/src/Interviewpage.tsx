@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,6 +12,8 @@ import {
   currentQuestionState,
   currentQuestionStateType,
   QuestionType,
+  totalQuestionCountState,
+  interviewResultState,
 } from './Recoil';
 import { motion } from 'framer-motion';
 import nextIcon from './images/nextbutton.png';
@@ -253,12 +256,18 @@ function Interviewpage() {
   const { id } = useParams(); // 면접 ID
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [interviewData, setInterviewData] =
+    useRecoilState(interviewResultState);
 
   //질문 관련
   const [question, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
+  const [questionContent, setQuestionContent] = useState<string>('');
+  const [questionType, setQuestionType] = useState<string>('');
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
+  const questionTotalCount = useRecoilValue(totalQuestionCountState);
+  const [responseCount, setResponseCount] = useState(0);
 
   //음성녹음 관련
   const recorderControls = useAudioRecorder();
@@ -266,46 +275,34 @@ function Interviewpage() {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const instRef = useRef<HTMLDivElement | null>(null);
   const [instText, setInstText] = useState('');
+  // let lastRecord: Blob;
 
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
-  //면접화면이 처음 렌더링될 때 질문정보 수신
+  // 첫 질문 조회
+  const fetchCommonQuestion = async () => {
+    if (id) {
+      try {
+        const response = await api.get(`interviews/${id}/questions/`);
+        console.log(response.data.questions);
+        setQuestion(response.data.questions);
+        setQuestionType(response.data.questions[0].type_name);
+        setQuestionContent(response.data.questions[0].content);
+        setQuestionId(response.data.questions[0].id);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  // 면접화면이 처음 렌더링될 때 질문정보 수신
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (id) {
-      api
-        .get(`interviews/${id}/questions/`)
-        .then((response) => {
-          console.log(response.data.questions);
-          setQuestion(response.data.questions);
-          setQuestionId(response.data.questions[0].id);
-        })
-        .catch((error) => {
-          console.error('Error fetching questions:', error);
-        });
-    }
+    fetchCommonQuestion();
     console.log(selectedInterviewType);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  //질문 음성이 종료됐을 때 녹음 시작해주는 이벤트함수 등록
-  useEffect(() => {
-    const audioElement = audioRef.current;
-    const handleEnded = () => {
-      handleRecordingStart();
-    };
-
-    if (audioElement) {
-      audioElement.addEventListener('ended', handleEnded);
-    }
-
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener('ended', handleEnded);
-      }
-    };
   }, [id]);
 
   //질문 내용 TTS변환 후 음성파일 실행 메소드
@@ -320,7 +317,8 @@ function Interviewpage() {
             languageCode: 'ko-KR',
           },
           input: {
-            text: `${question[0].content}`,
+            // text: `${question[0].content}`,
+            text: questionContent,
           },
           audioConfig: {
             audioEncoding: 'mp3',
@@ -350,6 +348,24 @@ function Interviewpage() {
     return blob;
   };
 
+  //질문 음성이 종료됐을 때 녹음 시작해주는 이벤트함수 등록
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    const handleEnded = () => {
+      handleRecordingStart();
+    };
+
+    if (audioElement) {
+      audioElement.addEventListener('ended', handleEnded);
+    }
+
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener('ended', handleEnded);
+      }
+    };
+  }, [questionId]);
+
   //버튼을 눌렀을 때, 녹음 중지 or 질문초기화
   const handleNextButtonClick = () => {
     if (recorderControls.isRecording) {
@@ -358,13 +374,17 @@ function Interviewpage() {
       setInstText('다음 질문 준비가 완료됐다면 버튼을 눌러주세요');
     }
     if (!recorderControls.isRecording && recorderControls.recordingBlob) {
-      getQuestion(recorderControls.recordingBlob);
-      console.log('녹음파일 전송 & 다음 질문 설정');
+      if (questionTotalCount === responseCount) {
+        sendLastAnswer(recorderControls.recordingBlob);
+      } else {
+        getQuestion(recorderControls.recordingBlob);
+        console.log('녹음파일 전송 & 다음 질문 설정');
+      }
       //TODO: 녹음 종료 기능 추가해야함
     }
   };
 
-  // 음성 파일 보내고 질문 받아오는 메소드
+  // 답변 등록 + 질문 생성 API (음성 파일 보내고 질문 받아오는 메소드)
   const getQuestion = async (blob: Blob) => {
     if (!id) return;
     const file = new FormData();
@@ -379,22 +399,44 @@ function Interviewpage() {
         `interviews/${parseInt(id)}/questions/${questionId}/process/`,
         file
       );
-      console.log(response.data);
-      updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
-      setIsLoading(false);
+      setResponseCount((prevCount) => prevCount + 1); // api Response가 올때마다 count를 1씩 증가시킴
+
+      console.log(responseCount);
 
       // 필요한 경우 인터뷰 종료
-      if (shouldEndInterview()) {
-        endInterview(blob);
+      // if (questionTotalCount === responseCount) {
+      //   endInterview(blob);
+      //   return;
+      // }
+
+      // 새로운 question ID를 questionId 상태에 업데이트
+      if (response.data && response.data.question) {
+        setQuestionId(response.data.question.id);
+        setQuestionType(response.data.question.question_type);
+        setQuestionContent(response.data.question.content);
+        updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
+        // getQ2AudioData();
       }
-      /* setQuestion(response.data.content);
-      setQuestionType(response.data.type_name);
-      setQuestionId(response.data.id); */
-      // endInterview();
+      setIsLoading(false);
     } catch (e) {
       console.error(e);
     }
   };
+
+  // 마지막 질문일 때 실행
+  useEffect(() => {
+    if (questionTotalCount === responseCount) {
+      endInterview();
+      return;
+    }
+  }, [responseCount]);
+
+  // questionContent의 값이 변경되면 TTS 실행
+  useEffect(() => {
+    if (questionContent !== '') {
+      getQ2AudioData();
+    }
+  }, [questionContent]);
 
   // 현재 question_type의 count 차감 및 다음 question_type으로 변경
   const updateQuestionState = () => {
@@ -404,7 +446,7 @@ function Interviewpage() {
       let nextType = prevState.currentType;
 
       // 현재 question_type의 count가 0이면 다음 question_type으로 변경
-      if (currentCounts === 1) {
+      if (currentCounts === 0) {
         nextType = getNextQuestionType(currentType);
       }
 
@@ -421,37 +463,86 @@ function Interviewpage() {
 
   // 다음 question_type을 결정
   const getNextQuestionType = (currentType: QuestionType) => {
-    if (currentType === 'project') {
+    const { counts } = questionState;
+    if (currentType === 'project' && counts.cs > 0) {
       return 'cs';
-    } else if (currentType === 'cs') {
+    } else if (currentType === 'cs' && counts.personality > 0) {
       return 'personality';
     } else {
-      return 'project'; // 다 끝나면 default로 다시 설정함
+      return '';
     }
   };
 
   // 인터뷰 종료를 결정하는 함수
-  const shouldEndInterview = () => {
-    const { counts } = questionState;
-    return counts.project === 0 && counts.cs === 0 && counts.personality === 0;
+  // const shouldEndInterview = () => {
+  //   const { counts } = questionState;
+  //   return counts.project === 0 && counts.cs === 0 && counts.personality === 0;
+  // };
+
+  // 마지막 질문 조회
+  const fetchLastQuestion = async () => {
+    if (id) {
+      try {
+        const response = await api.get(`interviews/${id}/questions/`);
+        console.log(response.data.questions);
+        const lastArrayIndex = response.data.questions.length - 1;
+        setQuestion(response.data.questions);
+        setQuestionType(response.data.questions[lastArrayIndex].type_name);
+        setQuestionContent(response.data.questions[lastArrayIndex].content);
+        setQuestionId(response.data.questions[lastArrayIndex].id);
+      } catch (e) {
+        console.log(e);
+      }
+    }
   };
 
-  //인터뷰 종료 메소드
-  const endInterview = async (blob: Blob) => {
-    if (!id) return;
+  // 마지막 question 답변 등록 API
+  const sendLastAnswer = async (blob: Blob) => {
+    if (!id || !blob) return;
     const file = new FormData();
     file.append('question', questionId.toString());
     file.append('record_url', blob);
     try {
-      const response = await api.post(
+      await api.post(
         `interviews/questions/${questionId}/answers/create/`,
         file
       );
-      console.log(response.data);
+
+      // 면접 결과 조회 API
+      const setInterviewResult = async () => {
+        try {
+          const response = await api.get(`interviews/${id}`);
+          setInterviewData(response.data);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
+      setInterviewResult(); // 면접 결과 저장
+      navigate('/result/' + id);
     } catch (e) {
       console.log(e);
     }
-    navigate('/result/' + id);
+  };
+
+  //인터뷰 종료 메소드
+  const endInterview = async () => {
+    if (!id) return;
+    await fetchLastQuestion(); // 마지막 질문 조회
+    // const file = new FormData();
+    // file.append('question', questionId.toString());
+    // file.append('record_url', blob);
+    // try {
+    //   // 답변 등록 API (질문 생성은 X)
+    //   const response = await api.post(
+    //     `interviews/questions/${questionId}/answers/create/`,
+    //     file
+    //   );
+    //   console.log(response.data);
+    //   navigate('/result/' + id);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
 
   //녹음 시작 메소드
@@ -495,49 +586,6 @@ function Interviewpage() {
     setIsInterviewStart(true);
     getQ2AudioData();
     startStopwatch();
-  };
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (id) {
-      const questionType = getQuestionType(questionState.counts);
-
-      // 선택한 질문 개수에 따라 해당하는 종류의 질문 가져오기
-      const fetchQuestions = async () => {
-        try {
-          const response = await api.get(`interviews/${id}/questions/`, {
-            params: { type: questionType },
-          });
-          console.log(response.data);
-          setQuestion(response.data.questions);
-          setQuestionId(response.data.questions[0].id);
-        } catch (e) {
-          console.log(e);
-        }
-      };
-
-      fetchQuestions();
-    }
-    console.log(selectedInterviewType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, questionState.counts]);
-
-  // 선택한 질문 개수에 따라 해당하는 종류의 질문 타입 반환
-  const getQuestionType = (counts: {
-    project: number;
-    cs: number;
-    personality: number;
-  }) => {
-    if (counts.project > 0) {
-      return 'project';
-    } else if (counts.cs > 0) {
-      return 'cs';
-    } else if (counts.personality > 0) {
-      return 'personality';
-    }
-
-    // total이 0이거나 다른 처리해야 할 상황에 따라 설정
-    return '';
   };
 
   return (
@@ -616,8 +664,8 @@ function Interviewpage() {
           </Up>
           <Down>
             <Q>
-              <QuestionText>{question[0].type_name}</QuestionText>
-              <ContentText>{question[0].content}</ContentText>
+              <QuestionText>{questionType}</QuestionText>
+              <ContentText>{questionContent}</ContentText>
             </Q>
             <RecordBox>
               <InstructionText ref={instRef}>{instText}</InstructionText>

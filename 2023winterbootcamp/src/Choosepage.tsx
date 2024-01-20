@@ -9,6 +9,7 @@ import {
   repoListState,
   currentQuestionState,
   currentQuestionStateType,
+  totalQuestionCountState,
 } from './Recoil';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { interviewTypeState } from './Recoil';
@@ -441,6 +442,9 @@ function Choose() {
   const [personalityCount, setPersonalityCount] = useState(0);
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
+  const [, setTotalQuestionCountState] = useRecoilState(
+    totalQuestionCountState
+  );
 
   // question_type 관련 함수
   const handleProjectCountChange = (
@@ -457,16 +461,32 @@ function Choose() {
     setPersonalityCount(parseInt(e.target.value));
   };
 
+  // question_type의 count에 따라 currentType 업데이트하는 함수
+  const updateSelectedQuestionCounts = () => {
+    setQuestionState((prevState) => {
+      let newCurrentType = prevState.currentType;
+
+      if (projectCount === 0 && csCount > 0) {
+        newCurrentType = 'cs';
+      } else if (projectCount === 0 && csCount === 0 && personalityCount > 0) {
+        newCurrentType = 'personality';
+      }
+
+      return {
+        ...prevState,
+        currentType: newCurrentType,
+        counts: {
+          project: projectCount,
+          cs: csCount,
+          personality: personalityCount,
+        },
+      };
+    });
+  };
+
   // question_type의 count가 바뀔때마다 실행
   useEffect(() => {
-    setQuestionState((prevState) => ({
-      ...prevState,
-      counts: {
-        project: projectCount,
-        cs: csCount,
-        personality: personalityCount,
-      },
-    }));
+    updateSelectedQuestionCounts();
     console.log(questionState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectCount, csCount, personalityCount]);
@@ -560,6 +580,12 @@ function Choose() {
   const createInterview = async () => {
     try {
       setIsLoading(true);
+      // 전체 질문 개수 update
+      const { project, cs, personality } = questionState.counts;
+      const total = project + cs + personality;
+      setTotalQuestionCountState(total);
+      console.log(total);
+
       const response = await api.post('interviews/create/', {
         user: githubLoginInfo.id,
         title: title,

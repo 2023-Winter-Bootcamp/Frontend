@@ -110,3 +110,9 @@ export const currentQuestionState = atom<currentQuestionStateType>({
     },
   },
 });
+
+// 전체 질문 개수
+export const totalQuestionCountState = atom({
+  key: 'totalQuestionCountState',
+  default: 0,
+});
