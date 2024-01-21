@@ -508,7 +508,7 @@ function Interviewpage() {
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
         try {
-          const response = await api.get(`interviews/${id}`);
+          const response = await api.get(`interviews/${id}/`);
           setInterviewData(response.data);
         } catch (e) {
           console.log(e);
@@ -526,20 +526,6 @@ function Interviewpage() {
   const endInterview = async () => {
     if (!id) return;
     await fetchLastQuestion(); // 마지막 질문 조회
-    // const file = new FormData();
-    // file.append('question', questionId.toString());
-    // file.append('record_url', blob);
-    // try {
-    //   // 답변 등록 API (질문 생성은 X)
-    //   const response = await api.post(
-    //     `interviews/questions/${questionId}/answers/create/`,
-    //     file
-    //   );
-    //   console.log(response.data);
-    //   navigate('/result/' + id);
-    // } catch (e) {
-    //   console.log(e);
-    // }
   };
 
   //녹음 시작 메소드
