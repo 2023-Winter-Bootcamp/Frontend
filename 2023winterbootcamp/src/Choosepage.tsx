@@ -1,14 +1,12 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import api from './baseURL/baseURL';
 import LoadingModal from './components/LoadingModal';
 import {
   githubLoginInfoState,
   repoListState,
   currentQuestionState,
-  currentQuestionStateType,
   totalQuestionCountState,
 } from './Recoil';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -46,23 +44,23 @@ const TextWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const Text = styled.div`
-  font-size: 24px;
-  font-weight: 600;
-  margin-top: 40px;
-  margin-left: 29%;
+// const Text = styled.div`
+//   font-size: 24px;
+//   font-weight: 600;
+//   margin-top: 40px;
+//   margin-left: 29%;
 
-  @media screen and (max-width: 769px) {
-    margin-left: 15%;
-  }
+//   @media screen and (max-width: 769px) {
+//     margin-left: 15%;
+//   }
 
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 28%;
-  }
+//   @media screen and (min-width: 769px) and (max-width: 1023px) {
+//     margin-left: 28%;
+//   }
 
-  @media screen and (min-width: 1024px) {
-  }
-`;
+//   @media screen and (min-width: 1024px) {
+//   }
+// `;
 
 const Input = styled.input`
   width: 41%;
@@ -271,12 +269,12 @@ const TextWrapper2 = styled.div`
   margin-top: 20px;
 `;
 
-const Text2 = styled.div`
-  font-size: 28px;
-  font-weight: bold;
-  margin-top: 40px;
-  margin-left: 29%;
-`;
+// const Text2 = styled.div`
+//   font-size: 28px;
+//   font-weight: bold;
+//   margin-top: 40px;
+//   margin-left: 29%;
+// `;
 
 const Text3 = styled.div`
   color: lightgray;
@@ -573,7 +571,7 @@ function Choose() {
   // 선택 완료 버튼 클릭 이벤트 함수 (다음 페이지로 이동)
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate('/interview/' + id);
+    navigate('/start/' + id);
   };
 
   // 면접 생성 API 함수

@@ -10,12 +10,10 @@ import { useRecoilValue } from 'recoil';
 import {
   interviewTypeState,
   currentQuestionState,
-  currentQuestionStateType,
   QuestionType,
   totalQuestionCountState,
   interviewResultState,
 } from './Recoil';
-import { motion } from 'framer-motion';
 import nextIcon from './images/nextbutton.png';
 import recordIcon from './images/recordbutton.png';
 import LoadingModal from './components/LoadingModal';
@@ -94,75 +92,6 @@ const RecordBox = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
-`;
-
-const StartModal = styled.div`
-  width: 100%;
-  height: 700px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
-const TextContent = styled(motion.div)<{ isInterviewStart: boolean }>`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 100px;
-`;
-
-const AnswerPoint = styled(motion.div)`
-  margin-bottom: 10px;
-  font-size: 34px;
-  letter-spacing: -10%;
-  width: 200px;
-  height: 180px;
-  border-right: 1px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-`;
-
-const PointText = styled(motion.div)`
-  font-size: 18px;
-  margin-left: 20px;
-  text-align: left;
-  line-height: 1.5;
-`;
-
-const StartButton = styled(motion.button)`
-  width: 240px;
-  height: 50px;
-  margin-top: 20px;
-  background-color: #1a1a1a;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  border: none;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #333;
-    transform: translateY(-0.5px);
-  }
-`;
-
-const Dot = styled(motion.div)`
-  margin-top: 10px;
-  text-align: center;
-  color: #afafaf;
-  font-size: 14px;
-  margin-top: 10px;
 `;
 
 const spin3D = keyframes`
@@ -256,8 +185,7 @@ function Interviewpage() {
   const { id } = useParams(); // 면접 ID
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [interviewData, setInterviewData] =
-    useRecoilState(interviewResultState);
+  const [, setInterviewData] = useRecoilState(interviewResultState);
 
   //질문 관련
   const [question, setQuestion] = useState<Question[]>([]);
@@ -275,7 +203,6 @@ function Interviewpage() {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const instRef = useRef<HTMLDivElement | null>(null);
   const [instText, setInstText] = useState('');
-  // let lastRecord: Blob;
 
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -301,9 +228,17 @@ function Interviewpage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchCommonQuestion();
+    interviewStart();
+
     console.log(selectedInterviewType);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // 면접 시작할때 시작되는 함수
+  const interviewStart = () => {
+    setIsInterviewStart(true);
+    getQ2AudioData();
+    startStopwatch();
+  };
 
   //질문 내용 TTS변환 후 음성파일 실행 메소드
   const getQ2AudioData = async () => {
@@ -317,7 +252,6 @@ function Interviewpage() {
             languageCode: 'ko-KR',
           },
           input: {
-            // text: `${question[0].content}`,
             text: questionContent,
           },
           audioConfig: {
@@ -329,11 +263,22 @@ function Interviewpage() {
       const base64String = response.data.audioContent;
       const audioBlob = base64ToBlob(base64String);
       if (audioRef.current && audioBlob !== undefined) {
-        audioRef.current.src = URL.createObjectURL(audioBlob);
-        audioRef.current.play();
+        const objectURL = URL.createObjectURL(audioBlob);
+        audioRef.current.src = objectURL;
+
+        audioRef.current.addEventListener('loadeddata', playAudio);
       }
     } catch (error) {
       console.error('Error fetching audio data:', error);
+    }
+  };
+
+  // 오디오 파일 재생 함수
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current
+        .play()
+        .catch((e) => console.error('Error playing audio:', e));
     }
   };
 
@@ -380,7 +325,6 @@ function Interviewpage() {
         getQuestion(recorderControls.recordingBlob);
         console.log('녹음파일 전송 & 다음 질문 설정');
       }
-      //TODO: 녹음 종료 기능 추가해야함
     }
   };
 
@@ -409,7 +353,6 @@ function Interviewpage() {
         setQuestionType(response.data.question.question_type);
         setQuestionContent(response.data.question.content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
-        // getQ2AudioData();
       }
       setIsLoading(false);
     } catch (e) {
@@ -469,12 +412,6 @@ function Interviewpage() {
       return '';
     }
   };
-
-  // 인터뷰 종료를 결정하는 함수
-  // const shouldEndInterview = () => {
-  //   const { counts } = questionState;
-  //   return counts.project === 0 && counts.cs === 0 && counts.personality === 0;
-  // };
 
   // 마지막 질문 조회
   const fetchLastQuestion = async () => {
@@ -561,107 +498,52 @@ function Interviewpage() {
     };
   }, [isRunning]);
 
+  // 스탑워치 스톱
   const startStopwatch = () => {
     setIsRunning(true);
   };
 
-  const interviewStart = () => {
-    setIsInterviewStart(true);
-    getQ2AudioData();
-    startStopwatch();
-  };
-
   return (
     <>
-      {!isInterviewStart ? (
-        <StartModal>
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 2 }}
-          >
-            <TextContent
-              isInterviewStart={isInterviewStart}
-              variants={fadeIn}
-              initial='hidden'
-              animate='visible'
-            >
-              <AnswerPoint>답변포인트</AnswerPoint>
-              <PointText>
-                <b>본인을 설명하는 키워드</b>가 회사의 조직문화나
-                <br />
-                <b>지원 직무와 어떤 연관성이 있는지</b>를 염두해 두고,
-                <br />
-                면접관의 긍정적인 판단에 도움이 되는 답변일지
-                <br />
-                고려해 봅시다.
-              </PointText>
-            </TextContent>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 3 }}
-          >
-            <StartButton onClick={interviewStart} variants={fadeIn}>
-              면접 시작
-            </StartButton>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 4 }}
-          >
-            <Dot variants={fadeIn}>
-              *면접할 준비가 되셨다면,
-              <br />
-              면접 시작 버튼을 눌러주세요!
-            </Dot>
-          </motion.div>
-        </StartModal>
-      ) : (
-        <>
-          <Up>
-            {selectedInterviewType.showCamera === false ? (
-              <VideoContainer>
-                <SpinnerBox>
-                  <LeoBorder
-                    color='rgb(102, 102, 102)'
-                    gradientColor='102, 102, 102'
-                    animationDuration={1.8}
-                  >
-                    <LeoCore backgroundColor='#191919aa' />
-                  </LeoBorder>
-                  <LeoBorder
-                    color='rgb(255, 215, 244)'
-                    gradientColor='255, 215, 244'
-                    animationDuration={2.2}
-                  >
-                    <LeoCore backgroundColor='#bebebeaa' />
-                  </LeoBorder>
-                </SpinnerBox>
-              </VideoContainer>
-            ) : (
-              <Camera elapsedTime={elapsedTime} children={undefined} />
-            )}
-          </Up>
-          <Down>
-            <Q>
-              <QuestionText>{questionType}</QuestionText>
-              <ContentText>{questionContent}</ContentText>
-            </Q>
-            <RecordBox>
-              <InstructionText ref={instRef}>{instText}</InstructionText>
-              <Next onClick={handleNextButtonClick} ref={btnRef}>
-                <StyledNextImage
-                  src={recorderControls.isRecording ? recordIcon : nextIcon}
-                  alt='next'
-                />
-              </Next>
-            </RecordBox>
-          </Down>
-        </>
-      )}
+      <Up>
+        {selectedInterviewType.showCamera === false ? (
+          <VideoContainer>
+            <SpinnerBox>
+              <LeoBorder
+                color='rgb(102, 102, 102)'
+                gradientColor='102, 102, 102'
+                animationDuration={1.8}
+              >
+                <LeoCore backgroundColor='#191919aa' />
+              </LeoBorder>
+              <LeoBorder
+                color='rgb(255, 215, 244)'
+                gradientColor='255, 215, 244'
+                animationDuration={2.2}
+              >
+                <LeoCore backgroundColor='#bebebeaa' />
+              </LeoBorder>
+            </SpinnerBox>
+          </VideoContainer>
+        ) : (
+          <Camera elapsedTime={elapsedTime} children={undefined} />
+        )}
+      </Up>
+      <Down>
+        <Q>
+          <QuestionText>{questionType}</QuestionText>
+          <ContentText>{questionContent}</ContentText>
+        </Q>
+        <RecordBox>
+          <InstructionText ref={instRef}>{instText}</InstructionText>
+          <Next onClick={handleNextButtonClick} ref={btnRef}>
+            <StyledNextImage
+              src={recorderControls.isRecording ? recordIcon : nextIcon}
+              alt='next'
+            />
+          </Next>
+        </RecordBox>
+      </Down>
       {isLoading ? <LoadingModal /> : null}
       <audio ref={audioRef} style={{ display: 'none' }} preload='auto' />
     </>
