@@ -4,7 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
-import { githubLoginInfoState, repoListState } from "./Recoil";
+import {
+  currentQuestionState,
+  githubLoginInfoState,
+  repoListState,
+  totalQuestionCountState,
+} from "./Recoil";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { interviewTypeState } from "./Recoil";
 
@@ -158,12 +163,12 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-const Button = styled.button<{ isSelected: boolean }>`
+const Button = styled.button<{ $isSelected: boolean }>`
   font-size: 14px;
   width: 300px;
   height: 54px;
-  background-color: ${(props) => (props.isSelected ? '#1a1a1a' : 'white')};
-  color: ${(props) => (props.isSelected ? 'white' : '#1a1a1a')};
+  background-color: ${(props) => (props.$isSelected ? "#1a1a1a" : "white")};
+  color: ${(props) => (props.$isSelected ? "white" : "#1a1a1a")};
   border: 1px solid white;
   border-bottom: 1px solid #1a1a1a;
   margin: 0 5px;
@@ -223,8 +228,8 @@ const ResumeContainer = styled.div`
   }
 `;
 
-const ScrollContainer = styled.div<{ len: number }>`
-  width: ${(props) => props.len * 500}px;
+const ScrollContainer = styled.div<{ $len: number }>`
+  width: ${(props) => props.$len * 500}px;
   height: 100%;
   flex: 1;
   display: flex;
@@ -249,7 +254,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   margin-bottom: 20px;
   cursor: pointer;
   border: ${(props) =>
-    props.$isSelected ? '2px solid black' : '2px solid #ffffff'};
+    props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
 
   &:hover {
     border: 2px solid #000000;
@@ -299,13 +304,13 @@ const RepoContainer = styled.div`
   }
 `;
 
-const Repo = styled.div<{ isSelected: boolean }>`
+const Repo = styled.div<{ $isSelected: boolean }>`
   width: 299px;
   height: 130px;
   background-color: white;
   border-radius: 10px;
   border: ${(props) =>
-    props.isSelected ? '2px solid black' : '2px solid #e7e7e7'};
+    props.$isSelected ? "2px solid black" : "2px solid #e7e7e7"};
   cursor: pointer;
 
   &:hover {
@@ -328,8 +333,8 @@ const Reponame = styled.div`
   text-overflow: ellipsis;
 `;
 
-const Start = styled.button<{ startClicked: boolean }>`
-  background-color: ${(props) => (props.startClicked ? '#1a1a1a' : '#cacaca')};
+const Start = styled.button<{ $startClicked: boolean }>`
+  background-color: ${(props) => (props.$startClicked ? "#1a1a1a" : "#cacaca")};
   color: #fff;
   font-weight: bold;
   font-size: 14px;
@@ -346,7 +351,7 @@ const Start = styled.button<{ startClicked: boolean }>`
 
   &:hover {
     background-color: ${(props) =>
-      props.startClicked ? '#1a1a1a' : '#1a1a1a'};
+      props.$startClicked ? "#1a1a1a" : "#1a1a1a"};
   }
 `;
 
@@ -494,7 +499,7 @@ function Choose() {
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
   const githubLoginInfo = useRecoilValue(githubLoginInfoState);
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
   const [, setInterviewType] = useRecoilState(interviewTypeState);
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -532,9 +537,9 @@ function Choose() {
       let newCurrentType = prevState.currentType;
 
       if (projectCount === 0 && csCount > 0) {
-        newCurrentType = 'cs';
+        newCurrentType = "cs";
       } else if (projectCount === 0 && csCount === 0 && personalityCount > 0) {
-        newCurrentType = 'personality';
+        newCurrentType = "personality";
       }
 
       return {
@@ -564,7 +569,7 @@ function Choose() {
       selectedInterviewType !== null &&
       selectedResume !== null &&
       selectedRepos.length > 0 &&
-      title !== '';
+      title !== "";
 
     setStartClicked(isAllSelected);
   }, [
@@ -590,6 +595,9 @@ function Choose() {
       updatedSelectedButtons = selectedMultiButtons.filter(
         (selectedButton) => selectedButton !== buttonName
       );
+      if(selectedIndex === 0) setProjectCount(0);
+      else if(selectedIndex === 1) setCsCount(0);
+      else if(selectedIndex === 2) setPersonalityCount(0);
     } else {
       updatedSelectedButtons = [...selectedMultiButtons, buttonName];
     }
@@ -609,7 +617,7 @@ function Choose() {
     setSelectedInterviewType((prevSelected) =>
       prevSelected === buttonName ? null : buttonName
     );
-    if (buttonName === 'video') {
+    if (buttonName === "video") {
       setInterviewType({ showCamera: true });
     } else {
       setInterviewType({ showCamera: false });
@@ -638,7 +646,8 @@ function Choose() {
   // 선택 완료 버튼 클릭 이벤트 함수 (다음 페이지로 이동)
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate('/start/' + id);
+    navigate("/start/" + id);
+    console.log(questionState);
   };
 
   // 면접 생성 API 함수
@@ -651,7 +660,7 @@ function Choose() {
       setTotalQuestionCountState(total);
       console.log(total);
 
-      const response = await api.post('interviews/create/', {
+      const response = await api.post("interviews/create/", {
         user: githubLoginInfo.id,
         title: title,
         position: selectedPosition,
@@ -663,7 +672,7 @@ function Choose() {
       handleStartClick(response.data.id);
       console.log(response.data);
       // 음성 면접인 경우에만 처리
-      if (selectedInterviewType !== 'video') {
+      if (selectedInterviewType !== "video") {
         setShowVideoComponent(false);
       }
     } catch (e) {
@@ -676,7 +685,7 @@ function Choose() {
   useEffect(() => {
     const getResumes = async () => {
       try {
-        const response = await api.get('resumes/');
+        const response = await api.get("resumes/");
         setResumeList(response.data);
       } catch (e) {
         console.error(e);
@@ -696,7 +705,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder='' onChange={handleChange}></Input>
+          <Input placeholder="" onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
@@ -705,20 +714,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedMultiButtons.includes('project')}
-              onClick={() => handleMultiButtonClick('project')}
+              $isSelected={selectedMultiButtons.includes("project")}
+              onClick={() => handleMultiButtonClick("project")}
             >
               프로젝트
             </Button>
             <Button
-              isSelected={selectedMultiButtons.includes('cs')}
-              onClick={() => handleMultiButtonClick('cs')}
+              $isSelected={selectedMultiButtons.includes("cs")}
+              onClick={() => handleMultiButtonClick("cs")}
             >
               CS 질문
             </Button>
             <Button
-              isSelected={selectedMultiButtons.includes('personality')}
-              onClick={() => handleMultiButtonClick('personality')}
+              $isSelected={selectedMultiButtons.includes("personality")}
+              onClick={() => handleMultiButtonClick("personality")}
             >
               인성 면접
             </Button>
@@ -729,7 +738,7 @@ function Choose() {
             <DropdownLabel>Project Label</DropdownLabel>
             <DropdownSelect1
               value={projectCount}
-              disabled={!selectedMultiButtons.includes('project')}
+              disabled={!selectedMultiButtons.includes("project")}
               onChange={handleProjectCountChange}
             >
               {options.map((option) => (
@@ -743,7 +752,7 @@ function Choose() {
             <DropdownLabel>CS Label</DropdownLabel>
             <DropdownSelect2
               value={csCount}
-              disabled={!selectedMultiButtons.includes('cs')}
+              disabled={!selectedMultiButtons.includes("cs")}
               onChange={handleCsCountChange}
             >
               {options.map((option) => (
@@ -757,7 +766,7 @@ function Choose() {
             <DropdownLabel>Personality Label</DropdownLabel>
             <DropdownSelect3
               value={personalityCount}
-              disabled={!selectedMultiButtons.includes('personality')}
+              disabled={!selectedMultiButtons.includes("personality")}
               onChange={handlePersonalityCountChange}
             >
               {options.map((option) => (
@@ -775,20 +784,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedPosition === 'frontend'}
-              onClick={() => handlePositionClick('frontend')}
+              $isSelected={selectedPosition === "frontend"}
+              onClick={() => handlePositionClick("frontend")}
             >
               Frontend
             </Button>
             <Button
-              isSelected={selectedPosition === 'backend'}
-              onClick={() => handlePositionClick('backend')}
+              $isSelected={selectedPosition === "backend"}
+              onClick={() => handlePositionClick("backend")}
             >
               Backend
             </Button>
             <Button
-              isSelected={selectedPosition === 'fullstack'}
-              onClick={() => handlePositionClick('fullstack')}
+              $isSelected={selectedPosition === "fullstack"}
+              onClick={() => handlePositionClick("fullstack")}
             >
               Fullstack
             </Button>
@@ -800,20 +809,20 @@ function Choose() {
           </TextWrapper1>
           <ButtonsContainer>
             <Button
-              isSelected={selectedInterviewType === 'video'}
-              onClick={() => handleInterviewTypeClick('video')}
+              $isSelected={selectedInterviewType === "video"}
+              onClick={() => handleInterviewTypeClick("video")}
             >
               화상 면접
             </Button>
             <Button
-              isSelected={selectedInterviewType === 'voice'}
-              onClick={() => handleInterviewTypeClick('voice')}
+              $isSelected={selectedInterviewType === "voice"}
+              onClick={() => handleInterviewTypeClick("voice")}
             >
               음성 면접
             </Button>
             <Button
-              isSelected={selectedInterviewType === 'text'}
-              onClick={() => handleInterviewTypeClick('text')}
+              $isSelected={selectedInterviewType === "text"}
+              onClick={() => handleInterviewTypeClick("text")}
             >
               텍스트 면접
             </Button>
@@ -824,7 +833,7 @@ function Choose() {
             <Text1>이력서</Text1>
           </TextWrapper2>
           <ResumeContainer>
-            <ScrollContainer len={resumeList.length}>
+            <ScrollContainer $len={resumeList.length}>
               {resumeList.map((resume, index) => (
                 <ResumeBox
                   key={resume.id}
@@ -847,7 +856,7 @@ function Choose() {
                 return (
                   <Repo
                     key={idx}
-                    isSelected={selectedRepos.includes(repo.repo_name)}
+                    $isSelected={selectedRepos.includes(repo.repo_name)}
                     onClick={() => handleRepoSelect(repo.repo_name)}
                   >
                     <Reponame>{repo.repo_name}</Reponame>
@@ -856,15 +865,15 @@ function Choose() {
               })
             ) : (
               <Repo
-                isSelected={selectedRepos.includes('')}
-                onClick={() => handleRepoSelect('')}
+                $isSelected={selectedRepos.includes("")}
+                onClick={() => handleRepoSelect("")}
               >
                 <Reponame>repository가 없습니다.</Reponame>
               </Repo>
             )}
           </RepoContainer>
         </Container4>
-        <Start startClicked={startClicked} onClick={createInterview}>
+        <Start $startClicked={startClicked} onClick={createInterview}>
           선택 완료
         </Start>
         {isLoading ? <LoadingModal /> : null}
