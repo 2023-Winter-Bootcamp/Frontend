@@ -1,16 +1,12 @@
-import React, { useEffect, useState, Suspense } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import api from './baseURL/baseURL';
-import LoadingModal from './components/LoadingModal';
-import {
-  githubLoginInfoState,
-  repoListState,
-  currentQuestionState,
-  totalQuestionCountState,
-} from './Recoil';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { interviewTypeState } from './Recoil';
+import React, { useEffect, useState, Suspense } from "react";
+import styled, { keyframes } from "styled-components";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import api from "./baseURL/baseURL";
+import LoadingModal from "./components/LoadingModal";
+import { githubLoginInfoState, repoListState } from "./Recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
   @media screen and (max-width: 768px) {
@@ -211,7 +207,6 @@ const Container4 = styled.div`
 const ResumeContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-right: 80px;
   width: 615px;
   margin: 0 auto;
   overflow-x: auto;
@@ -247,7 +242,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 5px;
   box-shadow: 4px 2px 8px rgba(0, 0, 0, 0.3);
   margin-left: 5px;
   border-radius: 4px;
@@ -279,7 +274,7 @@ const TextWrapper2 = styled.div`
 const Text3 = styled.div`
   color: lightgray;
   font-size: 14px;
-  margin-top: 53px;
+  margin-top: 50px;
   margin-left: 10px;
 `;
 
@@ -356,22 +351,40 @@ const Start = styled.button<{ startClicked: boolean }>`
 `;
 
 const DropdownContainer = styled.div`
-  width: 1000px;
+  width: 70%;
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
   flex-direction: row;
-  /* margin-left: 430px; */
-  margin-bottom: 60px;
+  margin-bottom: 10px;
   margin-top: -10px;
+  @media screen and (max-width: 769px) {
+    margin-left: 15%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 29%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 29.2%;
+  }
 `;
 
 const DropdownWrapper = styled.div`
-  width: 200px;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  margin-right: 10px;
+  @media screen and (max-width: 769px) {
+    width: 35%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 24.7%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 20.2%;
+  }
 `;
 
 const DropdownLabel = styled.div`
@@ -380,7 +393,6 @@ const DropdownLabel = styled.div`
   color: #4e4e4e;
   margin-bottom: 4px;
   font-weight: 500;
-
   @media screen and (max-width: 769px) {
   }
 
@@ -395,18 +407,73 @@ const DropdownSelect1 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  border: 1px solid #ccc;
+  @media screen and (max-width: 769px) {
+    width: 98%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 95.5%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 93%;
+  }
 `;
 
 const DropdownSelect2 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  border: 1px solid #ccc;
+  @media screen and (max-width: 769px) {
+    width: 96%;
+    margin-left: 3%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 94.5%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 94%;
+  }
 `;
 
 const DropdownSelect3 = styled.select`
   width: 190px;
   height: 38px;
   border-radius: 4px;
+  border: 1px solid #ccc;
+  @media screen and (max-width: 769px) {
+    width: 97%;
+    margin-left: 4%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 95%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 94%;
+  }
+`;
+
+const DropText = styled.div`
+  font-size: 14px;
+  color: lightgray;
+  margin-bottom: 40px;
+  @media screen and (max-width: 769px) {
+    margin-left: 49%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 54.5%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 57.3%;
+  }
 `;
 
 interface Resume {
@@ -701,6 +768,7 @@ function Choose() {
             </DropdownSelect3>
           </DropdownWrapper>
         </DropdownContainer>
+        <DropText>*원하는 질문의 개수를 선택해주세요</DropText>
         <Container2>
           <TextWrapper1>
             <Text1>Position</Text1>
