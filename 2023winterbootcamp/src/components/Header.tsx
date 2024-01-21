@@ -1,54 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import axios from 'axios';
-import api from '../baseURL/baseURL';
-import { useResetRecoilState } from 'recoil';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import axios from "axios";
+import api from "../baseURL/baseURL";
+import { useResetRecoilState } from "recoil";
 import {
   githubLoginInfoState,
   githubProfileState,
   repoListState,
-} from '../Recoil';
+} from "../Recoil";
 
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-  height: 30px;
   background-color: transparent;
   width: 100%;
-  height: 70px;
+  height: 80px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Logo = styled(motion(Link))`
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  font-size: 28px;
+  margin-bottom: 20px;
+  margin-top: 4px;
   @media screen and (max-width: 768px) {
-    font-weight: bold;
-    font-size: 28px;
-    margin-bottom: 30px;
-    margin-left: 100px;
-    text-decoration: none;
-    color: black;
-    position: absolute;
+    margin-left: 15%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    font-weight: bold;
-    font-size: 28px;
-    margin-bottom: 30px;
-    margin-left: 200px;
-    text-decoration: none;
-    color: black;
+    margin-left: 20%;
   }
   @media screen and (min-width: 1024px) {
-    font-weight: bold;
-    font-size: 28px;
-    margin-bottom: 20px;
-    margin-left: 267px;
-    text-decoration: none;
-    color: black;
-    margin-top: 4px;
+    margin-left: 18.1%;
   }
 `;
 
@@ -56,16 +44,17 @@ const Navigationbar = styled.div`
   @media screen and (max-width: 768px) {
     display: flex;
     gap: 20px;
-    margin-left: 60%;
+    margin-right: 10%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
+    margin-right: 15%;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
-    margin-right: 200px;
+    margin-right: 20%;
     margin-top: -10px;
   }
 `;
@@ -83,7 +72,7 @@ const NavItem = styled(Link)`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -115,7 +104,7 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -139,10 +128,10 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await api.get('users/status/', {
+        const response = await api.get("users/status/", {
           withCredentials: true,
         });
-        if (response.data.status === 'logged_in') {
+        if (response.data.status === "logged_in") {
           setIsLoggedIn(true);
         }
       } catch (e) {
@@ -155,7 +144,7 @@ function Header() {
 
   const handleGithubLogin = () => {
     const GITHUB_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}`;
-    window.localStorage.setItem('githubLogin', 'inProgress');
+    window.localStorage.setItem("githubLogin", "inProgress");
     window.location.assign(GITHUB_LOGIN_URL);
   };
 
@@ -171,11 +160,11 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await api.get('users/logout/', {
+      const response = await api.get("users/logout/", {
         withCredentials: true,
       });
       console.log(response.status);
-      window.location.href = '/';
+      window.location.href = "/";
       setIsLoggedIn(false);
       resetRecoilWhenLogout();
     } catch (e) {
@@ -186,7 +175,7 @@ function Header() {
   return (
     <HeaderContainer>
       <Logo
-        to='/'
+        to="/"
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -197,7 +186,7 @@ function Header() {
         {isLoggedIn ? (
           <>
             <MotionNavItem
-              to='/mypage'
+              to="/mypage"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.7 }}
@@ -205,7 +194,7 @@ function Header() {
               마이페이지
             </MotionNavItem>
             <MotionNavItem
-              to='/'
+              to="/"
               onClick={handleLogout}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -216,7 +205,7 @@ function Header() {
           </>
         ) : (
           <MotionNavItem
-            to='/'
+            to="/"
             onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
