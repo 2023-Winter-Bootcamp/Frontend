@@ -401,13 +401,7 @@ function Interviewpage() {
       );
       setResponseCount((prevCount) => prevCount + 1); // api Response가 올때마다 count를 1씩 증가시킴
 
-      console.log(responseCount);
-
-      // 필요한 경우 인터뷰 종료
-      // if (questionTotalCount === responseCount) {
-      //   endInterview(blob);
-      //   return;
-      // }
+      console.log(response.data);
 
       // 새로운 question ID를 questionId 상태에 업데이트
       if (response.data && response.data.question) {
@@ -440,10 +434,13 @@ function Interviewpage() {
 
   // 현재 question_type의 count 차감 및 다음 question_type으로 변경
   const updateQuestionState = () => {
-    setQuestionState((prevState: currentQuestionStateType) => {
+    setQuestionState((prevState) => {
       const currentType = prevState.currentType as QuestionType;
-      const currentCounts = prevState.counts[currentType];
+      let currentCounts = prevState.counts[currentType];
       let nextType = prevState.currentType;
+
+      // currentType의 count를 차감
+      currentCounts = Math.max(0, currentCounts - 1);
 
       // 현재 question_type의 count가 0이면 다음 question_type으로 변경
       if (currentCounts === 0) {
@@ -455,7 +452,7 @@ function Interviewpage() {
         currentType: nextType,
         counts: {
           ...prevState.counts,
-          [currentType]: Math.max(0, currentCounts - 1),
+          [currentType]: currentCounts,
         },
       };
     });
