@@ -152,7 +152,8 @@ const LeoBorder = styled.div<LeoBorderProps>`
     rgba(${(props) => props.$gradientColor}, 0.1) 33%,
     rgba(${(props) => props.$gradientColor}, 1) 100%
   );
-  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s infinite;
+  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s
+    infinite;
 `;
 
 interface LeoCoreProps {
@@ -435,6 +436,7 @@ function Interviewpage() {
   // 마지막 question 답변 등록 API
   const sendLastAnswer = async (blob: Blob) => {
     if (!id || !blob) return;
+    setIsLoading(true);
     const file = new FormData();
     file.append("question", questionId.toString());
     file.append("record_url", blob);
@@ -459,6 +461,7 @@ function Interviewpage() {
     } catch (e) {
       console.log(e);
     }
+    setIsLoading(false);
   };
 
   //인터뷰 종료 메소드
@@ -483,7 +486,7 @@ function Interviewpage() {
     getQ2AudioData();
     btnRef.current?.style.setProperty("visibility", "hidden");
     instRef.current?.style.setProperty("visibility", "hidden");
-  }, [question]);
+  }, [questionContent]);
 
   //스탑워치 시작 기능
   useEffect(() => {
