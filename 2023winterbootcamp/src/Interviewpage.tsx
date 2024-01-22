@@ -350,10 +350,10 @@ function Interviewpage() {
       console.log(response.data);
 
       // 새로운 question ID를 questionId 상태에 업데이트
-      if (response.data && response.data.question) {
-        setQuestionId(response.data.question.id);
-        setQuestionType(response.data.question.question_type);
-        setQuestionContent(response.data.question.content);
+      if (response.data && response.data.questions) {
+        setQuestionId(response.data.questions[0].id);
+        setQuestionType(response.data.questions[0].question_type);
+        setQuestionContent(response.data.questions[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       }
       setIsLoading(false);
