@@ -9,7 +9,7 @@ import {
   repoListState,
   totalQuestionCountState,
 } from "./Recoil";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import { interviewTypeState } from "./Recoil";
 import { useLocation } from "react-router-dom";
 
@@ -508,6 +508,7 @@ function Choose() {
   const [, setTotalQuestionCountState] = useRecoilState(
     totalQuestionCountState
   );
+  const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
 
   // question_type 관련 함수
   const handleProjectCountChange = (
@@ -526,15 +527,14 @@ function Choose() {
 
   // question_type의 count에 따라 currentType 업데이트하는 함수
   const updateSelectedQuestionCounts = () => {
+    
     setQuestionState((prevState) => {
       let newCurrentType = prevState.currentType;
-
       if (projectCount === 0 && csCount > 0) {
         newCurrentType = "cs";
       } else if (projectCount === 0 && csCount === 0 && personalityCount > 0) {
         newCurrentType = "personality";
       }
-
       return {
         ...prevState,
         currentType: newCurrentType,
@@ -595,7 +595,6 @@ function Choose() {
     } else {
       updatedSelectedButtons = [...selectedMultiButtons, buttonName];
     }
-
     setSelectedMultiButtons(updatedSelectedButtons);
   };
 
@@ -720,6 +719,11 @@ function Choose() {
       }
     };
   }, [startClicked]);
+
+  //면접선택 페이지 들어올 때마다 이전에 저장된 전역상태정보 초기화
+  useEffect(()=>{
+    resetCurrentQuestion();
+  },[])
 
   return (
     <>
