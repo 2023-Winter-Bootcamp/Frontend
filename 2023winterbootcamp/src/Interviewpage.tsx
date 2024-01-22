@@ -130,8 +130,8 @@ const commonStyle = `
 
 interface LeoBorderProps {
   color: string;
-  gradientColor: string;
-  animationDuration: number;
+  $gradientColor: string;
+  $animationDuration: number;
 }
 
 const SpinnerBox = styled.div`
@@ -149,21 +149,21 @@ const LeoBorder = styled.div<LeoBorderProps>`
   background: ${(props) => props.color};
   background: linear-gradient(
     0deg,
-    rgba(${(props) => props.gradientColor}, 0.1) 33%,
-    rgba(${(props) => props.gradientColor}, 1) 100%
+    rgba(${(props) => props.$gradientColor}, 0.1) 33%,
+    rgba(${(props) => props.$gradientColor}, 1) 100%
   );
-  animation: ${spin3D} ${(props) => props.animationDuration}s linear 0s infinite;
+  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s infinite;
 `;
 
 interface LeoCoreProps {
-  backgroundColor: string;
+  $backgroundColor: string;
 }
 
 const LeoCore = styled.div<LeoCoreProps>`
   ${commonStyle}
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) => props.$backgroundColor};
 `;
 
 const InstructionText = styled.div`
@@ -518,17 +518,17 @@ function Interviewpage() {
             <SpinnerBox>
               <LeoBorder
                 color="rgb(102, 102, 102)"
-                gradientColor="102, 102, 102"
-                animationDuration={1.8}
+                $gradientColor="102, 102, 102"
+                $animationDuration={1.8}
               >
-                <LeoCore backgroundColor="#191919aa" />
+                <LeoCore $backgroundColor="#191919aa" />
               </LeoBorder>
               <LeoBorder
                 color="rgb(255, 215, 244)"
-                gradientColor="255, 215, 244"
-                animationDuration={2.2}
+                $gradientColor="255, 215, 244"
+                $animationDuration={2.2}
               >
-                <LeoCore backgroundColor="#bebebeaa" />
+                <LeoCore $backgroundColor="#bebebeaa" />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
