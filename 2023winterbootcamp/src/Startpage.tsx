@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -79,6 +80,10 @@ function Startpage() {
     navigate('/interview/' + id);
   };
 
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[])
+  
   return (
     <StartModal>
       <motion.div
