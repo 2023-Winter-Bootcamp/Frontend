@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, useCallback } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import styled, { css } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import api from "./baseURL/baseURL";
