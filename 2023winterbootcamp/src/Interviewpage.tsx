@@ -1,25 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAudioRecorder } from 'react-audio-voice-recorder';
-import axios from 'axios';
-import api from './baseURL/baseURL';
-import Camera from './components/Camera';
-import { useRecoilValue } from 'recoil';
+import React, { useState, useEffect, useRef } from "react";
+import styled, { keyframes } from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAudioRecorder } from "react-audio-voice-recorder";
+import axios from "axios";
+import api from "./baseURL/baseURL";
+import Camera from "./components/Camera";
+import { useRecoilValue } from "recoil";
 import {
   interviewTypeState,
   currentQuestionState,
   QuestionType,
   totalQuestionCountState,
   interviewResultState,
-} from './Recoil';
-import nextIcon from './images/nextbutton.png';
-import recordIcon from './images/recordbutton.png';
-import LoadingModal from './components/LoadingModal';
-import { useRecoilState } from 'recoil';
+} from "./Recoil";
+import nextIcon from "./images/nextbutton.png";
+import recordIcon from "./images/recordbutton.png";
+import LoadingModal from "./components/LoadingModal";
+import { useRecoilState } from "recoil";
 
 const Up = styled.div`
+  user-select: none;
   width: 100%;
   height: 400px;
   box-sizing: border-box;
@@ -30,6 +31,7 @@ const Up = styled.div`
 `;
 
 const Down = styled.div`
+  user-select: none;
   width: 740px;
   height: 300px;
   background-color: #ffffff;
@@ -190,8 +192,8 @@ function Interviewpage() {
   //질문 관련
   const [question, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
-  const [questionContent, setQuestionContent] = useState<string>('');
-  const [questionType, setQuestionType] = useState<string>('');
+  const [questionContent, setQuestionContent] = useState<string>("");
+  const [questionType, setQuestionType] = useState<string>("");
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -202,7 +204,7 @@ function Interviewpage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const instRef = useRef<HTMLDivElement | null>(null);
-  const [instText, setInstText] = useState('');
+  const [instText, setInstText] = useState("");
 
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -244,18 +246,18 @@ function Interviewpage() {
   const getQ2AudioData = async () => {
     try {
       const response = await axios({
-        method: 'post',
+        method: "post",
         url: `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.REACT_APP_TTS_KEY}`,
         headers: {},
         data: {
           voice: {
-            languageCode: 'ko-KR',
+            languageCode: "ko-KR",
           },
           input: {
             text: questionContent,
           },
           audioConfig: {
-            audioEncoding: 'mp3',
+            audioEncoding: "mp3",
           },
         },
       });
@@ -266,10 +268,10 @@ function Interviewpage() {
         const objectURL = URL.createObjectURL(audioBlob);
         audioRef.current.src = objectURL;
 
-        audioRef.current.addEventListener('loadeddata', playAudio);
+        audioRef.current.addEventListener("loadeddata", playAudio);
       }
     } catch (error) {
-      console.error('Error fetching audio data:', error);
+      console.error("Error fetching audio data:", error);
     }
   };
 
@@ -278,7 +280,7 @@ function Interviewpage() {
     if (audioRef.current) {
       audioRef.current
         .play()
-        .catch((e) => console.error('Error playing audio:', e));
+        .catch((e) => console.error("Error playing audio:", e));
     }
   };
 
@@ -289,7 +291,7 @@ function Interviewpage() {
       char.charCodeAt(0)
     );
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'audio/mp3' });
+    const blob = new Blob([byteArray], { type: "audio/mp3" });
     return blob;
   };
 
@@ -301,12 +303,12 @@ function Interviewpage() {
     };
 
     if (audioElement) {
-      audioElement.addEventListener('ended', handleEnded);
+      audioElement.addEventListener("ended", handleEnded);
     }
 
     return () => {
       if (audioElement) {
-        audioElement.removeEventListener('ended', handleEnded);
+        audioElement.removeEventListener("ended", handleEnded);
       }
     };
   }, [questionId]);
@@ -315,15 +317,15 @@ function Interviewpage() {
   const handleNextButtonClick = () => {
     if (recorderControls.isRecording) {
       recorderControls.stopRecording();
-      console.log('녹음 중지');
-      setInstText('다음 질문 준비가 완료됐다면 버튼을 눌러주세요');
+      console.log("녹음 중지");
+      setInstText("다음 질문 준비가 완료됐다면 버튼을 눌러주세요");
     }
     if (!recorderControls.isRecording && recorderControls.recordingBlob) {
       if (questionTotalCount === responseCount) {
         sendLastAnswer(recorderControls.recordingBlob);
       } else {
         getQuestion(recorderControls.recordingBlob);
-        console.log('녹음파일 전송 & 다음 질문 설정');
+        console.log("녹음파일 전송 & 다음 질문 설정");
       }
     }
   };
@@ -332,10 +334,10 @@ function Interviewpage() {
   const getQuestion = async (blob: Blob) => {
     if (!id) return;
     const file = new FormData();
-    file.append('question_id', questionId.toString());
-    file.append('interview_id', id as string);
-    file.append('record_url', blob);
-    file.append('question_type', questionState.currentType);
+    file.append("question_id", questionId.toString());
+    file.append("interview_id", id as string);
+    file.append("record_url", blob);
+    file.append("question_type", questionState.currentType);
     try {
       setIsLoading(true);
       //음성파일 보내는 기능
@@ -370,7 +372,7 @@ function Interviewpage() {
 
   // questionContent의 값이 변경되면 TTS 실행
   useEffect(() => {
-    if (questionContent !== '') {
+    if (questionContent !== "") {
       getQ2AudioData();
     }
   }, [questionContent]);
@@ -404,12 +406,12 @@ function Interviewpage() {
   // 다음 question_type을 결정
   const getNextQuestionType = (currentType: QuestionType) => {
     const { counts } = questionState;
-    if (currentType === 'project' && counts.cs > 0) {
-      return 'cs';
-    } else if (currentType === 'cs' && counts.personality > 0) {
-      return 'personality';
+    if (currentType === "project" && counts.cs > 0) {
+      return "cs";
+    } else if (currentType === "cs" && counts.personality > 0) {
+      return "personality";
     } else {
-      return '';
+      return "";
     }
   };
 
@@ -434,8 +436,8 @@ function Interviewpage() {
   const sendLastAnswer = async (blob: Blob) => {
     if (!id || !blob) return;
     const file = new FormData();
-    file.append('question', questionId.toString());
-    file.append('record_url', blob);
+    file.append("question", questionId.toString());
+    file.append("record_url", blob);
     try {
       await api.post(
         `interviews/questions/${questionId}/answers/create/`,
@@ -453,7 +455,7 @@ function Interviewpage() {
       };
 
       setInterviewResult(); // 면접 결과 저장
-      navigate('/result/' + id);
+      navigate("/result/" + id);
     } catch (e) {
       console.log(e);
     }
@@ -469,9 +471,9 @@ function Interviewpage() {
   const handleRecordingStart = () => {
     setTimeout(() => {
       recorderControls.startRecording();
-      btnRef.current?.style.setProperty('visibility', 'visible');
-      instRef.current?.style.setProperty('visibility', 'visible');
-      setInstText('답변이 완료되면 버튼을 눌러주세요');
+      btnRef.current?.style.setProperty("visibility", "visible");
+      instRef.current?.style.setProperty("visibility", "visible");
+      setInstText("답변이 완료되면 버튼을 눌러주세요");
     }, 1000);
   };
 
@@ -479,8 +481,8 @@ function Interviewpage() {
   useEffect(() => {
     if (!isInterviewStart) return;
     getQ2AudioData();
-    btnRef.current?.style.setProperty('visibility', 'hidden');
-    instRef.current?.style.setProperty('visibility', 'hidden');
+    btnRef.current?.style.setProperty("visibility", "hidden");
+    instRef.current?.style.setProperty("visibility", "hidden");
   }, [question]);
 
   //스탑워치 시작 기능
@@ -503,25 +505,30 @@ function Interviewpage() {
     setIsRunning(true);
   };
 
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
   return (
     <>
-      <Up>
+      <Up onContextMenu={handleSelectStart}>
         {selectedInterviewType.showCamera === false ? (
           <VideoContainer>
             <SpinnerBox>
               <LeoBorder
-                color='rgb(102, 102, 102)'
-                gradientColor='102, 102, 102'
+                color="rgb(102, 102, 102)"
+                gradientColor="102, 102, 102"
                 animationDuration={1.8}
               >
-                <LeoCore backgroundColor='#191919aa' />
+                <LeoCore backgroundColor="#191919aa" />
               </LeoBorder>
               <LeoBorder
-                color='rgb(255, 215, 244)'
-                gradientColor='255, 215, 244'
+                color="rgb(255, 215, 244)"
+                gradientColor="255, 215, 244"
                 animationDuration={2.2}
               >
-                <LeoCore backgroundColor='#bebebeaa' />
+                <LeoCore backgroundColor="#bebebeaa" />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
@@ -529,7 +536,7 @@ function Interviewpage() {
           <Camera elapsedTime={elapsedTime} children={undefined} />
         )}
       </Up>
-      <Down>
+      <Down onContextMenu={handleSelectStart}>
         <Q>
           <QuestionText>{questionType}</QuestionText>
           <ContentText>{questionContent}</ContentText>
@@ -539,13 +546,13 @@ function Interviewpage() {
           <Next onClick={handleNextButtonClick} ref={btnRef}>
             <StyledNextImage
               src={recorderControls.isRecording ? recordIcon : nextIcon}
-              alt='next'
+              alt="next"
             />
           </Next>
         </RecordBox>
       </Down>
       {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: 'none' }} preload='auto' />
+      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
     </>
   );
 }

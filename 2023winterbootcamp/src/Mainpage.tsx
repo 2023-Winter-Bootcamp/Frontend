@@ -42,6 +42,7 @@ const Container = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
+  user-select: none;
 `;
 
 const ScrollWrapper = styled.div`
@@ -707,12 +708,17 @@ function Main() {
         // GitHub 로그인이 진행 중이었다면 API 요청을 수행
       });
     }
-  }, []);
+  }, [setGithubInfo, setGithubProfile, setRepoListState]);
+
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
 
   return (
     <Suspense fallback={<LoadingModal />}>
       <>
-        <Container>
+        <Container onContextMenu={handleSelectStart}>
           <ScrollWrapper>
             <ScrollContent id="scrollContent">
               <motion.div

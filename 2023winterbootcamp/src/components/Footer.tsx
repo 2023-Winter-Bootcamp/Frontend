@@ -2,21 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const FooterContainer = styled.div`
-  @media screen and (max-width: 768px) {
-    width: 100%;
-    height: 380px;
-    background: #1a1a1a;
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 100%;
-    height: 380px;
-    background: #1a1a1a;
-  }
-  @media screen and (min-width: 1024px) {
-    width: 100%;
-    height: 380px;
-    background: #1a1a1a;
-  }
+  user-select: none;
+  width: 100%;
+  height: 380px;
+  background: #1a1a1a;
 `;
 
 const TextBox = styled.div`
@@ -64,9 +53,14 @@ const SubText = styled.div<SubTextProps>`
   margin-bottom: ${(props) => props.$margin_bottom || 0}px;
 `;
 
+const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+  event.preventDefault();
+  return false;
+};
+
 function App() {
   return (
-    <FooterContainer>
+    <FooterContainer onContextMenu={handleSelectStart}>
       <TextBox>
         <MainText>teamA.</MainText>
         <SubText $margin_bottom={40}>문의 - 제안 teama@gmail.com</SubText>
