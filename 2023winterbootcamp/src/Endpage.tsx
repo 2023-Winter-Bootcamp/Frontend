@@ -11,6 +11,7 @@ const Container = styled.div`
   height: 550px;
   display: flex;
   flex-direction: column;
+  user-select: none;
 `;
 
 const Box = styled.div<{ width: string; height: string }>`
@@ -105,8 +106,14 @@ function Endpage(props: Props) {
       console.log("인터뷰 결과 불러오는 중 에러 발생");
     }
   };
+
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
   return (
-    <Container>
+    <Container onContextMenu={handleSelectStart}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Suspense } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
 import {
@@ -12,37 +11,22 @@ import {
 } from "./Recoil";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { interviewTypeState } from "./Recoil";
+import { useLocation } from "react-router-dom";
 
 const Container = styled.div`
-  @media screen and (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  }
-
-  @media screen and (min-width: 1024px) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
-  }
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  margin-top: 20px;
 `;
 
 const TextWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-start;
+  user-select: none;
 `;
 
 // const Text = styled.div`
@@ -66,6 +50,7 @@ const TextWrapper = styled.div`
 const Input = styled.input`
   width: 41%;
   height: 40px;
+  user-select: none;
   @media screen and (max-width: 768px) {
     border: none;
     border-bottom: 1px solid #1a1a1a;
@@ -98,6 +83,7 @@ const Input = styled.input`
 `;
 
 const Container1 = styled.div`
+  user-select: none;
   @media screen and (max-width: 768px) {
     display: flex;
     flex-direction: column;
@@ -130,8 +116,8 @@ const Text1 = styled.div`
   font-size: 24px;
   font-weight: 700;
   margin-top: 40px;
-  margin-left: 29%;
-
+  margin-left: 28.9%;
+  user-select: none;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
   }
@@ -150,6 +136,7 @@ const ButtonsContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 10px;
+  user-select: none;
   @media screen and (max-width: 768px) {
     width: 71%;
   }
@@ -224,7 +211,7 @@ const ResumeContainer = styled.div`
   }
 
   @media screen and (min-width: 1024px) {
-    margin-left: 29%;
+    margin-left: 28.87%;
   }
 `;
 
@@ -281,6 +268,7 @@ const Text3 = styled.div`
   font-size: 14px;
   margin-top: 50px;
   margin-left: 10px;
+  user-select: none;
 `;
 
 const RepoContainer = styled.div`
@@ -291,6 +279,7 @@ const RepoContainer = styled.div`
   margin-bottom: 80px;
   flex-wrap: wrap;
   gap: 20px 2%;
+  user-select: none;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
   }
@@ -306,9 +295,9 @@ const RepoContainer = styled.div`
 
 const Repo = styled.div<{ $isSelected: boolean }>`
   width: 299px;
-  height: 130px;
+  height: 100px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 8px;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #e7e7e7"};
   cursor: pointer;
@@ -348,7 +337,7 @@ const Start = styled.button<{ $startClicked: boolean }>`
   margin-left: 70%;
   border: none;
   cursor: pointer;
-
+  user-select: none;
   &:hover {
     background-color: ${(props) =>
       props.$startClicked ? "#1a1a1a" : "#1a1a1a"};
@@ -362,6 +351,7 @@ const DropdownContainer = styled.div`
   flex-direction: row;
   margin-bottom: 10px;
   margin-top: -10px;
+  user-select: none;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
   }
@@ -468,6 +458,7 @@ const DropText = styled.div`
   font-size: 14px;
   color: lightgray;
   margin-bottom: 40px;
+  user-select: none;
   @media screen and (max-width: 769px) {
     margin-left: 49%;
   }
@@ -595,9 +586,9 @@ function Choose() {
       updatedSelectedButtons = selectedMultiButtons.filter(
         (selectedButton) => selectedButton !== buttonName
       );
-      if(selectedIndex === 0) setProjectCount(0);
-      else if(selectedIndex === 1) setCsCount(0);
-      else if(selectedIndex === 2) setPersonalityCount(0);
+      if (selectedIndex === 0) setProjectCount(0);
+      else if (selectedIndex === 1) setCsCount(0);
+      else if (selectedIndex === 2) setPersonalityCount(0);
     } else {
       updatedSelectedButtons = [...selectedMultiButtons, buttonName];
     }
@@ -643,11 +634,15 @@ function Choose() {
     setSelectedRepos(updatedSelectedRepos);
   };
 
-  // 선택 완료 버튼 클릭 이벤트 함수 (다음 페이지로 이동)
+  // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate("/start/" + id);
+    // 다른 페이지로 이동하는 대신 현재 페이지의 URL을 변경하여 Choose 페이지로 이동하는 효과
+    window.history.pushState(null, "", "/choose");
     console.log(questionState);
+
+    // Choose 페이지로 이동할 때만 스크롤을 막습니다.
+    document.body.style.overflow = "auto";
   };
 
   // 면접 생성 API 함수
@@ -698,10 +693,36 @@ function Choose() {
   // 드롭다운 메뉴 만드는 Array
   const options = Array.from({ length: 6 }, (_, index) => index);
 
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
+    const containerElement = document.getElementById("choose-container");
+    if (startClicked && containerElement) {
+      containerElement.style.overflow = "hidden";
+      containerElement.addEventListener("wheel", handleWheel, {
+        passive: false,
+      });
+    }
+
+    return () => {
+      if (containerElement) {
+        containerElement.style.overflow = "auto";
+        containerElement.removeEventListener("wheel", handleWheel);
+      }
+    };
+  }, [startClicked]);
+
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-        <Container>
+        <Container id="choose-container" onContextMenu={handleSelectStart}>
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>

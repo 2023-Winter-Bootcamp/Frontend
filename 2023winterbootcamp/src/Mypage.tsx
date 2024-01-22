@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
-import styled from 'styled-components';
-import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
-import api from './baseURL/baseURL';
-import { useNavigate } from 'react-router-dom';
-import interview_image from './images/interview_image.jpg';
-import Modal from './components/Modal';
+import React, { useEffect, useState, useRef } from "react";
+import styled from "styled-components";
+import { useDropzone } from "react-dropzone";
+import api from "./baseURL/baseURL";
+import { useNavigate } from "react-router-dom";
+import interview_image from "./images/interview_image.jpg";
+import Modal from "./components/Modal";
 
 const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  user-select: none;
   @media screen and (max-width: 768px) {
     height: 450px;
   }
@@ -236,6 +236,7 @@ const Text2 = styled.div`
     font-weight: 700;
     margin-left: 100px;
     margin-bottom: 10px;
+    user-select: none;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -265,6 +266,7 @@ const InterviewContainer = styled.div`
   overflow-y: hidden;
   display: flex;
   align-items: center;
+  user-select: none;
 `;
 
 const InterviewContainer2 = styled.div`
@@ -411,17 +413,17 @@ function Mypage() {
   const handleFileUpload = async (title: string) => {
     if (selectedFile) {
       const file = new FormData();
-      file.append('file', selectedFile);
-      const user_id = '1';
-      file.append('user_id', user_id);
-      file.append('title', title);
+      file.append("file", selectedFile);
+      const user_id = "1";
+      file.append("user_id", user_id);
+      file.append("title", title);
 
       try {
-        const response = await api.post('resumes/create', file);
-        console.log('File uploaded successfully!', response.data);
+        const response = await api.post("resumes/create", file);
+        console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
       } catch (error) {
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
       }
     }
   };
@@ -448,7 +450,7 @@ function Mypage() {
 
   const getInterviewList = async () => {
     try {
-      const response = await api.get('interviews/');
+      const response = await api.get("interviews/");
       setInterviewList(response.data);
     } catch (e) {
       console.error(e);
@@ -457,7 +459,7 @@ function Mypage() {
 
   const getResumes = async () => {
     try {
-      const response = await api.get('resumes/');
+      const response = await api.get("resumes/");
       setResumeList(response.data);
     } catch (e) {
       console.error(e);
@@ -489,21 +491,27 @@ function Mypage() {
   const interviewConRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (interviewList.length === 0) {
-      scrollConRef.current?.style.setProperty('justify-content', 'center');
-      interviewConRef.current?.style.setProperty('justify-content', 'center');
+      scrollConRef.current?.style.setProperty("justify-content", "center");
+      interviewConRef.current?.style.setProperty("justify-content", "center");
     } else {
-      scrollConRef.current?.style.setProperty('justify-content', 'start');
-      interviewConRef.current?.style.setProperty('justify-content', 'start');
+      scrollConRef.current?.style.setProperty("justify-content", "start");
+      interviewConRef.current?.style.setProperty("justify-content", "start");
     }
   }, [interviewList]);
+
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
   return (
     <>
-      <Container>
+      <Container onContextMenu={handleSelectStart}>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview1 $pre_image_url='' {...getRootProps()}>
-              <input type='file' {...getInputProps()} />
+            <ResumePreview1 $pre_image_url="" {...getRootProps()}>
+              <input type="file" {...getInputProps()} />
               <Text7>
                 이 곳을 클릭해
                 <br />
@@ -538,8 +546,8 @@ function Mypage() {
           </ScrollContainer>
         </ResumeContainer>
       </Container>
-      <Text2>나의 면접</Text2>
-      <InterviewContainer>
+      <Text2 onContextMenu={handleSelectStart}>나의 면접</Text2>
+      <InterviewContainer onContextMenu={handleSelectStart}>
         <InterviewContainer2 ref={interviewConRef}>
           <ScrollContainer len={interviewList.length || 2} ref={scrollConRef}>
             <InterviewBox boxWidth={interviewList.length * 400 || 400}>

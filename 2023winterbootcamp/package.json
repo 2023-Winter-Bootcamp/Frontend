@@ -25,6 +25,7 @@
     "react-pdf": "^7.6.0",
     "react-router-dom": "^6.21.2",
     "react-scripts": "5.0.1",
+    "react-share": "^5.0.3",
     "recoil": "^0.7.7",
     "recoil-persist": "^5.1.0",
     "styled-components": "^6.1.6",

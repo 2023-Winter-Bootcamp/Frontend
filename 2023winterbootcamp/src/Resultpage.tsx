@@ -1,22 +1,24 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Suspense,
-  startTransition,
-} from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
 import {
   githubLoginInfoState,
   githubProfileState,
   interviewResultState,
-} from './Recoil';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import axios from 'axios';
-import api from './baseURL/baseURL';
+} from "./Recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import instagramwhiteicon from "./images/instagram-white-icon.webp";
+
+declare global {
+  interface Window {
+    onInstagramLogin?: () => void;
+  }
+}
 
 const ProfileContainer = styled.div`
+  user-select: none;
   width: 100%;
   height: 420px;
   background: #070707;
@@ -58,6 +60,7 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
       ? `url("${props.avatarUrl}")`
       : 'url("https://ifh.cc/g/bHznLB.png")'};
   background-position: center;
+  background-size: cover;
   border: none;
   aspect-ratio: 1;
   @media screen and (max-width: 768px) {
@@ -67,7 +70,8 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
     width: 220px;
   }
   @media screen and (min-width: 1024px) {
-    width: 250px;
+    width: 280px;
+    height: 280px;
   }
 `;
 
@@ -206,6 +210,7 @@ const TextBox3 = styled.div`
 `;
 
 const QnAContainer = styled.div`
+  user-select: none;
   width: 100%;
   height: 100vh;
   padding: 20px;
@@ -316,7 +321,7 @@ const VoiceBox = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  right: -15px;
+  right: -35px;
   bottom: 15px;
 `;
 
@@ -347,21 +352,30 @@ const Button = styled.button<ButtonProps>`
 const Text4 = styled.div`
   width: 130px;
   height: 34px;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.4;
-  margin-top: 5px;
+  margin-top: 9px;
 `;
 
-interface InterviewData {
-  title: string;
-  interview_type_names: string[];
-  position: string;
-  style: string;
-  resume: number;
-  repo_names: string[];
-  questions: { type_name: string; content: string }[];
-  answers: { content: string; record_url: string }[];
+const Button2 = styled.button`
+  width: 25px;
+  height: 25px;
+  background: url(${instagramwhiteicon}) no-repeat center center;
+  background-size: cover;
+  border: none;
+  margin-top: 165px;
+  cursor: pointer;
+`;
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
 }
 
 const Resultpage = () => {
@@ -369,7 +383,7 @@ const Resultpage = () => {
 
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
   const audioRefs = useRef<HTMLAudioElement[]>([]);
-  const { id } = useParams();
+  useParams();
 
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
@@ -409,7 +423,7 @@ const Resultpage = () => {
           audioRef.pause();
         }
 
-        audioRef.addEventListener('ended', () => {
+        audioRef.addEventListener("ended", () => {
           // 오디오 재생이 끝나면 버튼을 다시 play 상태로 변경
           const newIsPlayingList = [...isPlayingList];
           newIsPlayingList[index] = false;
@@ -419,33 +433,55 @@ const Resultpage = () => {
     });
   }, [isPlayingList]);
 
-  const [githubLoginInfo, setGithubLoginInfo] =
-    useRecoilState(githubLoginInfoState);
-  const [githubProfile, setGithubProfile] = useRecoilState(githubProfileState);
-  const [avatarUrl, setAvatarUrl] = useState('');
-  const [gitName, setGitName] = useState('');
+  const [githubLoginInfo] = useRecoilState(githubLoginInfoState);
+  // eslint-disable-next-line no-empty-pattern
+  const [] = useRecoilState(githubProfileState);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [gitName, setGitName] = useState("");
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const gitId = githubLoginInfo.html_url.split('/').slice(-1)[0];
+        const gitId = githubLoginInfo.html_url.split("/").slice(-1)[0];
         const response = await axios.get(
           `https://api.github.com/users/${gitId}`
         );
         setAvatarUrl(response.data.avatar_url);
         setGitName(response.data.name);
       } catch (error) {
-        console.error('GitHub 사용자 정보를 가져오는 중 에러 발생:', error);
+        console.error("GitHub 사용자 정보를 가져오는 중 에러 발생:", error);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [githubLoginInfo.html_url]);
+
+  const handleInstagramShare = () => {
+    // 면접 결과 페이지 URL
+    const resultPageUrl = encodeURIComponent(
+      "https://www.instagram.com/ahnnakyung/"
+    );
+
+    // 면접 결과를 설명하는 캡션
+    const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
+
+    // 인스타그램 스토리에 공유하는 URL
+    const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
+
+    // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
+    window.open(instagramStoryUrl, "_blank");
+  };
+
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
 
   return (
     <>
       {interviewData && (
         <>
-          <ProfileContainer>
+          <ScrollToTop />
+          <ProfileContainer onContextMenu={handleSelectStart}>
             <ProfileBox>
               <ProfileImage avatarUrl={avatarUrl} />
               <ProfileInfo>
@@ -462,18 +498,19 @@ const Resultpage = () => {
                   <TextBox3>
                     <Text3>{interviewData.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names.join(', ')}
+                      {interviewData.interview_type_names.join(", ")}
                     </Text3>
                     <Text3>{interviewData.position}</Text3>
                     <Text3>{interviewData.style}</Text3>
                     <Text3>{interviewData.resume}</Text3>
-                    <Text3>{interviewData.repo_names.join(', ')}</Text3>
+                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
+                  <Button2 onClick={handleInstagramShare} />
                 </TextBox1>
               </ProfileInfo>
             </ProfileBox>
           </ProfileContainer>
-          <QnAContainer>
+          <QnAContainer onContextMenu={handleSelectStart}>
             <QnABox>
               {interviewData.questions.map((question, index) => (
                 <QnAWrapper key={index}>

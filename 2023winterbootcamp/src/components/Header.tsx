@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import axios from "axios";
 import api from "../baseURL/baseURL";
 import { useResetRecoilState } from "recoil";
 import {
@@ -20,6 +19,7 @@ const HeaderContainer = styled.div`
   width: 100%;
   height: 80px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  user-select: none;
 `;
 
 const Logo = styled(motion(Link))`
@@ -45,11 +45,13 @@ const Navigationbar = styled.div`
     display: flex;
     gap: 20px;
     margin-right: 10%;
+    margin-top: -10px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
-    margin-right: 15%;
+    margin-right: 14%;
+    margin-top: -10px;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
@@ -172,8 +174,13 @@ function Header() {
     }
   };
 
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
   return (
-    <HeaderContainer>
+    <HeaderContainer onContextMenu={handleSelectStart}>
       <Logo
         to="/"
         initial={{ opacity: 0, y: -5 }}
@@ -185,6 +192,14 @@ function Header() {
       <Navigationbar>
         {isLoggedIn ? (
           <>
+            <MotionNavItem
+              to="/choose"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+            >
+              면접보기
+            </MotionNavItem>
             <MotionNavItem
               to="/mypage"
               initial={{ opacity: 0, y: -10 }}
