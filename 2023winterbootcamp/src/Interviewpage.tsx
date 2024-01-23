@@ -217,7 +217,9 @@ function Interviewpage() {
   const fetchCommonQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`);
+        const response = await api.get(`interviews/${id}/questions/`, {
+          withCredentials: true,
+        });
         console.log(response.data.questions);
         setQuestion(response.data.questions);
         setQuestionType(response.data.questions[0].type_name);
@@ -353,10 +355,10 @@ function Interviewpage() {
       console.log(response.data);
 
       // 새로운 question ID를 questionId 상태에 업데이트
-      if (response.data && response.data.questions) {
-        setQuestionId(response.data.questions[0].id);
-        setQuestionType(response.data.questions[0].question_type);
-        setQuestionContent(response.data.questions[0].content);
+      if (response.data && response.data.question) {
+        setQuestionId(response.data.question[0].id);
+        setQuestionType(response.data.question[0].question_type);
+        setQuestionContent(response.data.question[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       }
       setIsLoading(false);
@@ -422,7 +424,9 @@ function Interviewpage() {
   const fetchLastQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`);
+        const response = await api.get(`interviews/${id}/questions/`, {
+          withCredentials: true,
+        });
         console.log(response.data.questions);
         const lastArrayIndex = response.data.questions.length - 1;
         setQuestion(response.data.questions);
@@ -451,7 +455,9 @@ function Interviewpage() {
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
         try {
-          const response = await api.get(`interviews/${id}/`);
+          const response = await api.get(`interviews/${id}/`, {
+            withCredentials: true,
+          });
           setInterviewData(response.data);
         } catch (e) {
           console.log(e);

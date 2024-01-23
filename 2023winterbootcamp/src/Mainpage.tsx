@@ -558,6 +558,8 @@ function Main() {
   const setRepoListState = useSetRecoilState(repoListState);
   const [githubInfo, setGithubInfo] = useRecoilState(githubLoginInfoState);
   const setGithubProfile = useSetRecoilState(githubProfileState);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleMyGitHubClick = () => {
     //사용자의 GitHub 프로필로 이동합니다.
     if (githubInfo.id === -1) {
@@ -568,10 +570,11 @@ function Main() {
   };
 
   const handleFileUpload = async (title: string) => {
+    setIsLoading(true);
     if (selectedFile) {
       const file = new FormData();
       file.append("file", selectedFile);
-      const user_id = "14";
+      const user_id = githubInfo.id.toString();
       file.append("user_id", user_id);
       file.append("title", title);
 
@@ -579,10 +582,12 @@ function Main() {
         const response = await api.post("resumes/create", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
+        navigate('/mypage')
       } catch (error) {
         console.error("Error uploading file:", error);
       }
     }
+    setIsLoading(false);
   };
 
   const handleModalRegister = (title: string) => {
@@ -910,6 +915,7 @@ function Main() {
           </Container2>
         </ScrollContent>
       </>
+      {isLoading ? <LoadingModal/> : null}
     </Suspense>
   );
 }

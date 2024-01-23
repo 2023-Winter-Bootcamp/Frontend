@@ -503,8 +503,7 @@ function Choose() {
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
-  const [resumeList, setResumeList] = useState<Resume[]>([]);
-  const setResumeListState = useSetRecoilState<ResumeType[]>(resumeListState);
+  const [resumeList, setResumeList] = useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
 
   // question_type 관련 state
@@ -688,7 +687,7 @@ function Choose() {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
         setResumeList(response.data);
-        setResumeListState(response.data);
+        console.log(response.data);
       } catch (e) {
         console.error(e);
       }
