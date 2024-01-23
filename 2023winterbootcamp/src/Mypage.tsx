@@ -232,6 +232,7 @@ const ResumePreview1 = styled.div<{ $pre_image_url: string }>`
 `;
 
 const Text2 = styled.div`
+  user-select: none;
   @media screen and (max-width: 768px) {
     width: 170px;
     height: 35px;
@@ -239,7 +240,6 @@ const Text2 = styled.div`
     font-weight: 700;
     margin-left: 100px;
     margin-bottom: 10px;
-    user-select: none;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {

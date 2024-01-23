@@ -88,23 +88,24 @@ const Text2 = styled.div`
   }
 `;
 
-const Text3 = styled.div`
-  color: #4a4a4a;
-  font-weight: 700;
-  font-size: 16px;
-  margin-top: 4px;
-  @media screen and (max-width: 1023px) {
-    font-size: 14px;
-  }
-  @media screen and (min-width: 1024px) {
-    font-size: 16px;
-  }
-`;
+// const Text3 = styled.div`
+//   color: #4a4a4a;
+//   font-weight: 700;
+//   font-size: 16px;
+//   margin-top: 4px;
+//   @media screen and (max-width: 1023px) {
+//     font-size: 14px;
+//   }
+//   @media screen and (min-width: 1024px) {
+//     font-size: 16px;
+//   }
+// `;
 
 const Image = styled.img`
   width: 200px;
   height: 200px;
   margin-top: 40px;
+  user-select: none;
   @media screen and (max-width: 1023px) {
     width: 180px;
     height: 180px;
@@ -136,6 +137,7 @@ const Button = styled.div`
   padding: 10px 20px;
   margin: 0 10px;
   cursor: pointer;
+  user-select: none;
   transition: transform 0.3s ease-in-out;
 
   &:hover {
@@ -157,6 +159,7 @@ const ButtonContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 `;
 
 const ButtonImage = styled.img`
@@ -402,6 +405,7 @@ const ImageBoxText = styled.div`
   font-weight: 700;
   text-align: center;
   line-height: 1.4;
+  user-select: none;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     padding: 0;
@@ -417,6 +421,7 @@ const ImageBoxText2 = styled.div`
   text-align: center;
   line-height: 1.7;
   margin-top: 10px;
+  user-select: none;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     height: 60px;
@@ -437,6 +442,7 @@ const ImageBoxText3 = styled.div`
   text-align: center;
   line-height: 1.7;
   margin-top: 10px;
+  user-select: none;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     padding: 0;
@@ -522,6 +528,7 @@ const Text10 = styled.div`
   font-weight: 700;
   text-align: center;
   margin-bottom: 20px;
+  user-select: none;
 `;
 
 const MiddleContainer = styled.div`
@@ -541,6 +548,7 @@ const Text9 = styled.button`
   border: none;
   text-decoration: underline;
   cursor: pointer;
+  user-select: none;
 `;
 
 function Main() {
@@ -774,6 +782,7 @@ function Main() {
                   <Image
                     src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
                     alt="GitHub Logo"
+                    draggable={false}
                   />
                 </motion.div>
                 <ButtonWrapper>

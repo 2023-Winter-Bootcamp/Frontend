@@ -11,7 +11,12 @@ import {
   resumeListState,
   totalQuestionCountState,
 } from "./Recoil";
-import { useRecoilState, useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
+import {
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from "recoil";
 import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
@@ -338,13 +343,14 @@ const Start = styled.button<{ $startClicked: boolean }>`
   margin-left: 70%;
   border: none;
   user-select: none;
-  ${(props) => props.$startClicked && css`
-    cursor: pointer;
-    &:hover {
-    background-color: "#1a1a1a";
-  }
-  `}
-  
+  ${(props) =>
+    props.$startClicked &&
+    css`
+      cursor: pointer;
+      &:hover {
+        background-color: "#1a1a1a";
+      }
+    `}
 `;
 
 const DropdownContainer = styled.div`
@@ -528,7 +534,6 @@ function Choose() {
 
   // question_type의 count에 따라 currentType 업데이트하는 함수
   const updateSelectedQuestionCounts = () => {
-    
     setQuestionState((prevState) => {
       let newCurrentType = prevState.currentType;
       if (projectCount === 0 && csCount > 0) {
@@ -640,13 +645,13 @@ function Choose() {
   // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    navigate(`/start/${id}`)
+    navigate(`/start/${id}`);
     console.log(questionState);
   };
 
   // 면접 생성 API 함수
   const createInterview = async () => {
-    if(!startClicked) return;
+    if (!startClicked) return;
     try {
       setIsLoading(true);
       // 전체 질문 개수 update
@@ -674,11 +679,10 @@ function Choose() {
     }
     setIsLoading(false);
   };
-  
 
   // 이력서 목록 조회 API
   useEffect(() => {
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
     const getResumes = async () => {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
@@ -690,16 +694,10 @@ function Choose() {
     };
 
     getResumes();
-    
-  }, []);
+  }, [setResumeListState]);
 
   // 드롭다운 메뉴 만드는 Array
   const options = Array.from({ length: 6 }, (_, index) => index);
-
-  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    return false;
-  };
 
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
@@ -723,9 +721,9 @@ function Choose() {
   }, [startClicked]);
 
   //면접선택 페이지 들어올 때마다 이전에 저장된 전역상태정보 초기화
-  useEffect(()=>{
+  useEffect(() => {
     resetCurrentQuestion();
-  },[])
+  }, [resetCurrentQuestion]);
 
   return (
     <>

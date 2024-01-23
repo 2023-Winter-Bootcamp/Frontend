@@ -112,6 +112,7 @@ const VideoContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: flex-start;
+  transform: scaleX(-1);
   //border: 1px solid lightgray;
 `;
 
@@ -191,7 +192,7 @@ function Interviewpage() {
   const [, setInterviewData] = useRecoilState(interviewResultState);
 
   //질문 관련
-  const [question, setQuestion] = useState<Question[]>([]);
+  const [, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
