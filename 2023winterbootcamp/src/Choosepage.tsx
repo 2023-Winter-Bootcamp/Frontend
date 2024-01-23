@@ -694,7 +694,7 @@ function Choose() {
     };
 
     getResumes();
-  }, [resumeList]);
+  }, []);
 
   // 드롭다운 메뉴 만드는 Array
   const options = Array.from({ length: 6 }, (_, index) => index);
