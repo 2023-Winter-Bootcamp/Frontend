@@ -195,6 +195,7 @@ function Interviewpage() {
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
+  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common")
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -513,6 +514,14 @@ function Interviewpage() {
     return false;
   };
 
+  //질문 타입 바뀔 때마다 그에 맞는 질문 타이틀 설정
+  useEffect(()=>{
+    if(questionType === 'common') setQuestionTypeTitle('자기소개');
+    else if(questionType === 'project') setQuestionTypeTitle('프로젝트 질문');
+    else if(questionType === 'cs') setQuestionTypeTitle('CS 질문');
+    else if(questionType === 'personality') setQuestionTypeTitle('인성 면접 질문');
+  }, [questionType]);
+
   return (
     <>
       <Up onContextMenu={handleSelectStart}>
@@ -541,7 +550,7 @@ function Interviewpage() {
       </Up>
       <Down onContextMenu={handleSelectStart}>
         <Q>
-          <QuestionText>{questionType}</QuestionText>
+          <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
         </Q>
         <RecordBox>
