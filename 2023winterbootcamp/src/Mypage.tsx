@@ -5,6 +5,9 @@ import api from "./baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
+import { githubLoginInfoState, resumeListState } from "./Recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import LoadingModal from "./components/LoadingModal";
 
 const Container = styled.div`
   width: 100%;
@@ -396,14 +399,14 @@ function Mypage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const githubLoginInfo = useRecoilValue(githubLoginInfoState);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInterviewClick = async (id: number) => {
     try {
-      const response = await api.get(`interviews/${id}/`);
-      const interviewResult = response.data.title;
-
-      // 여기에서 필요한 동작을 수행하고 페이지 이동
-      console.log(`면접 결과: ${interviewResult}`);
+      const response = await api.get(`interviews/${id}/`, {
+        withCredentials: true,
+      });
       navigate(`/result/${id}`); // 해당 페이지로 이동
     } catch (error) {
       console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
@@ -411,11 +414,12 @@ function Mypage() {
   };
 
   const handleFileUpload = async (title: string) => {
+    setIsLoading(true);
     if (selectedFile) {
       const file = new FormData();
       file.append("file", selectedFile);
-      const user_id = "14";
-      file.append("user_id", user_id);
+      const user_id = githubLoginInfo.id;
+      file.append("user_id", user_id.toString());
       file.append("title", title);
 
       try {
@@ -426,6 +430,7 @@ function Mypage() {
         console.error("Error uploading file:", error);
       }
     }
+    setIsLoading(false);
   };
 
   const handleModalRegister = (title: string) => {
@@ -445,12 +450,12 @@ function Mypage() {
     getResumes();
   };
 
-  const [resumeList, setResumeList] = useState<Resume[]>([]);
+  const [resumeList, setResumeList] = useRecoilState(resumeListState);
   const [interviewList, setInterviewList] = useState<Interview[]>([]);
 
   const getInterviewList = async () => {
     try {
-      const response = await api.get("interviews/");
+      const response = await api.get("interviews/", { withCredentials: true });
       setInterviewList(response.data);
     } catch (e) {
       console.error(e);
@@ -461,6 +466,7 @@ function Mypage() {
     try {
       const response = await api.get("resumes/", { withCredentials: true });
       setResumeList(response.data);
+      console.log(response.data);
     } catch (e) {
       console.error(e);
     }
@@ -469,6 +475,7 @@ function Mypage() {
   function handleClick(id: number) {
     resumeList.forEach(async (item, idx) => {
       if (item.id === id) {
+        console.log(id);
         try {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const response = await api.delete(`resumes/delete/${id}`);
@@ -571,6 +578,7 @@ function Mypage() {
           </ScrollContainer>
         </InterviewContainer2>
       </InterviewContainer>
+      {isLoading ? <LoadingModal /> : null}
     </>
   );
 }

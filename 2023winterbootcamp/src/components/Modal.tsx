@@ -95,7 +95,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
       onRegister(title);
       onClose();
-      navigate("/mypage");
     };
 
     const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
