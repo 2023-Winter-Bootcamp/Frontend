@@ -8,7 +8,7 @@ const githubLogin = () => {
 
   // Axios를 사용하여 API 호출
   axios
-    .get(githubAuthURL)
+    .get(githubAuthURL, {withCredentials: true})
     .then((response) => {
       // 깃허브 API 응답 처리
       console.log('Github API Response:', response.data);

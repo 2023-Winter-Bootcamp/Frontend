@@ -11,6 +11,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import instagramwhiteicon from "./images/instagram-white-icon.webp";
+import api from "./baseURL/baseURL";
 
 declare global {
   interface Window {
@@ -368,13 +369,12 @@ function ScrollToTop() {
 }
 
 const Resultpage = () => {
-  const interviewData = useRecoilValue(interviewResultState);
-
+  const [interviewResult, setInterviewResult] = useRecoilState(interviewResultState);
+  const { id } = useParams();
   const resumeList = useRecoilValue(resumeListState);
 
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
   const audioRefs = useRef<HTMLAudioElement[]>([]);
-  useParams();
 
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
@@ -467,16 +467,23 @@ const Resultpage = () => {
     return false;
   };
 
-  const [resumeName, setResumeName] = useState('');
+  const getResultInfo = async () => {
+    try {
+      const response = await api.get(`interviews/${id}/`);
+      setInterviewResult(response.data);
+    } catch (e) {
+      console.error(e);
+      console.log("인터뷰 결과 불러오는 중 에러 발생");
+    }
+  };
 
   useEffect(()=>{
-    // setResumeName(resumeList[interviewData.resume].title);
-    console.log(resumeList)
+    getResultInfo();
   },[]);
 
   return (
     <>
-      {interviewData && (
+      {interviewResult && (
         <>
           <ScrollToTop />
           <ProfileContainer onContextMenu={handleSelectStart}>
@@ -494,9 +501,9 @@ const Resultpage = () => {
                     <Text2>Repository</Text2>
                   </TextBox2>
                   <TextBox3>
-                    <Text3>{interviewData.title}</Text3>
+                    <Text3>{interviewResult.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names
+                      {interviewResult.interview_type_names
                         .map((type) => {
                           switch (type) {
                             case "common":
@@ -515,7 +522,7 @@ const Resultpage = () => {
                     </Text3>
                     <Text3>
                       {(() => {
-                        switch (interviewData.position) {
+                        switch (interviewResult.position) {
                           case "frontend":
                             return "프론트엔드";
                           case "backend":
@@ -523,26 +530,26 @@ const Resultpage = () => {
                           case "fullstack":
                             return "풀스택";
                           default:
-                            return interviewData.position;
+                            return interviewResult.position;
                         }
                       })()}
                     </Text3>
                     <Text3>
                       {(() => {
-                        switch (interviewData.style) {
+                        switch (interviewResult.style) {
                           case "video":
                             return "화상 면접";
                           case "voice":
                             return "음성 면접";
                           default:
-                            return interviewData.style;
+                            return interviewResult.style;
                         }
                       })()}
                     </Text3>
                     <Text3>{resumeList.map((item,idx) => {
-                      if(item.id === interviewData.resume) return item.title;
+                      if(item.id === interviewResult.resume) return item.title;
                     })}</Text3>
-                    <Text3>{interviewData.repo_names.join(", ")}</Text3>
+                    <Text3>{interviewResult.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   <Button2 onClick={handleInstagramShare} />
                 </TextBox1>
@@ -551,7 +558,7 @@ const Resultpage = () => {
           </ProfileContainer>
           <QnAContainer onContextMenu={handleSelectStart}>
             <QnABox>
-              {interviewData.questions.map((question, index) => (
+              {interviewResult.questions.map((question, index) => (
                 <QnAWrapper key={index}>
                   <QuestionBox>
                     <QLargeText>
@@ -570,7 +577,7 @@ const Resultpage = () => {
                   <AnswerBox>
                     <ALargeText>나의 답변</ALargeText>
                     <ASmallText>
-                      {interviewData.answers[index].content}
+                      {interviewResult.answers[index].content}
                     </ASmallText>
                     <VoiceBox>
                       <audio
@@ -578,7 +585,7 @@ const Resultpage = () => {
                           // 여기서 non-null 어설션을 사용합니다.
                           audioRefs.current[index] = audioRef!;
                         }}
-                        src={interviewData.answers[index].record_url}
+                        src={interviewResult.answers[index].record_url}
                       ></audio>
                       {isPlayingList[index] ? (
                         <Button

@@ -1,9 +1,6 @@
 import { motion } from "framer-motion";
 import React from "react";
-import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { interviewResultState } from "./Recoil";
-import api from "./baseURL/baseURL";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`
@@ -92,20 +89,8 @@ type Props = {
 };
 
 function Endpage(props: Props) {
-  const setInterviewResult = useSetRecoilState(interviewResultState);
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const getResultInfo = async () => {
-    try {
-      const response = await api.get(`interviews/${id}/`);
-      setInterviewResult(response.data);
-      navigate(`/result/${id}`);
-    } catch (e) {
-      console.error(e);
-      console.log("인터뷰 결과 불러오는 중 에러 발생");
-    }
-  };
 
   const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -136,7 +121,9 @@ function Endpage(props: Props) {
           <BottomText width="70vw" height="100px">
             {props.interview_name}
           </BottomText>
-          <StartButton onClick={getResultInfo}>결과 보기</StartButton>
+          <StartButton onClick={() => navigate(`/result/${id}`)}>
+            결과 보기
+          </StartButton>
         </BottomBox>
       </motion.div>
     </Container>
