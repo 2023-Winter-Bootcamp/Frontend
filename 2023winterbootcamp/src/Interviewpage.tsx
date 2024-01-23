@@ -130,8 +130,8 @@ const commonStyle = `
 
 interface LeoBorderProps {
   color: string;
-  gradientColor: string;
-  animationDuration: number;
+  $gradientColor: string;
+  $animationDuration: number;
 }
 
 const SpinnerBox = styled.div`
@@ -149,21 +149,22 @@ const LeoBorder = styled.div<LeoBorderProps>`
   background: ${(props) => props.color};
   background: linear-gradient(
     0deg,
-    rgba(${(props) => props.gradientColor}, 0.1) 33%,
-    rgba(${(props) => props.gradientColor}, 1) 100%
+    rgba(${(props) => props.$gradientColor}, 0.1) 33%,
+    rgba(${(props) => props.$gradientColor}, 1) 100%
   );
-  animation: ${spin3D} ${(props) => props.animationDuration}s linear 0s infinite;
+  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s
+    infinite;
 `;
 
 interface LeoCoreProps {
-  backgroundColor: string;
+  $backgroundColor: string;
 }
 
 const LeoCore = styled.div<LeoCoreProps>`
   ${commonStyle}
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: ${(props) => props.$backgroundColor};
 `;
 
 const InstructionText = styled.div`
@@ -194,6 +195,7 @@ function Interviewpage() {
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
+  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common")
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -350,10 +352,10 @@ function Interviewpage() {
       console.log(response.data);
 
       // 새로운 question ID를 questionId 상태에 업데이트
-      if (response.data && response.data.question) {
-        setQuestionId(response.data.question.id);
-        setQuestionType(response.data.question.question_type);
-        setQuestionContent(response.data.question.content);
+      if (response.data && response.data.questions) {
+        setQuestionId(response.data.questions[0].id);
+        setQuestionType(response.data.questions[0].question_type);
+        setQuestionContent(response.data.questions[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       }
       setIsLoading(false);
@@ -435,6 +437,7 @@ function Interviewpage() {
   // 마지막 question 답변 등록 API
   const sendLastAnswer = async (blob: Blob) => {
     if (!id || !blob) return;
+    setIsLoading(true);
     const file = new FormData();
     file.append("question", questionId.toString());
     file.append("record_url", blob);
@@ -459,6 +462,7 @@ function Interviewpage() {
     } catch (e) {
       console.log(e);
     }
+    setIsLoading(false);
   };
 
   //인터뷰 종료 메소드
@@ -483,7 +487,7 @@ function Interviewpage() {
     getQ2AudioData();
     btnRef.current?.style.setProperty("visibility", "hidden");
     instRef.current?.style.setProperty("visibility", "hidden");
-  }, [question]);
+  }, [questionContent]);
 
   //스탑워치 시작 기능
   useEffect(() => {
@@ -510,6 +514,14 @@ function Interviewpage() {
     return false;
   };
 
+  //질문 타입 바뀔 때마다 그에 맞는 질문 타이틀 설정
+  useEffect(()=>{
+    if(questionType === 'common') setQuestionTypeTitle('자기소개');
+    else if(questionType === 'project') setQuestionTypeTitle('프로젝트 질문');
+    else if(questionType === 'cs') setQuestionTypeTitle('CS 질문');
+    else if(questionType === 'personality') setQuestionTypeTitle('인성 면접 질문');
+  }, [questionType]);
+
   return (
     <>
       <Up onContextMenu={handleSelectStart}>
@@ -518,17 +530,17 @@ function Interviewpage() {
             <SpinnerBox>
               <LeoBorder
                 color="rgb(102, 102, 102)"
-                gradientColor="102, 102, 102"
-                animationDuration={1.8}
+                $gradientColor="102, 102, 102"
+                $animationDuration={1.8}
               >
-                <LeoCore backgroundColor="#191919aa" />
+                <LeoCore $backgroundColor="#191919aa" />
               </LeoBorder>
               <LeoBorder
                 color="rgb(255, 215, 244)"
-                gradientColor="255, 215, 244"
-                animationDuration={2.2}
+                $gradientColor="255, 215, 244"
+                $animationDuration={2.2}
               >
-                <LeoCore backgroundColor="#bebebeaa" />
+                <LeoCore $backgroundColor="#bebebeaa" />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
@@ -538,7 +550,7 @@ function Interviewpage() {
       </Up>
       <Down onContextMenu={handleSelectStart}>
         <Q>
-          <QuestionText>{questionType}</QuestionText>
+          <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
         </Q>
         <RecordBox>

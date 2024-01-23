@@ -1,5 +1,6 @@
 import React, { useEffect, useState, Suspense } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { useNavigate } from "react-router-dom";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
 import {
@@ -10,7 +11,7 @@ import {
   resumeListState,
   totalQuestionCountState,
 } from "./Recoil";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { interviewTypeState } from "./Recoil";
 
 const Container = styled.div`
@@ -336,12 +337,14 @@ const Start = styled.button<{ $startClicked: boolean }>`
   margin-bottom: 100px;
   margin-left: 70%;
   border: none;
-  cursor: pointer;
   user-select: none;
-  &:hover {
-    background-color: ${(props) =>
-      props.$startClicked ? "#1a1a1a" : "#1a1a1a"};
+  ${(props) => props.$startClicked && css`
+    cursor: pointer;
+    &:hover {
+    background-color: "#1a1a1a";
   }
+  `}
+  
 `;
 
 const DropdownContainer = styled.div`
@@ -506,6 +509,7 @@ function Choose() {
   const [, setTotalQuestionCountState] = useRecoilState(
     totalQuestionCountState
   );
+  const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
 
   // question_type 관련 함수
   const handleProjectCountChange = (
@@ -524,15 +528,14 @@ function Choose() {
 
   // question_type의 count에 따라 currentType 업데이트하는 함수
   const updateSelectedQuestionCounts = () => {
+    
     setQuestionState((prevState) => {
       let newCurrentType = prevState.currentType;
-
       if (projectCount === 0 && csCount > 0) {
         newCurrentType = "cs";
       } else if (projectCount === 0 && csCount === 0 && personalityCount > 0) {
         newCurrentType = "personality";
       }
-
       return {
         ...prevState,
         currentType: newCurrentType,
@@ -548,20 +551,18 @@ function Choose() {
   // question_type의 count가 바뀔때마다 실행
   useEffect(() => {
     updateSelectedQuestionCounts();
-    console.log(questionState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectCount, csCount, personalityCount]);
 
   // 모든 칸이 입력돼야 면접을 시작할 수 있음
   useEffect(() => {
     const isAllSelected =
-      selectedMultiButtons.length > 0 &&
+      Boolean(projectCount || csCount || personalityCount) &&
       selectedPosition !== null &&
       selectedInterviewType !== null &&
       selectedResume !== null &&
       selectedRepos.length > 0 &&
       title !== "";
-
     setStartClicked(isAllSelected);
   }, [
     selectedMultiButtons,
@@ -570,6 +571,9 @@ function Choose() {
     selectedResume,
     selectedRepos,
     title,
+    projectCount,
+    csCount,
+    personalityCount,
   ]);
 
   // 면접 제목 Change 이벤트 함수
@@ -592,7 +596,6 @@ function Choose() {
     } else {
       updatedSelectedButtons = [...selectedMultiButtons, buttonName];
     }
-
     setSelectedMultiButtons(updatedSelectedButtons);
   };
 
@@ -637,23 +640,19 @@ function Choose() {
   // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
     setStartClicked(true);
-    // 다른 페이지로 이동하는 대신 현재 페이지의 URL을 변경하여 Choose 페이지로 이동하는 효과
-    window.history.pushState(null, "", "/choose");
+    navigate(`/start/${id}`)
     console.log(questionState);
-
-    // Choose 페이지로 이동할 때만 스크롤을 막습니다.
-    document.body.style.overflow = "auto";
   };
 
   // 면접 생성 API 함수
   const createInterview = async () => {
+    if(!startClicked) return;
     try {
       setIsLoading(true);
       // 전체 질문 개수 update
       const { project, cs, personality } = questionState.counts;
       const total = project + cs + personality;
       setTotalQuestionCountState(total);
-      console.log(total);
 
       const response = await api.post("interviews/create/", {
         user: githubLoginInfo.id,
@@ -665,19 +664,21 @@ function Choose() {
         type_names: selectedMultiButtons,
       });
       handleStartClick(response.data.id);
-      console.log(response.data);
+
       // 음성 면접인 경우에만 처리
       if (selectedInterviewType !== "video") {
         setShowVideoComponent(false);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
     setIsLoading(false);
   };
+  
 
   // 이력서 목록 조회 API
   useEffect(() => {
+    window.scrollTo(0,0);
     const getResumes = async () => {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
@@ -689,10 +690,42 @@ function Choose() {
     };
 
     getResumes();
+    
   }, []);
 
   // 드롭다운 메뉴 만드는 Array
   const options = Array.from({ length: 6 }, (_, index) => index);
+
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+
+    const containerElement = document.getElementById("choose-container");
+    if (startClicked && containerElement) {
+      containerElement.style.overflow = "hidden";
+      containerElement.addEventListener("wheel", handleWheel, {
+        passive: false,
+      });
+    }
+
+    return () => {
+      if (containerElement) {
+        containerElement.style.overflow = "auto";
+        containerElement.removeEventListener("wheel", handleWheel);
+      }
+    };
+  }, [startClicked]);
+
+  //면접선택 페이지 들어올 때마다 이전에 저장된 전역상태정보 초기화
+  useEffect(()=>{
+    resetCurrentQuestion();
+  },[])
 
   return (
     <>
@@ -837,7 +870,7 @@ function Choose() {
         </Container4>
         <Container4>
           <TextWrapper2>
-            <Text1>Github reposiotries</Text1>
+            <Text1>Github repositories</Text1>
             <Text3>복수 선택이 가능합니다.</Text3>
           </TextWrapper2>
           <RepoContainer>
