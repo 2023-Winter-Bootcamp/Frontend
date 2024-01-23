@@ -88,18 +88,18 @@ const Text2 = styled.div`
   }
 `;
 
-const Text3 = styled.div`
-  color: #4a4a4a;
-  font-weight: 700;
-  font-size: 16px;
-  margin-top: 4px;
-  @media screen and (max-width: 1023px) {
-    font-size: 14px;
-  }
-  @media screen and (min-width: 1024px) {
-    font-size: 16px;
-  }
-`;
+// const Text3 = styled.div`
+//   color: #4a4a4a;
+//   font-weight: 700;
+//   font-size: 16px;
+//   margin-top: 4px;
+//   @media screen and (max-width: 1023px) {
+//     font-size: 14px;
+//   }
+//   @media screen and (min-width: 1024px) {
+//     font-size: 16px;
+//   }
+// `;
 
 const Image = styled.img`
   width: 200px;

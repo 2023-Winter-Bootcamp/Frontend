@@ -10,7 +10,7 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import instagramwhiteicon from "./images/instagram-white-icon.webp";
+//import instagramwhiteicon from "./images/instagram-white-icon.webp";
 
 declare global {
   interface Window {
@@ -23,7 +23,6 @@ const ProfileContainer = styled.div`
   width: 100%;
   height: 420px;
   background: #070707;
-  padding: 20px;
   @media screen and (max-width: 768px) {
     height: 340px;
   }
@@ -38,7 +37,6 @@ const ProfileContainer = styled.div`
 const ProfileBox = styled.div`
   width: 70%;
   display: flex;
-  margin-top: 60px;
   margin-left: 18%;
   @media screen and (max-width: 768px) {
     height: 180px;
@@ -50,7 +48,6 @@ const ProfileBox = styled.div`
   }
   @media screen and (min-width: 1024px) {
     height: 250px;
-    margin-top: 60px;
   }
 `;
 
@@ -62,6 +59,7 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
   background-size: cover;
   border: none;
   aspect-ratio: 1;
+  margin-top: 60px;
   @media screen and (max-width: 768px) {
     width: 180px;
   }
@@ -77,6 +75,7 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
 const ProfileInfo = styled.div`
   height: inherit;
   aspect-ratio: 1;
+  margin-top: 60px;
   @media screen and (max-width: 768px) {
     width: 350px;
     margin-top: 0;
@@ -97,6 +96,7 @@ const ProfileInfo = styled.div`
 const Text1 = styled.div`
   font-weight: 700;
   color: white;
+  margin-top: 60px;
   @media screen and (max-width: 768px) {
     width: 60px;
     height: 26px;
@@ -211,7 +211,6 @@ const TextBox3 = styled.div`
 const QnAContainer = styled.div`
   user-select: none;
   width: 100%;
-  padding: 20px;
   background: linear-gradient(#f4f4f4 90%, lightgray);
 `;
 
@@ -227,7 +226,8 @@ const QnAWrapper = styled.div`
   width: 100%;
   height: 555px;
   box-sizing: border-box;
-  margin-bottom: -50px;
+  margin-bottom: -60px;
+  margin-top: 20px;
   @media screen and (max-width: 1023px) {
     height: 90vh;
   }
@@ -239,7 +239,6 @@ const QuestionBox = styled.div`
   padding: 25px 34px 15px;
   margin: 0 25% 20px 15%;
   background: #fff;
-
   @media screen and (max-width: 1023px) {
     margin: 0 12% 20px 12%;
     width: 75%;
@@ -349,15 +348,15 @@ const Text4 = styled.div`
   margin-top: 9px;
 `;
 
-const Button2 = styled.button`
-  width: 25px;
-  height: 25px;
-  background: url(${instagramwhiteicon}) no-repeat center center;
-  background-size: cover;
-  border: none;
-  margin-top: 165px;
-  cursor: pointer;
-`;
+// const Button2 = styled.button`
+//   width: 25px;
+//   height: 25px;
+//   background: url(${instagramwhiteicon}) no-repeat center center;
+//   background-size: cover;
+//   border: none;
+//   margin-top: 165px;
+//   cursor: pointer;
+// `;
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -448,21 +447,21 @@ const Resultpage = () => {
     fetchUserData();
   }, [githubLoginInfo.html_url]);
 
-  const handleInstagramShare = () => {
-    // 면접 결과 페이지 URL
-    const resultPageUrl = encodeURIComponent(
-      "https://www.instagram.com/ahnnakyung/"
-    );
+  // const handleInstagramShare = () => {
+  //   // 면접 결과 페이지 URL
+  //   const resultPageUrl = encodeURIComponent(
+  //     "https://www.instagram.com/ahnnakyung/"
+  //   );
 
-    // 면접 결과를 설명하는 캡션
-    const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
+  //   // 면접 결과를 설명하는 캡션
+  //   const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
 
-    // 인스타그램 스토리에 공유하는 URL
-    const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
+  //   // 인스타그램 스토리에 공유하는 URL
+  //   const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
 
-    // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
-    window.open(instagramStoryUrl, "_blank");
-  };
+  //   // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
+  //   window.open(instagramStoryUrl, "_blank");
+  // };
 
   const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -537,7 +536,7 @@ const Resultpage = () => {
                     <Text3>{resumeList[interviewData.resume].title}</Text3>
                     <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
-                  <Button2 onClick={handleInstagramShare} />
+                  {/* <Button2 onClick={handleInstagramShare} /> */}
                 </TextBox1>
               </ProfileInfo>
             </ProfileBox>

@@ -41,7 +41,7 @@ const Camera = ({ children, elapsedTime }: CameraProps) => {
         width="2000px"
         height="500px"
         autoPlay
-        style={{ marginLeft: "5px" }}
+        style={{ marginLeft: "5px", transform: "scaleX(-1)" }}
       />
       {/* <Timer elapsedTime={elapsedTime} /> */}
       {children}

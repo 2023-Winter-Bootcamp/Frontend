@@ -112,6 +112,7 @@ const VideoContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: flex-start;
+  transform: scaleX(-1);
   //border: 1px solid lightgray;
 `;
 
@@ -191,11 +192,11 @@ function Interviewpage() {
   const [, setInterviewData] = useRecoilState(interviewResultState);
 
   //질문 관련
-  const [question, setQuestion] = useState<Question[]>([]);
+  const [, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
-  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common")
+  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common");
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -515,11 +516,12 @@ function Interviewpage() {
   };
 
   //질문 타입 바뀔 때마다 그에 맞는 질문 타이틀 설정
-  useEffect(()=>{
-    if(questionType === 'common') setQuestionTypeTitle('자기소개');
-    else if(questionType === 'project') setQuestionTypeTitle('프로젝트 질문');
-    else if(questionType === 'cs') setQuestionTypeTitle('CS 질문');
-    else if(questionType === 'personality') setQuestionTypeTitle('인성 면접 질문');
+  useEffect(() => {
+    if (questionType === "common") setQuestionTypeTitle("자기소개");
+    else if (questionType === "project") setQuestionTypeTitle("프로젝트 질문");
+    else if (questionType === "cs") setQuestionTypeTitle("CS 질문");
+    else if (questionType === "personality")
+      setQuestionTypeTitle("인성 면접 질문");
   }, [questionType]);
 
   return (
