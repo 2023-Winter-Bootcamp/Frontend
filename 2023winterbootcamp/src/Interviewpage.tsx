@@ -195,7 +195,7 @@ function Interviewpage() {
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
-  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common")
+  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common");
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -216,7 +216,9 @@ function Interviewpage() {
   const fetchCommonQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`);
+        const response = await api.get(`interviews/${id}/questions/`, {
+          withCredentials: true,
+        });
         console.log(response.data.questions);
         setQuestion(response.data.questions);
         setQuestionType(response.data.questions[0].type_name);
@@ -421,7 +423,9 @@ function Interviewpage() {
   const fetchLastQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`);
+        const response = await api.get(`interviews/${id}/questions/`, {
+          withCredentials: true,
+        });
         console.log(response.data.questions);
         const lastArrayIndex = response.data.questions.length - 1;
         setQuestion(response.data.questions);
@@ -450,7 +454,9 @@ function Interviewpage() {
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
         try {
-          const response = await api.get(`interviews/${id}/`);
+          const response = await api.get(`interviews/${id}/`, {
+            withCredentials: true,
+          });
           setInterviewData(response.data);
         } catch (e) {
           console.log(e);
@@ -515,11 +521,12 @@ function Interviewpage() {
   };
 
   //질문 타입 바뀔 때마다 그에 맞는 질문 타이틀 설정
-  useEffect(()=>{
-    if(questionType === 'common') setQuestionTypeTitle('자기소개');
-    else if(questionType === 'project') setQuestionTypeTitle('프로젝트 질문');
-    else if(questionType === 'cs') setQuestionTypeTitle('CS 질문');
-    else if(questionType === 'personality') setQuestionTypeTitle('인성 면접 질문');
+  useEffect(() => {
+    if (questionType === "common") setQuestionTypeTitle("자기소개");
+    else if (questionType === "project") setQuestionTypeTitle("프로젝트 질문");
+    else if (questionType === "cs") setQuestionTypeTitle("CS 질문");
+    else if (questionType === "personality")
+      setQuestionTypeTitle("인성 면접 질문");
   }, [questionType]);
 
   return (

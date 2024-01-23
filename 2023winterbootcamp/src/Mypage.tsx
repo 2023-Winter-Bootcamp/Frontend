@@ -404,12 +404,9 @@ function Mypage() {
 
   const handleInterviewClick = async (id: number) => {
     try {
-      const response = await api.get(`interviews/${id}/`);
-      const interviewResult = response.data.title;
-
-      // 여기에서 필요한 동작을 수행하고 페이지 이동
-      console.log(`면접 결과: ${interviewResult}`);
-      console.log(interviewResult)
+      const response = await api.get(`interviews/${id}/`, {
+        withCredentials: true,
+      });
       navigate(`/result/${id}`); // 해당 페이지로 이동
     } catch (error) {
       console.error(`면접 결과를 불러오는 중 오류 발생: ${error}`);
@@ -469,7 +466,7 @@ function Mypage() {
     try {
       const response = await api.get("resumes/", { withCredentials: true });
       setResumeList(response.data);
-      console.log(response.data)
+      console.log(response.data);
     } catch (e) {
       console.error(e);
     }
@@ -581,7 +578,7 @@ function Mypage() {
           </ScrollContainer>
         </InterviewContainer2>
       </InterviewContainer>
-      {isLoading ? <LoadingModal/> : null}
+      {isLoading ? <LoadingModal /> : null}
     </>
   );
 }

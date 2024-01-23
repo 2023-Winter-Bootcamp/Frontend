@@ -369,7 +369,8 @@ function ScrollToTop() {
 }
 
 const Resultpage = () => {
-  const [interviewResult, setInterviewResult] = useRecoilState(interviewResultState);
+  const [interviewResult, setInterviewResult] =
+    useRecoilState(interviewResultState);
   const { id } = useParams();
   const resumeList = useRecoilValue(resumeListState);
 
@@ -469,7 +470,9 @@ const Resultpage = () => {
 
   const getResultInfo = async () => {
     try {
-      const response = await api.get(`interviews/${id}/`);
+      const response = await api.get(`interviews/${id}/`, {
+        withCredentials: true,
+      });
       setInterviewResult(response.data);
     } catch (e) {
       console.error(e);
@@ -477,9 +480,9 @@ const Resultpage = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getResultInfo();
-  },[]);
+  }, []);
 
   return (
     <>
@@ -546,9 +549,12 @@ const Resultpage = () => {
                         }
                       })()}
                     </Text3>
-                    <Text3>{resumeList.map((item,idx) => {
-                      if(item.id === interviewResult.resume) return item.title;
-                    })}</Text3>
+                    <Text3>
+                      {resumeList.map((item, idx) => {
+                        if (item.id === interviewResult.resume)
+                          return item.title;
+                      })}
+                    </Text3>
                     <Text3>{interviewResult.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   <Button2 onClick={handleInstagramShare} />
