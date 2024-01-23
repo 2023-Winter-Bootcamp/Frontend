@@ -15,12 +15,13 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
-  background-color: transparent;
+  padding-top: 10px;
+  background-color: white;
   width: 100%;
   height: 80px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   user-select: none;
+  z-index: 1;
 `;
 
 const Logo = styled(motion(Link))`
