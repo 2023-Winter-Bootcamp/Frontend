@@ -78,7 +78,8 @@ const Text1 = styled.div`
 const Text2 = styled.div`
   color: #3a3a3a;
   font-size: 16px;
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   @media screen and (max-width: 1023px) {
     font-size: 15px;
   }
@@ -562,7 +563,7 @@ function Main() {
     if (selectedFile) {
       const file = new FormData();
       file.append("file", selectedFile);
-      const user_id = "1";
+      const user_id = "14";
       file.append("user_id", user_id);
       file.append("title", title);
 
@@ -715,168 +716,190 @@ function Main() {
     return false;
   };
 
+  useEffect(() => {
+    // 페이지가 처음 로드될 때 실행되는 부분
+    window.scrollTo(0, 0);
+  }, []);
+
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!initialized) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <Suspense fallback={<LoadingModal />}>
       <>
-        <Container onContextMenu={handleSelectStart}>
-          <ScrollWrapper>
-            <ScrollContent id="scrollContent">
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1 }}
-              >
-                <Text1>깃허브를 이용한 AI면접</Text1>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 2, delay: 1 }}
-              >
-                <Text2>깃허브 기반 AI면접. teamA입니다.</Text2>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 2, delay: 1.5 }}
-              >
-                <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 2.5, delay: 2.5 }}
-              >
-                <Image
-                  src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                  alt="GitHub Logo"
-                />
-              </motion.div>
-              <ButtonWrapper>
+        <ScrollContent>
+          <Container onContextMenu={handleSelectStart}>
+            <ScrollWrapper>
+              <ScrollContent id="scrollContent">
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 1 }}
+                  transition={{ duration: 1 }}
                 >
-                  <Button onClick={handleMyGitHubClick}>
-                    <ButtonContent>
-                      <ButtonImage
-                        src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                        alt="GitHub Logo"
-                      />
-                      내 깃허브
-                    </ButtonContent>
-                  </Button>
+                  <Text1>깃허브를 이용한 AI면접</Text1>
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 1 }}
+                  transition={{ duration: 2, delay: 1 }}
                 >
-                  <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+                  <Text2>깃허브 기반 AI면접. Giterview입니다.</Text2>
                 </motion.div>
-                <ResumeButton
-                  id={githubInfo.id}
-                  getRootProps={getRootProps}
-                  getInputProps={getInputProps}
-                  handleModalClose={handleModalClose}
-                />
-                {isModalOpen && (
-                  <Modal
-                    ref={modalRef}
-                    onClose={handleModalClose}
-                    onRegister={handleModalRegister}
+                {/* <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 2, delay: 1.5 }}
+                >
+                  <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
+                </motion.div> */}
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 2.5, delay: 2.5 }}
+                >
+                  <Image
+                    src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                    alt="GitHub Logo"
                   />
-                )}
-              </ButtonWrapper>
+                </motion.div>
+                <ButtonWrapper>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1 }}
+                  >
+                    <Button onClick={handleMyGitHubClick}>
+                      <ButtonContent>
+                        <ButtonImage
+                          src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                          alt="GitHub Logo"
+                        />
+                        내 깃허브
+                      </ButtonContent>
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 1 }}
+                  >
+                    <Button onClick={handleAIInterviewClick}>AI 면접</Button>
+                  </motion.div>
+                  <ResumeButton
+                    id={githubInfo.id}
+                    getRootProps={getRootProps}
+                    getInputProps={getInputProps}
+                    handleModalClose={handleModalClose}
+                  />
+                  {isModalOpen && (
+                    <Modal
+                      ref={modalRef}
+                      onClose={handleModalClose}
+                      onRegister={handleModalRegister}
+                    />
+                  )}
+                </ButtonWrapper>
 
-              <TextField>
-                <Text4>깃허브 연동</Text4>
-                <Text4>개발자 필수 면접 플랫폼</Text4>
-                <Text5>teamA.</Text5>
-              </TextField>
-            </ScrollContent>
-          </ScrollWrapper>
-          <Page2Container id="page2container">
-            <Page2
-              initial={{ opacity: 0, y: 50 }}
-              animate={control1}
-              transition={{ duration: 1, delay: 0.25 }}
-            >
-              <TextComponents2>
-                <TextComponents>
-                  <Textb>
-                    <Text6>GitHub 계정과</Text6>
-                    <Text6>이력서만 제출하세요</Text6>
-                  </Textb>
-                </TextComponents>
-                <Text8>
-                  이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
-                  지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트 경험,
-                  협업 능력 등을 정확하게 평가하여 나만의 면접을 제공합니다
-                </Text8>
-              </TextComponents2>
-              <Image2 />
-            </Page2>
-          </Page2Container>
-        </Container>
-        <Container1>
-          <ImageContainer>
+                <TextField>
+                  <Text4>깃허브 연동</Text4>
+                  <Text4>개발자 필수 면접 플랫폼</Text4>
+                  <Text5>Giterview</Text5>
+                </TextField>
+              </ScrollContent>
+            </ScrollWrapper>
+            <Page2Container id="page2container">
+              <Page2
+                initial={{ opacity: 0, y: 50 }}
+                animate={control1}
+                transition={{ duration: 1, delay: 0.25 }}
+              >
+                <TextComponents2>
+                  <TextComponents>
+                    <Textb>
+                      <Text6>GitHub 계정과</Text6>
+                      <Text6>이력서만 제출하세요</Text6>
+                    </Textb>
+                  </TextComponents>
+                  <Text8>
+                    이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
+                    지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트
+                    경험, 협업 능력 등을 정확하게 평가하여 나만의 면접을
+                    제공합니다
+                  </Text8>
+                </TextComponents2>
+                <Image2 />
+              </Page2>
+            </Page2Container>
+          </Container>
+          <Container1>
+            <ImageContainer>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={control2}
+                transition={{ duration: 1, delay: 0.2 }}
+              >
+                <ImageBox>
+                  <ImageBoxText>
+                    면접 종류, 포지션, 면접 방식, <br />
+                    이력서 선택 등 다양한 옵션
+                  </ImageBoxText>
+                  <ImageBoxImage imageurl={picture1} />
+                </ImageBox>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={control2}
+                transition={{ duration: 1, delay: 0.5 }}
+              >
+                <ImageBox2>
+                  <ImageBoxText2>
+                    실시간 화상 면접, 음성 텍스트 변환
+                  </ImageBoxText2>
+                  <ImageBoxImage2 imageurl={picture2} />
+                </ImageBox2>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={control2}
+                transition={{ duration: 1, delay: 0.8 }}
+              >
+                <ImageBox3>
+                  <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
+                  <ImageBoxImage3 imageurl={picture3} />
+                </ImageBox3>
+              </motion.div>
+            </ImageContainer>
+          </Container1>
+          <MiddleContainer />
+          <Container2>
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={control2}
-              transition={{ duration: 1, delay: 0.2 }}
+              initial={{ opacity: 0 }}
+              animate={control3}
+              transition={{ duration: 1 }}
             >
-              <ImageBox>
-                <ImageBoxText>
-                  면접 종류, 포지션, 면접 방식, <br />
-                  이력서 선택 등 다양한 옵션
-                </ImageBoxText>
-                <ImageBoxImage imageurl={picture1} />
-              </ImageBox>
+              <Text10>
+                Giterview와 함께 개발자 커리어 준비를 시작해보세요
+              </Text10>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={control2}
-              transition={{ duration: 1, delay: 0.5 }}
-            >
-              <ImageBox2>
-                <ImageBoxText2>
-                  실시간 화상 면접, 음성 텍스트 변환
-                </ImageBoxText2>
-                <ImageBoxImage2 imageurl={picture2} />
-              </ImageBox2>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={control2}
-              transition={{ duration: 1, delay: 0.8 }}
-            >
-              <ImageBox3>
-                <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
-                <ImageBoxImage3 imageurl={picture3} />
-              </ImageBox3>
-            </motion.div>
-          </ImageContainer>
-        </Container1>
-        <MiddleContainer />
-        <Container2>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={control3}
-            transition={{ duration: 1 }}
-          >
-            <Text10>teamA.와 함께 개발자 커리어 준비를 시작해보세요</Text10>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={control3}
-            transition={{ duration: 10 }}
-          >
-            <Text9 onClick={handleAIInterviewClick}>면접보러 가기</Text9>
-          </motion.div>
-        </Container2>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={control3}
+              transition={{ duration: 10 }}
+            >
+              <Text9 onClick={handleAIInterviewClick}>면접보러 가기</Text9>
+            </motion.div>
+          </Container2>
+        </ScrollContent>
       </>
     </Suspense>
   );

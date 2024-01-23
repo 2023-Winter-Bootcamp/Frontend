@@ -9,6 +9,7 @@ import {
   githubProfileState,
   repoListState,
 } from "../Recoil";
+import logo from "../images/logo.png";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -28,7 +29,11 @@ const Logo = styled(motion(Link))`
   color: black;
   font-size: 28px;
   margin-bottom: 20px;
-  margin-top: 4px;
+  margin-top: 50px;
+  background: url(${logo}) no-repeat;
+  background-size: contain;
+  width: 150px;
+  height: 80px;
   @media screen and (max-width: 768px) {
     margin-left: 15%;
   }
@@ -186,9 +191,7 @@ function Header() {
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
-      >
-        teamA.
-      </Logo>
+      ></Logo>
       <Navigationbar>
         {isLoggedIn ? (
           <>

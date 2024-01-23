@@ -414,7 +414,7 @@ function Mypage() {
     if (selectedFile) {
       const file = new FormData();
       file.append("file", selectedFile);
-      const user_id = "1";
+      const user_id = "14";
       file.append("user_id", user_id);
       file.append("title", title);
 
@@ -459,7 +459,7 @@ function Mypage() {
 
   const getResumes = async () => {
     try {
-      const response = await api.get("resumes/");
+      const response = await api.get("resumes/", { withCredentials: true });
       setResumeList(response.data);
     } catch (e) {
       console.error(e);

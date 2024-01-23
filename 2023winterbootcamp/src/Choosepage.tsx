@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
 import {
+  ResumeType,
   currentQuestionState,
   githubLoginInfoState,
   repoListState,
+  resumeListState,
   totalQuestionCountState,
 } from "./Recoil";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { interviewTypeState } from "./Recoil";
-import { useLocation } from "react-router-dom";
 
 const Container = styled.div`
   user-select: none;
@@ -480,7 +481,6 @@ interface Resume {
 }
 
 function Choose() {
-  const navigate = useNavigate();
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
@@ -498,6 +498,7 @@ function Choose() {
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
   const [resumeList, setResumeList] = useState<Resume[]>([]);
+  const setResumeListState = useSetRecoilState<ResumeType[]>(resumeListState);
 
   // question_type 관련 state
   const [projectCount, setProjectCount] = useState(0);
@@ -680,8 +681,9 @@ function Choose() {
     window.scrollTo(0,0);
     const getResumes = async () => {
       try {
-        const response = await api.get("resumes/");
+        const response = await api.get("resumes/", { withCredentials: true });
         setResumeList(response.data);
+        setResumeListState(response.data);
       } catch (e) {
         console.error(e);
       }
@@ -728,7 +730,7 @@ function Choose() {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-        <Container id="choose-container" onContextMenu={handleSelectStart}>
+        <Container>
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
@@ -846,12 +848,6 @@ function Choose() {
               onClick={() => handleInterviewTypeClick("voice")}
             >
               음성 면접
-            </Button>
-            <Button
-              $isSelected={selectedInterviewType === "text"}
-              onClick={() => handleInterviewTypeClick("text")}
-            >
-              텍스트 면접
             </Button>
           </ButtonsContainer>
         </Container3>

@@ -1,10 +1,10 @@
-import { atom } from 'recoil';
-import { recoilPersist } from 'recoil-persist';
+import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
 export const interviewTypeState = atom({
-  key: 'interviewTypeState',
+  key: "interviewTypeState",
   default: {
     showCamera: true,
   },
@@ -17,14 +17,14 @@ export type githubLoginInfoType = {
   repos_url: string;
 };
 export const githubLoginInfoState = atom<githubLoginInfoType>({
-  key: 'githubLoginInfoState',
+  key: "githubLoginInfoState",
   effects_UNSTABLE: [persistAtom],
   default: {
-    username: 'userName',
-    html_url: 'https://github.com/',
+    username: "userName",
+    html_url: "https://github.com/",
     id: -1,
     login_id: -1,
-    repos_url: 'https://api.github.com/users/userid',
+    repos_url: "https://api.github.com/users/userid",
   },
 });
 
@@ -34,7 +34,7 @@ export type RepoType = {
 };
 
 export const repoListState = atom<RepoType[]>({
-  key: 'repoListState',
+  key: "repoListState",
   effects_UNSTABLE: [persistAtom],
   default: [],
 });
@@ -44,7 +44,7 @@ export type githubProfileType = {
   avatar_url: string;
 };
 
-export type QuestionType = 'project' | 'cs' | 'personality';
+export type QuestionType = "project" | "cs" | "personality";
 
 export type currentQuestionStateType = {
   currentType: string;
@@ -54,11 +54,11 @@ export type currentQuestionStateType = {
 };
 
 export const githubProfileState = atom<githubProfileType>({
-  key: 'githubProfileState',
+  key: "githubProfileState",
   effects_UNSTABLE: [persistAtom],
   default: {
-    name: 'userName',
-    avatar_url: '',
+    name: "userName",
+    avatar_url: "",
   },
 });
 
@@ -84,14 +84,14 @@ export type InterviewResultType = {
 };
 
 export const interviewResultState = atom<InterviewResultType>({
-  key: 'interviewResultState',
+  key: "interviewResultState",
   default: {
-    title: '',
-    interview_type_names: [''],
-    position: '',
-    style: '',
+    title: "",
+    interview_type_names: [""],
+    position: "",
+    style: "",
     resume: -1,
-    repo_names: [''],
+    repo_names: [""],
     questions: [],
     answers: [],
   },
@@ -100,9 +100,9 @@ export const interviewResultState = atom<InterviewResultType>({
 
 // 현재 question 상태
 export const currentQuestionState = atom<currentQuestionStateType>({
-  key: 'currentQuestionState',
+  key: "currentQuestionState",
   default: {
-    currentType: 'project', // 현재 질문 타입
+    currentType: "project", // 현재 질문 타입
     counts: {
       project: 0,
       cs: 0,
@@ -113,6 +113,19 @@ export const currentQuestionState = atom<currentQuestionStateType>({
 
 // 전체 질문 개수
 export const totalQuestionCountState = atom({
-  key: 'totalQuestionCountState',
+  key: "totalQuestionCountState",
   default: 0,
+});
+
+export type ResumeType = {
+  created_at: string;
+  id: number;
+  pre_image_url: string;
+  text_contents: string;
+  title: string;
+  user_id: string;
+};
+export const resumeListState = atom<ResumeType[]>({
+  key: "resumeListState",
+  default: [],
 });
