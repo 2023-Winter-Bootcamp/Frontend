@@ -5,6 +5,7 @@ import {
   githubLoginInfoState,
   githubProfileState,
   interviewResultState,
+  resumeListState,
 } from "./Recoil";
 import { useRecoilState, useRecoilValue } from "recoil";
 import axios from "axios";
@@ -56,9 +57,7 @@ const ProfileBox = styled.div`
 const ProfileImage = styled.div<{ avatarUrl?: string }>`
   border-radius: 50%;
   background-image: ${(props) =>
-    props.avatarUrl
-      ? `url("${props.avatarUrl}")`
-      : 'url("https://ifh.cc/g/bHznLB.png")'};
+    props.avatarUrl ? `url("${props.avatarUrl}")` : 'url("")'};
   background-position: center;
   background-size: cover;
   border: none;
@@ -212,27 +211,23 @@ const TextBox3 = styled.div`
 const QnAContainer = styled.div`
   user-select: none;
   width: 100%;
-  height: 100vh;
   padding: 20px;
   background: linear-gradient(#f4f4f4 90%, lightgray);
 `;
 
 const QnABox = styled.div`
   width: 100%;
-  height: inherit;
   box-sizing: border-box;
   padding: 20px 20px 0px 20px;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(#f4f4f4 90%, lightgray);
-  overflow: scroll;
 `;
 
 const QnAWrapper = styled.div`
   width: 100%;
   height: 555px;
   box-sizing: border-box;
-  margin-bottom: 60px;
+  margin-bottom: -50px;
   @media screen and (max-width: 1023px) {
     height: 90vh;
   }
@@ -240,7 +235,6 @@ const QnAWrapper = styled.div`
 
 const QuestionBox = styled.div`
   width: 60%;
-  height: 200px;
   box-sizing: border-box;
   padding: 25px 34px 15px;
   margin: 0 25% 20px 15%;
@@ -249,7 +243,6 @@ const QuestionBox = styled.div`
   @media screen and (max-width: 1023px) {
     margin: 0 12% 20px 12%;
     width: 75%;
-    height: 25vh;
   }
   @media screen and (min-width: 1024px) {
     margin: 0 25% 20px 15%;
@@ -260,8 +253,8 @@ const QuestionBox = styled.div`
 const QLargeText = styled.div`
   width: 100%;
   height: 34px;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   margin-bottom: 10px;
   overflow: auto;
 `;
@@ -298,7 +291,6 @@ const ASmallText = styled.div`
 
 const AnswerBox = styled.div`
   width: 60%;
-  height: 350px;
   box-sizing: border-box;
   margin: 0 15% 0 25%;
   padding: 30px 34px 0px;
@@ -307,7 +299,6 @@ const AnswerBox = styled.div`
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
-    height: 62vh;
   }
   @media screen and (min-width: 1024px) {
     margin: 0 15% 0 25%;
@@ -380,6 +371,8 @@ function ScrollToTop() {
 
 const Resultpage = () => {
   const interviewData = useRecoilValue(interviewResultState);
+
+  const resumeList = useRecoilValue(resumeListState);
 
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
   const audioRefs = useRef<HTMLAudioElement[]>([]);
@@ -498,11 +491,50 @@ const Resultpage = () => {
                   <TextBox3>
                     <Text3>{interviewData.title}</Text3>
                     <Text3>
-                      {interviewData.interview_type_names.join(", ")}
+                      {interviewData.interview_type_names
+                        .map((type) => {
+                          switch (type) {
+                            case "common":
+                              return "자기소개";
+                            case "project":
+                              return "프로젝트";
+                            case "cs":
+                              return "CS 질문";
+                            case "personality":
+                              return "인성 면접 질문";
+                            default:
+                              return type;
+                          }
+                        })
+                        .join(", ")}
                     </Text3>
-                    <Text3>{interviewData.position}</Text3>
-                    <Text3>{interviewData.style}</Text3>
-                    <Text3>{interviewData.resume}</Text3>
+                    <Text3>
+                      {(() => {
+                        switch (interviewData.position) {
+                          case "frontend":
+                            return "프론트엔드";
+                          case "backend":
+                            return "백엔드";
+                          case "fullstack":
+                            return "풀스택";
+                          default:
+                            return interviewData.position;
+                        }
+                      })()}
+                    </Text3>
+                    <Text3>
+                      {(() => {
+                        switch (interviewData.style) {
+                          case "video":
+                            return "화상 면접";
+                          case "voice":
+                            return "음성 면접";
+                          default:
+                            return interviewData.style;
+                        }
+                      })()}
+                    </Text3>
+                    <Text3>{resumeList[interviewData.resume].title}</Text3>
                     <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   <Button2 onClick={handleInstagramShare} />
@@ -515,7 +547,17 @@ const Resultpage = () => {
               {interviewData.questions.map((question, index) => (
                 <QnAWrapper key={index}>
                   <QuestionBox>
-                    <QLargeText>{question.type_name}</QLargeText>
+                    <QLargeText>
+                      {question.type_name === "common"
+                        ? "자기소개"
+                        : question.type_name === "project"
+                          ? "프로젝트 질문"
+                          : question.type_name === "cs"
+                            ? "CS 질문"
+                            : question.type_name === "personality"
+                              ? "인성 면접 질문"
+                              : question.type_name}
+                    </QLargeText>
                     <QSmallText>{question.content}</QSmallText>
                   </QuestionBox>
                   <AnswerBox>

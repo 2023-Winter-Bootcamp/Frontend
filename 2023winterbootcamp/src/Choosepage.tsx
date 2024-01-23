@@ -1,17 +1,17 @@
 import React, { useEffect, useState, Suspense } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
 import {
+  ResumeType,
   currentQuestionState,
   githubLoginInfoState,
   repoListState,
+  resumeListState,
   totalQuestionCountState,
 } from "./Recoil";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { interviewTypeState } from "./Recoil";
-import { useLocation } from "react-router-dom";
 
 const Container = styled.div`
   user-select: none;
@@ -478,7 +478,6 @@ interface Resume {
 }
 
 function Choose() {
-  const navigate = useNavigate();
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
   );
@@ -496,6 +495,7 @@ function Choose() {
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
   const [resumeList, setResumeList] = useState<Resume[]>([]);
+  const setResumeListState = useSetRecoilState<ResumeType[]>(resumeListState);
 
   // question_type 관련 state
   const [projectCount, setProjectCount] = useState(0);
@@ -680,8 +680,9 @@ function Choose() {
   useEffect(() => {
     const getResumes = async () => {
       try {
-        const response = await api.get("resumes/");
+        const response = await api.get("resumes/", { withCredentials: true });
         setResumeList(response.data);
+        setResumeListState(response.data);
       } catch (e) {
         console.error(e);
       }
@@ -693,36 +694,10 @@ function Choose() {
   // 드롭다운 메뉴 만드는 Array
   const options = Array.from({ length: 6 }, (_, index) => index);
 
-  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    return false;
-  };
-
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-    };
-
-    const containerElement = document.getElementById("choose-container");
-    if (startClicked && containerElement) {
-      containerElement.style.overflow = "hidden";
-      containerElement.addEventListener("wheel", handleWheel, {
-        passive: false,
-      });
-    }
-
-    return () => {
-      if (containerElement) {
-        containerElement.style.overflow = "auto";
-        containerElement.removeEventListener("wheel", handleWheel);
-      }
-    };
-  }, [startClicked]);
-
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-        <Container id="choose-container" onContextMenu={handleSelectStart}>
+        <Container>
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
@@ -840,12 +815,6 @@ function Choose() {
               onClick={() => handleInterviewTypeClick("voice")}
             >
               음성 면접
-            </Button>
-            <Button
-              $isSelected={selectedInterviewType === "text"}
-              onClick={() => handleInterviewTypeClick("text")}
-            >
-              텍스트 면접
             </Button>
           </ButtonsContainer>
         </Container3>
