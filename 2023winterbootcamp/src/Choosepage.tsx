@@ -518,7 +518,7 @@ function Choose() {
     totalQuestionCountState
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
-
+  
   // question_type 관련 함수
   const handleProjectCountChange = (
     e: React.ChangeEvent<HTMLSelectElement>
