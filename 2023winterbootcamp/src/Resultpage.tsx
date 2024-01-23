@@ -469,6 +469,12 @@ const Resultpage = () => {
     return false;
   };
 
+  const [resumeName, setResumeName] = useState('');
+
+  useEffect(()=>{
+    setResumeName(resumeList[interviewData.resume].title);
+  },[]);
+
   return (
     <>
       {interviewData && (
@@ -534,7 +540,7 @@ const Resultpage = () => {
                         }
                       })()}
                     </Text3>
-                    <Text3>{resumeList[interviewData.resume].title}</Text3>
+                    <Text3>{resumeName}</Text3>
                     <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   <Button2 onClick={handleInstagramShare} />
