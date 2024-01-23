@@ -129,3 +129,9 @@ export const resumeListState = atom<ResumeType[]>({
   key: "resumeListState",
   default: [],
 });
+
+export const interviewTitleState = atom<string>({
+  key: "interviewTitleState",
+  default: '',
+  effects_UNSTABLE: [persistAtom],
+})

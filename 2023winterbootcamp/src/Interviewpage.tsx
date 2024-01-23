@@ -323,7 +323,9 @@ function Interviewpage() {
     if (recorderControls.isRecording) {
       recorderControls.stopRecording();
       console.log("녹음 중지");
-      setInstText("다음 질문 준비가 완료됐다면 버튼을 눌러주세요");
+      responseCount === questionTotalCount
+        ? setInstText("모든 답변이 완료되었습니다. 면접을 종료합니다.")
+        : setInstText("다음 질문 준비가 완료됐다면 버튼을 눌러주세요");
     }
     if (!recorderControls.isRecording && recorderControls.recordingBlob) {
       if (questionTotalCount === responseCount) {
@@ -465,7 +467,7 @@ function Interviewpage() {
       };
 
       setInterviewResult(); // 면접 결과 저장
-      navigate("/result/" + id);
+      navigate("/end/" + id);
     } catch (e) {
       console.log(e);
     }

@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { interviewResultState, interviewTitleState } from "./Recoil";
 
 const Container = styled.div`
   width: 100%;
@@ -20,15 +22,9 @@ const TopBox = styled(Box)`
   margin-top: 60px;
   box-sizing: border-box;
   border-bottom: 1px solid black;
-  @media screen and (max-width: 768px) {
-    margin-left: 100px;
-  }
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    margin-left: 200px;
-  }
-  @media screen and (min-width: 1024px) {
-    margin-left: 267px;
-  }
+  margin-left: 20%;
+  display: flex;
+  align-items: end;
 `;
 
 const BottomBox = styled(Box)`
@@ -39,21 +35,16 @@ const BottomBox = styled(Box)`
   align-items: center;
   border: 2px solid lightgray;
   margin-top: 50px;
-  @media screen and (max-width: 768px) {
-    margin-left: 100px;
-  }
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    margin-left: 200px;
-  }
-  @media screen and (min-width: 1024px) {
-    margin-left: 267px;
-  }
+  margin-left: 20%;
 `;
+
 const TopText = styled(Box)`
   font-size: 32px;
   text-align: left;
-  word-break: keep-all;
-  overflow-y: auto;
+  @media screen and (max-width: 768px){
+    font-size: 25px;
+    height: 70px;
+  }
 `;
 
 const BottomText = styled(Box)`
@@ -65,6 +56,9 @@ const BottomText = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width: 768px){
+    font-size: 22px;
+  }
 `;
 
 const StartButton = styled(motion.button)`
@@ -84,18 +78,20 @@ const StartButton = styled(motion.button)`
   }
 `;
 
-type Props = {
-  interview_name: string;
-};
 
-function Endpage(props: Props) {
+function Endpage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const interviewTitle = useRecoilValue(interviewTitleState);
 
   const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     return false;
   };
+
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[]);
 
   return (
     <Container onContextMenu={handleSelectStart}>
@@ -104,8 +100,8 @@ function Endpage(props: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 2 }}
       >
-        <TopBox width="63vw" height="100px">
-          <TopText width="65vw" height="90px">
+        <TopBox width="60%" height="100px">
+          <TopText width="100%" height="90px">
             본인이 지원한 면접의
             <br />
             <b>결과를 확인</b>하실 수 있습니다.
@@ -117,9 +113,9 @@ function Endpage(props: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 3 }}
       >
-        <BottomBox width="63vw" height="270px">
-          <BottomText width="70vw" height="100px">
-            {props.interview_name}
+        <BottomBox width="60%" height="270px">
+          <BottomText width="80%" height="100px">
+            {interviewTitle}
           </BottomText>
           <StartButton onClick={() => navigate(`/result/${id}`)}>
             결과 보기

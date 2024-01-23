@@ -24,7 +24,7 @@ function App() {
             <Route path='/interview/:id' element={<Interview />} />
             <Route
               path='/end/:id'
-              element={<Endpage interview_name='삼성전자 2022 하반기 3급' />}
+              element={<Endpage />}
             />
             <Route path='/result/:id' element={<Resultpage />} />
           </Routes>

@@ -7,6 +7,7 @@ import {
   ResumeType,
   currentQuestionState,
   githubLoginInfoState,
+  interviewTitleState,
   repoListState,
   resumeListState,
   totalQuestionCountState,
@@ -505,6 +506,7 @@ function Choose() {
   const repoList = useRecoilValue(repoListState);
   const [resumeList, setResumeList] = useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
+  const setInterviewTitle = useSetRecoilState(interviewTitleState);
 
   // question_type 관련 state
   const [projectCount, setProjectCount] = useState(0);
@@ -677,6 +679,7 @@ function Choose() {
     } catch (e) {
       console.error(e);
     }
+    setInterviewTitle(title);
     setIsLoading(false);
   };
 
