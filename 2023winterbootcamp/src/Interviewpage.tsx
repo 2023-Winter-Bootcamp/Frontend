@@ -152,7 +152,8 @@ const LeoBorder = styled.div<LeoBorderProps>`
     rgba(${(props) => props.$gradientColor}, 0.1) 33%,
     rgba(${(props) => props.$gradientColor}, 1) 100%
   );
-  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s infinite;
+  animation: ${spin3D} ${(props) => props.$animationDuration}s linear 0s
+    infinite;
 `;
 
 interface LeoCoreProps {
@@ -194,6 +195,7 @@ function Interviewpage() {
   const [questionId, setQuestionId] = useState<number>(0);
   const [questionContent, setQuestionContent] = useState<string>("");
   const [questionType, setQuestionType] = useState<string>("");
+  const [questionTypeTitle, setQuestionTypeTitle] = useState<string>("common")
   const [questionState, setQuestionState] =
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
@@ -435,6 +437,7 @@ function Interviewpage() {
   // 마지막 question 답변 등록 API
   const sendLastAnswer = async (blob: Blob) => {
     if (!id || !blob) return;
+    setIsLoading(true);
     const file = new FormData();
     file.append("question", questionId.toString());
     file.append("record_url", blob);
@@ -459,6 +462,7 @@ function Interviewpage() {
     } catch (e) {
       console.log(e);
     }
+    setIsLoading(false);
   };
 
   //인터뷰 종료 메소드
@@ -483,7 +487,7 @@ function Interviewpage() {
     getQ2AudioData();
     btnRef.current?.style.setProperty("visibility", "hidden");
     instRef.current?.style.setProperty("visibility", "hidden");
-  }, [question]);
+  }, [questionContent]);
 
   //스탑워치 시작 기능
   useEffect(() => {
@@ -509,6 +513,14 @@ function Interviewpage() {
     event.preventDefault();
     return false;
   };
+
+  //질문 타입 바뀔 때마다 그에 맞는 질문 타이틀 설정
+  useEffect(()=>{
+    if(questionType === 'common') setQuestionTypeTitle('자기소개');
+    else if(questionType === 'project') setQuestionTypeTitle('프로젝트 질문');
+    else if(questionType === 'cs') setQuestionTypeTitle('CS 질문');
+    else if(questionType === 'personality') setQuestionTypeTitle('인성 면접 질문');
+  }, [questionType]);
 
   return (
     <>
@@ -538,7 +550,7 @@ function Interviewpage() {
       </Up>
       <Down onContextMenu={handleSelectStart}>
         <Q>
-          <QuestionText>{questionType}</QuestionText>
+          <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
         </Q>
         <RecordBox>
