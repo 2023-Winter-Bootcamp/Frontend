@@ -95,20 +95,18 @@ const ProfileInfo = styled.div`
 `;
 
 const Text1 = styled.div`
+  width: 100%;
   font-weight: 700;
   color: white;
   @media screen and (max-width: 768px) {
-    width: 60px;
     height: 26px;
     font-size: 20px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 75px;
     height: 30px;
     font-size: 24px;
   }
   @media screen and (min-width: 1024px) {
-    width: 90px;
     height: 34px;
     font-size: 28px;
   }
@@ -472,7 +470,8 @@ const Resultpage = () => {
   const [resumeName, setResumeName] = useState('');
 
   useEffect(()=>{
-    setResumeName(resumeList[interviewData.resume].title);
+    // setResumeName(resumeList[interviewData.resume].title);
+    console.log(resumeList)
   },[]);
 
   return (
@@ -540,7 +539,9 @@ const Resultpage = () => {
                         }
                       })()}
                     </Text3>
-                    <Text3>{resumeName}</Text3>
+                    <Text3>{resumeList.map((item,idx) => {
+                      if(item.id === interviewData.resume) return item.title;
+                    })}</Text3>
                     <Text3>{interviewData.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   <Button2 onClick={handleInstagramShare} />
