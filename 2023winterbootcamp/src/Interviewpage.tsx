@@ -257,12 +257,16 @@ function Interviewpage() {
         data: {
           voice: {
             languageCode: "ko-KR",
+            name: "ko-KR-Wavenet-C",
           },
           input: {
             text: questionContent,
           },
           audioConfig: {
             audioEncoding: "mp3",
+            effectsProfileId: ["small-bluetooth-speaker-class-device"],
+            pitch: -1.5,
+            speakingRate: 1.11,
           },
         },
       });
