@@ -391,10 +391,11 @@ function Interviewpage() {
       //   updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       // }
       if (response?.data && response.data.question) {
-        setQuestionId(response.data.question.id);
-        setQuestionType(response.data.question.question_type);
-        setQuestionContent(response.data.question.content);
+        setQuestionId(response.data.question[0].id);
+        setQuestionType(response.data.question[0].question_type);
+        setQuestionContent(response.data.question[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
+        console.log(response.data)
       }
       setIsLoading(false);
     } catch (e) {
