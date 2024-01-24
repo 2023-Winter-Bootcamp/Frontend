@@ -229,10 +229,57 @@ const ScrollContainer = styled.div<{ $len: number }>`
   display: flex;
 `;
 
+const BlackBox = styled.div`
+  width: 100%;
+  height: 0;
+  background-color: black;
+  opacity: 0.6;
+  position: absolute;
+`;
+
+const Text6 = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  text-align: left;
+  color: white;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
+const Text3 = styled.div`
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  height: auto;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
+const BoldText = styled.span`
+  /* Existing styles */
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+  font-weight: bold;
+`;
+
 const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
+  position: relative;
   width: 249px;
   height: 345px;
-  position: relative;
   background-image: url(${(props) => props.$pre_image_url});
   background-position: center;
   background-size: cover;
@@ -249,9 +296,36 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
+  //transition: all 0.3s ease-in-out;
 
   &:hover {
     border: 2px solid #000000;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+  }
+
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    ${BlackBox} {
+      height: 100%;
+      opacity: 0.6;
+    }
+    ${Text6}, ${Text3}, ${BoldText} {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 `;
 
@@ -270,7 +344,7 @@ const TextWrapper2 = styled.div`
 //   margin-left: 29%;
 // `;
 
-const Text3 = styled.div`
+const Text33 = styled.div`
   color: lightgray;
   font-size: 14px;
   margin-top: 50px;
@@ -344,10 +418,10 @@ const Start = styled.button<{ $startClicked: boolean }>`
   margin-left: 70%;
   border: none;
   user-select: none;
+  cursor: pointer;
   ${(props) =>
     props.$startClicked &&
     css`
-      cursor: pointer;
       &:hover {
         background-color: "#1a1a1a";
       }
@@ -520,7 +594,6 @@ function Choose() {
     totalQuestionCountState
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
-  
   // question_type 관련 함수
   const handleProjectCountChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -572,6 +645,7 @@ function Choose() {
       selectedResume !== null &&
       selectedRepos.length > 0 &&
       title !== "";
+
     setStartClicked(isAllSelected);
   }, [
     selectedMultiButtons,
@@ -659,20 +733,58 @@ function Choose() {
 
   // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
+    if (!title.trim()) {
+      // 제목이 비어 있거나 공백만 포함되어 있다면 에러 메시지를 설정합니다.
+      setTitleError("제목을 입력해주세요.");
+      return;
+    }
+
     setStartClicked(true);
     navigate(`/start/${id}`);
     console.log(questionState);
   };
 
+  //사용자가 선택사항들을 모두 체크했는지 확인하고 아니면 alert를 한 후 선택 안 한 선택지로 스크롤 이동
+  const checkChoices = ()=>{
+    if (title === "") {
+      window.scrollTo(0, 0);
+      window.alert("면접 제목을 입력해주세요");
+    } else if (!Boolean(projectCount || csCount || personalityCount)) {
+      window.scrollTo(0, 0);
+      window.alert("면접 종류와 개수를 선택해주세요");
+    } else if (selectedPosition === null) {
+      window.scrollTo(0, 230);
+      window.alert("Position을 선택해주세요");
+    } else if (selectedInterviewType === null) {
+      window.scrollTo(0, 420);
+      window.alert("면접 방식을 선택해주세요");
+    } else if (selectedResume === null) {
+      window.scrollTo(0, 750);
+      window.alert("이력서를 선택해주세요");
+    } else if (selectedRepos.length === 0) {
+      window.scrollTo(0, 1100);
+      window.alert("Repository를 선택해주세요");
+    }
+  }
+
   // 면접 생성 API 함수
   const createInterview = async () => {
-    if (!startClicked) return;
+    if (!startClicked) {
+      checkChoices();
+      return;
+    }
     try {
       setIsLoading(true);
       // 전체 질문 개수 update
       const { project, cs, personality } = questionState.counts;
       const total = project + cs + personality;
       setTotalQuestionCountState(total);
+
+      // 유효성 검사 - 제목이 비어 있거나 공백만 포함된 경우 에러 메시지 설정
+      if (!title.trim()) {
+        setTitleError("제목을 입력해주세요.");
+        return;
+      }
 
       const response = await api.post("interviews/create/", {
         user: githubLoginInfo.id,
@@ -713,6 +825,7 @@ function Choose() {
     };
 
     getResumes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 드롭다운 메뉴 만드는 Array
@@ -744,6 +857,10 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
+  function handleClick(id: number): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -756,7 +873,7 @@ function Choose() {
         <Container1>
           <TextWrapper1>
             <Text1>면접 종류</Text1>
-            <Text3>복수 선택이 가능합니다.</Text3>
+            <Text33>복수 선택이 가능합니다.</Text33>
           </TextWrapper1>
           <ButtonsContainer>
             <Button
@@ -874,13 +991,23 @@ function Choose() {
           </TextWrapper2>
           <ResumeContainer>
             <ScrollContainer $len={resumeList.length}>
-              {resumeList.map((resume, index) => (
+              {resumeList.map((item, idx) => (
                 <ResumeBox
-                  key={resume.id}
-                  $pre_image_url={resume.pre_image_url}
-                  $isSelected={selectedResume === resume.id}
-                  onClick={() => handleResumeSelect(resume.id)}
-                />
+                  key={idx}
+                  $pre_image_url={item.pre_image_url}
+                  $isSelected={selectedResume === item.id}
+                  onClick={() => handleResumeSelect(item.id)}
+                >
+                  <BlackBox />
+                  <Text6>{item.title}</Text6>
+                  <Text3>
+                    <br />
+                    {item.created_at.slice(0, 10)}에 등록한
+                    <br />
+                    이력서 입니다.
+                    <br />
+                  </Text3>
+                </ResumeBox>
               ))}
             </ScrollContainer>
           </ResumeContainer>
