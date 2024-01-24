@@ -243,7 +243,6 @@ function Interviewpage() {
   // 면접 시작할때 시작되는 함수
   const interviewStart = () => {
     setIsInterviewStart(true);
-    getQ2AudioData();
     startStopwatch();
   };
 
@@ -399,9 +398,9 @@ function Interviewpage() {
       //   updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       // }
       if (response?.data && response.data.question) {
-        setQuestionId(response.data.question.id);
-        setQuestionType(response.data.question.question_type);
-        setQuestionContent(response.data.question.content);
+        setQuestionId(response.data.question[0].id);
+        setQuestionType(response.data.question[0].question_type);
+        setQuestionContent(response.data.question[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
       }
       setIsLoading(false);
@@ -421,7 +420,10 @@ function Interviewpage() {
   // questionContent의 값이 변경되면 TTS 실행
   useEffect(() => {
     if (questionContent !== "") {
+      if (!isInterviewStart) return;
       getQ2AudioData();
+      btnRef.current?.style.setProperty("visibility", "hidden");
+      instRef.current?.style.setProperty("visibility", "hidden");
     }
   }, [questionContent]);
 
@@ -540,14 +542,6 @@ function Interviewpage() {
       setInstText("답변이 완료되면 버튼을 눌러주세요");
     }, 1000);
   };
-
-  //다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
-  useEffect(() => {
-    if (!isInterviewStart) return;
-    getQ2AudioData();
-    btnRef.current?.style.setProperty("visibility", "hidden");
-    instRef.current?.style.setProperty("visibility", "hidden");
-  }, [questionContent]);
 
   //스탑워치 시작 기능
   useEffect(() => {
