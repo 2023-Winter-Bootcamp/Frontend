@@ -556,6 +556,12 @@ const DropText = styled.div`
   }
 `;
 
+interface Resume {
+  id: number;
+  pre_image_url: string;
+  created_at: string;
+}
+
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
@@ -588,8 +594,6 @@ function Choose() {
     totalQuestionCountState
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
-  const [titleError, setTitleError] = useState<string | null>(null);
-
   // question_type 관련 함수
   const handleProjectCountChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -657,9 +661,13 @@ function Choose() {
 
   // 면접 제목 Change 이벤트 함수
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-    // 사용자가 입력할 때마다 에러 메시지를 초기화합니다.
-    setTitleError(null);
+    const newTitle = e.target.value;
+    // 제목의 최대 길이를 30으로 제한
+    if (newTitle.length > 30) {
+      setTitle(newTitle.slice(0, 30));
+    } else {
+      setTitle(newTitle);
+    }
   };
 
   // question_type 중복 선택 클릭 이벤트 함수
@@ -671,6 +679,11 @@ function Choose() {
       updatedSelectedButtons = selectedMultiButtons.filter(
         (selectedButton) => selectedButton !== buttonName
       );
+      // 버튼 클릭 취소 시 count 0으로 초기화
+      if (buttonName === "project") setProjectCount(0);
+      else if (buttonName === "cs") setCsCount(0);
+      else if (buttonName === "personality") setPersonalityCount(0);
+
       if (selectedIndex === 0) setProjectCount(0);
       else if (selectedIndex === 1) setCsCount(0);
       else if (selectedIndex === 2) setPersonalityCount(0);
@@ -801,7 +814,10 @@ function Choose() {
     const getResumes = async () => {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
-        setResumeList(response.data);
+        const sortedData = response.data.sort((a: Resume, b: Resume) =>
+          b.created_at.localeCompare(a.created_at)
+        );
+        setResumeList(sortedData);
         console.log(response.data);
       } catch (e) {
         console.error(e);
@@ -852,14 +868,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input
-            placeholder=""
-            onChange={handleChange}
-            // 에러 메시지가 null이 아닌 경우에 제목 입력란의 테두리 색상을 빨간색으로 변경합니다.
-            style={{ borderColor: titleError ? "red" : "initial" }}
-          ></Input>
-          {/* 에러 메시지가 null이 아닌 경우 에러 메시지를 표시합니다. */}
-          {titleError && <div style={{ color: "red" }}>{titleError}</div>}
+          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>

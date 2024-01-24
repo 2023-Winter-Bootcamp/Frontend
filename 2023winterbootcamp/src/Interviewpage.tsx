@@ -243,7 +243,6 @@ function Interviewpage() {
   // 면접 시작할때 시작되는 함수
   const interviewStart = () => {
     setIsInterviewStart(true);
-    getQ2AudioData();
     startStopwatch();
   };
 
@@ -257,12 +256,16 @@ function Interviewpage() {
         data: {
           voice: {
             languageCode: "ko-KR",
+            name: "ko-KR-Wavenet-C",
           },
           input: {
             text: questionContent,
           },
           audioConfig: {
             audioEncoding: "mp3",
+            effectsProfileId: ["small-bluetooth-speaker-class-device"],
+            pitch: -1.5,
+            speakingRate: 1.11,
           },
         },
       });
@@ -337,6 +340,32 @@ function Interviewpage() {
     }
   };
 
+  //pollingFetchResult
+  const pollingFetchResult = async (taskId: string, waitTime: number) => {
+    await new Promise((resolve) => setTimeout(resolve, waitTime));
+
+    try {
+      while (true) {
+        const response = await api.get(`interviews/task-result/${taskId}`, {
+          withCredentials: true,
+        });
+        const statusCode = response.status;
+
+        if (statusCode === 202) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        } else if (statusCode === 200) {
+          return response;
+        } else {
+          throw new Error(
+            `Failed to fetch task-result. Status code: ${statusCode}`
+          );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // 답변 등록 + 질문 생성 API (음성 파일 보내고 질문 받아오는 메소드)
   const getQuestion = async (blob: Blob) => {
     if (!id) return;
@@ -348,20 +377,32 @@ function Interviewpage() {
     try {
       setIsLoading(true);
       //음성파일 보내는 기능
-      const response = await api.post(
-        `interviews/${parseInt(id)}/questions/${questionId}/process/`,
-        file
-      );
+      const response = await api
+        .post(
+          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          file
+        )
+        .then((response) =>
+          pollingFetchResult(response.data.task_id, response.data.wait_time)
+        );
+
       setResponseCount((prevCount) => prevCount + 1); // api Response가 올때마다 count를 1씩 증가시킴
 
-      console.log(response.data);
+      console.log(response?.data);
 
       // 새로운 question ID를 questionId 상태에 업데이트
-      if (response.data && response.data.question) {
+      // if (response?.data && response.data.questions) {
+      //   setQuestionId(response.data.questions[0].id);
+      //   setQuestionType(response.data.questions[0].question_type);
+      //   setQuestionContent(response.data.questions[0].content);
+      //   updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
+      // }
+      if (response?.data && response.data.question) {
         setQuestionId(response.data.question[0].id);
         setQuestionType(response.data.question[0].question_type);
         setQuestionContent(response.data.question[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
+        console.log(response.data)
       }
       setIsLoading(false);
     } catch (e) {
@@ -380,8 +421,12 @@ function Interviewpage() {
   // questionContent의 값이 변경되면 TTS 실행
   useEffect(() => {
     if (questionContent !== "") {
+      if (!isInterviewStart) return;
       getQ2AudioData();
+      btnRef.current?.style.setProperty("visibility", "hidden");
+      instRef.current?.style.setProperty("visibility", "hidden");
     }
+    window.scrollTo(0,0);
   }, [questionContent]);
 
   // 현재 question_type의 count 차감 및 다음 question_type으로 변경
@@ -448,11 +493,21 @@ function Interviewpage() {
     const file = new FormData();
     file.append("question", questionId.toString());
     file.append("record_url", blob);
+    file.append("is_last", "true");
     try {
-      await api.post(
-        `interviews/questions/${questionId}/answers/create/`,
-        file
-      );
+      // await api.post(
+      //   `interviews/questions/${questionId}/answers/create/`,
+      //   file
+      // );
+
+      await api
+        .post(
+          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          file
+        )
+        .then((response) =>
+          pollingFetchResult(response.data.task_id, response.data.wait_time)
+        );
 
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
@@ -489,14 +544,6 @@ function Interviewpage() {
       setInstText("답변이 완료되면 버튼을 눌러주세요");
     }, 1000);
   };
-
-  //다음 질문 넘어간 후 질문 음성 TTS 변환 & 음성 시작
-  useEffect(() => {
-    if (!isInterviewStart) return;
-    getQ2AudioData();
-    btnRef.current?.style.setProperty("visibility", "hidden");
-    instRef.current?.style.setProperty("visibility", "hidden");
-  }, [questionContent]);
 
   //스탑워치 시작 기능
   useEffect(() => {
@@ -539,18 +586,18 @@ function Interviewpage() {
           <VideoContainer>
             <SpinnerBox>
               <LeoBorder
-                color="rgb(102, 102, 102)"
-                $gradientColor="102, 102, 102"
+                color='rgb(102, 102, 102)'
+                $gradientColor='102, 102, 102'
                 $animationDuration={1.8}
               >
-                <LeoCore $backgroundColor="#191919aa" />
+                <LeoCore $backgroundColor='#191919aa' />
               </LeoBorder>
               <LeoBorder
-                color="rgb(255, 215, 244)"
-                $gradientColor="255, 215, 244"
+                color='rgb(255, 215, 244)'
+                $gradientColor='255, 215, 244'
                 $animationDuration={2.2}
               >
-                <LeoCore $backgroundColor="#bebebeaa" />
+                <LeoCore $backgroundColor='#bebebeaa' />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
@@ -568,13 +615,13 @@ function Interviewpage() {
           <Next onClick={handleNextButtonClick} ref={btnRef}>
             <StyledNextImage
               src={recorderControls.isRecording ? recordIcon : nextIcon}
-              alt="next"
+              alt='next'
             />
           </Next>
         </RecordBox>
       </Down>
       {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
+      <audio ref={audioRef} style={{ display: "none" }} preload='auto' />
     </>
   );
 }
