@@ -485,6 +485,7 @@ const DropText = styled.div`
 interface Resume {
   id: number;
   pre_image_url: string;
+  created_at: string;
 }
 
 function Choose() {
@@ -504,7 +505,8 @@ function Choose() {
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
-  const [resumeList, setResumeList] = useRecoilState<ResumeType[]>(resumeListState);
+  const [resumeList, setResumeList] =
+    useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
   const setInterviewTitle = useSetRecoilState(interviewTitleState);
 
@@ -689,7 +691,10 @@ function Choose() {
     const getResumes = async () => {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
-        setResumeList(response.data);
+        const sortedData = response.data.sort((a: Resume, b: Resume) =>
+          b.created_at.localeCompare(a.created_at)
+        );
+        setResumeList(sortedData);
         console.log(response.data);
       } catch (e) {
         console.error(e);
@@ -735,7 +740,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder="" onChange={handleChange}></Input>
+          <Input placeholder='' onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
