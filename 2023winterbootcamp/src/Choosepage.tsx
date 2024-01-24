@@ -605,6 +605,11 @@ function Choose() {
       updatedSelectedButtons = selectedMultiButtons.filter(
         (selectedButton) => selectedButton !== buttonName
       );
+      // 버튼 클릭 취소 시 count 0으로 초기화
+      if (buttonName === "project") setProjectCount(0);
+      else if (buttonName === "cs") setCsCount(0);
+      else if (buttonName === "personality") setPersonalityCount(0);
+
       if (selectedIndex === 0) setProjectCount(0);
       else if (selectedIndex === 1) setCsCount(0);
       else if (selectedIndex === 2) setPersonalityCount(0);
