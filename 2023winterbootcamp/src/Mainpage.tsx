@@ -32,6 +32,7 @@ import picture1 from "./images/picture1.png";
 import picture2 from "./images/picture2.png";
 import picture3 from "./images/picture3.png";
 import ResumeModal from "./components/ResumeModal";
+import LoadingModal from "./components/LoadingModal";
 
 const FixedBackGround = styled.div<{ $imgUrl: string }>`
   width: 100vw;

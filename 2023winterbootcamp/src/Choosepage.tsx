@@ -733,12 +733,6 @@ function Choose() {
 
   // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
-    if (!title.trim()) {
-      // 제목이 비어 있거나 공백만 포함되어 있다면 에러 메시지를 설정합니다.
-      setTitleError("제목을 입력해주세요.");
-      return;
-    }
-
     setStartClicked(true);
     navigate(`/start/${id}`);
     console.log(questionState);
@@ -779,12 +773,6 @@ function Choose() {
       const { project, cs, personality } = questionState.counts;
       const total = project + cs + personality;
       setTotalQuestionCountState(total);
-
-      // 유효성 검사 - 제목이 비어 있거나 공백만 포함된 경우 에러 메시지 설정
-      if (!title.trim()) {
-        setTitleError("제목을 입력해주세요.");
-        return;
-      }
 
       const response = await api.post("interviews/create/", {
         user: githubLoginInfo.id,
