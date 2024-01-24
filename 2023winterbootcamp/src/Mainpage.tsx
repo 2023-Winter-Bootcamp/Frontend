@@ -27,14 +27,23 @@ import {
 } from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
 import { useSetRecoilState, useRecoilState } from "recoil";
+import picture0 from "./images/main_page_github.jpg";
 import picture1 from "./images/picture1.png";
 import picture2 from "./images/picture2.png";
 import picture3 from "./images/picture3.png";
 
+const FixedBackGround = styled.div<{ $imgUrl: string }>`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  background-image: url(${(props) => props.$imgUrl});
+  z-index: -1;
+`;
+
 const Container = styled.div`
-  background-image: url("https://ifh.cc/g/9wn5LW.jpg");
   width: 100%;
-  height: 120vh;
+  height: 135vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -50,6 +59,7 @@ const ScrollWrapper = styled.div`
   height: 100vh;
   overflow: hidden;
   position: relative;
+  z-index: 1;
 `;
 
 const ScrollContent = styled.div`
@@ -170,7 +180,7 @@ const ButtonImage = styled.img`
 
 const TextField = styled.div`
   text-align: left;
-  margin-top: 172px;
+  margin-top: 300px;
   @media screen and (max-width: 768px) {
     margin-left: 80px;
   }
@@ -215,6 +225,7 @@ const Page2 = styled(motion.div)`
   background-color: white;
   text-align: start;
   line-height: 1.5;
+  z-index: 1;
 `;
 
 const TextComponents = styled.div`
@@ -257,7 +268,7 @@ const Text6 = styled.div`
   @media screen and (min-width: 1024px) {
     color: black;
     font-weight: bold;
-    font-size: 31px;
+    font-size: 30px;
     margin-left: 10px;
   }
 `;
@@ -582,7 +593,7 @@ function Main() {
         const response = await api.post("resumes/create", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
-        navigate('/mypage')
+        navigate("/mypage");
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -751,6 +762,7 @@ function Main() {
       <>
         <ScrollContent>
           <Container onContextMenu={handleSelectStart}>
+          <FixedBackGround $imgUrl={picture0} />
             <ScrollWrapper>
               <ScrollContent id="scrollContent">
                 <motion.div
@@ -915,7 +927,7 @@ function Main() {
           </Container2>
         </ScrollContent>
       </>
-      {isLoading ? <LoadingModal/> : null}
+      {isLoading ? <LoadingModal /> : null}
     </Suspense>
   );
 }
