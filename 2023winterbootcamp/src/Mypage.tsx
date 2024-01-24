@@ -385,6 +385,7 @@ const BoldText = styled.b`
 type Interview = {
   id: number;
   title: string;
+  created_at: string;
 };
 
 type Resume = {
@@ -426,6 +427,7 @@ function Mypage() {
         const response = await api.post("resumes/create", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
+        window.location.href = "/mypage";
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -456,7 +458,10 @@ function Mypage() {
   const getInterviewList = async () => {
     try {
       const response = await api.get("interviews/", { withCredentials: true });
-      setInterviewList(response.data);
+      const sortedData = response.data.sort((a: Interview, b: Interview) =>
+        b.created_at.localeCompare(a.created_at)
+      );
+      setInterviewList(sortedData);
     } catch (e) {
       console.error(e);
     }
@@ -465,7 +470,10 @@ function Mypage() {
   const getResumes = async () => {
     try {
       const response = await api.get("resumes/", { withCredentials: true });
-      setResumeList(response.data);
+      const sortedData = response.data.sort((a: Resume, b: Resume) =>
+        b.created_at.localeCompare(a.created_at)
+      );
+      setResumeList(sortedData);
       console.log(response.data);
     } catch (e) {
       console.error(e);
@@ -517,8 +525,8 @@ function Mypage() {
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview1 $pre_image_url="" {...getRootProps()}>
-              <input type="file" {...getInputProps()} />
+            <ResumePreview1 $pre_image_url='' {...getRootProps()}>
+              <input type='file' {...getInputProps()} />
               <Text7>
                 이 곳을 클릭해
                 <br />

@@ -485,6 +485,7 @@ const DropText = styled.div`
 interface Resume {
   id: number;
   pre_image_url: string;
+  created_at: string;
 }
 
 function Choose() {
@@ -504,7 +505,8 @@ function Choose() {
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
-  const [resumeList, setResumeList] = useRecoilState<ResumeType[]>(resumeListState);
+  const [resumeList, setResumeList] =
+    useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
   const setInterviewTitle = useSetRecoilState(interviewTitleState);
 
@@ -585,7 +587,13 @@ function Choose() {
 
   // 면접 제목 Change 이벤트 함수
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    // 제목의 최대 길이를 30으로 제한
+    if (newTitle.length > 30) {
+      setTitle(newTitle.slice(0, 30));
+    } else {
+      setTitle(newTitle);
+    }
   };
 
   // question_type 중복 선택 클릭 이벤트 함수
@@ -597,6 +605,11 @@ function Choose() {
       updatedSelectedButtons = selectedMultiButtons.filter(
         (selectedButton) => selectedButton !== buttonName
       );
+      // 버튼 클릭 취소 시 count 0으로 초기화
+      if (buttonName === "project") setProjectCount(0);
+      else if (buttonName === "cs") setCsCount(0);
+      else if (buttonName === "personality") setPersonalityCount(0);
+
       if (selectedIndex === 0) setProjectCount(0);
       else if (selectedIndex === 1) setCsCount(0);
       else if (selectedIndex === 2) setPersonalityCount(0);
@@ -689,7 +702,10 @@ function Choose() {
     const getResumes = async () => {
       try {
         const response = await api.get("resumes/", { withCredentials: true });
-        setResumeList(response.data);
+        const sortedData = response.data.sort((a: Resume, b: Resume) =>
+          b.created_at.localeCompare(a.created_at)
+        );
+        setResumeList(sortedData);
         console.log(response.data);
       } catch (e) {
         console.error(e);
@@ -735,7 +751,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder="" onChange={handleChange}></Input>
+          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
