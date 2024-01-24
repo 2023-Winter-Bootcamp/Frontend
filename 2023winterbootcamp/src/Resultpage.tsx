@@ -12,7 +12,8 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 //import instagramwhiteicon from "./images/instagram-white-icon.webp";
 import api from "./baseURL/baseURL";
-
+import playImg from "./images/resultpage_play_button.jpg";
+import stopImg from "./images/resultpage_stop_button.jpg";
 declare global {
   interface Window {
     onInstagramLogin?: () => void;
@@ -332,8 +333,9 @@ const Button = styled.button<ButtonProps>`
 
   background-image: ${(props) =>
     props.$isPlaying
-      ? "url('https://i.postimg.cc/X7bpvB9Z/image.jpg')"
-      : "url('https://i.postimg.cc/mDgPBv9m/Polygon-2.jpg')"};
+      ? `url(${stopImg})`
+      : `url(${playImg})`
+  };
 
   &:hover {
     cursor: pointer;
