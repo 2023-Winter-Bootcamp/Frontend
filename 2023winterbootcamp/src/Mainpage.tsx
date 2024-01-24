@@ -18,7 +18,7 @@ import { DropzoneInputProps, useDropzone } from "react-dropzone";
 import axios from "axios";
 import api from "./baseURL/baseURL";
 import Modal from "./components/Modal";
-import LoadingModal from "./components/LoadingModal";
+//import LoadingModal from "./components/LoadingModal";
 import {
   RepoType,
   githubLoginInfoState,
@@ -30,6 +30,7 @@ import { useSetRecoilState, useRecoilState } from "recoil";
 import picture1 from "./images/picture1.png";
 import picture2 from "./images/picture2.png";
 import picture3 from "./images/picture3.png";
+import ResumeModal from "./components/ResumeModal";
 
 const Container = styled.div`
   background-image: url("https://ifh.cc/g/9wn5LW.jpg");
@@ -582,7 +583,7 @@ function Main() {
         const response = await api.post("resumes/create", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
-        navigate('/mypage')
+        navigate("/mypage");
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -747,7 +748,7 @@ function Main() {
   }
 
   return (
-    <Suspense fallback={<LoadingModal />}>
+    <Suspense fallback={<ResumeModal />}>
       <>
         <ScrollContent>
           <Container onContextMenu={handleSelectStart}>
@@ -915,7 +916,7 @@ function Main() {
           </Container2>
         </ScrollContent>
       </>
-      {isLoading ? <LoadingModal/> : null}
+      {isLoading ? <ResumeModal /> : null}
     </Suspense>
   );
 }

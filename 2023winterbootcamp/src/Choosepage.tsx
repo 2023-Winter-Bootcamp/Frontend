@@ -648,6 +648,7 @@ function Choose() {
       selectedResume !== null &&
       selectedRepos.length > 0 &&
       title !== "";
+
     setStartClicked(isAllSelected);
   }, [
     selectedMultiButtons,

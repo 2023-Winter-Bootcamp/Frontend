@@ -7,7 +7,8 @@ import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
 import { githubLoginInfoState, resumeListState } from "./Recoil";
 import { useRecoilState, useRecoilValue } from "recoil";
-import LoadingModal from "./components/LoadingModal";
+//import LoadingModal from "./components/LoadingModal";
+import ResumeModal from "./components/ResumeModal";
 
 const Container = styled.div`
   width: 100%;
@@ -578,7 +579,7 @@ function Mypage() {
           </ScrollContainer>
         </InterviewContainer2>
       </InterviewContainer>
-      {isLoading ? <LoadingModal /> : null}
+      {isLoading ? <ResumeModal /> : null}
     </>
   );
 }
