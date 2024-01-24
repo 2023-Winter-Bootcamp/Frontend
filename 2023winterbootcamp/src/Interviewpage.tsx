@@ -343,15 +343,19 @@ function Interviewpage() {
 
     try {
       while (true) {
-        const response = await api.get(`interviews/task-result/${taskId}`);
+        const response = await api.get(`interviews/task-result/${taskId}`, {
+          withCredentials: true,
+        });
         const statusCode = response.status;
-  
+
         if (statusCode === 202) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
         } else if (statusCode === 200) {
           return response;
         } else {
-          throw new Error(`Failed to fetch task-result. Status code: ${statusCode}`);
+          throw new Error(
+            `Failed to fetch task-result. Status code: ${statusCode}`
+          );
         }
       }
     } catch (error) {
@@ -370,14 +374,14 @@ function Interviewpage() {
     try {
       setIsLoading(true);
       //음성파일 보내는 기능
-      const response = await api.post(
-        `interviews/${parseInt(id)}/questions/${questionId}/process/`,
-        file
-      )
-      .then(response => pollingFetchResult(
-        response.data.task_id,
-        response.data.wait_time
-      ));
+      const response = await api
+        .post(
+          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          file
+        )
+        .then((response) =>
+          pollingFetchResult(response.data.task_id, response.data.wait_time)
+        );
 
       setResponseCount((prevCount) => prevCount + 1); // api Response가 올때마다 count를 1씩 증가시킴
 
@@ -488,14 +492,14 @@ function Interviewpage() {
       //   file
       // );
 
-      await api.post(
-        `interviews/${parseInt(id)}/questions/${questionId}/process/`,
-        file
-      )
-      .then(response => pollingFetchResult(
-        response.data.task_id,
-        response.data.wait_time
-      ));
+      await api
+        .post(
+          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          file
+        )
+        .then((response) =>
+          pollingFetchResult(response.data.task_id, response.data.wait_time)
+        );
 
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
@@ -582,18 +586,18 @@ function Interviewpage() {
           <VideoContainer>
             <SpinnerBox>
               <LeoBorder
-                color="rgb(102, 102, 102)"
-                $gradientColor="102, 102, 102"
+                color='rgb(102, 102, 102)'
+                $gradientColor='102, 102, 102'
                 $animationDuration={1.8}
               >
-                <LeoCore $backgroundColor="#191919aa" />
+                <LeoCore $backgroundColor='#191919aa' />
               </LeoBorder>
               <LeoBorder
-                color="rgb(255, 215, 244)"
-                $gradientColor="255, 215, 244"
+                color='rgb(255, 215, 244)'
+                $gradientColor='255, 215, 244'
                 $animationDuration={2.2}
               >
-                <LeoCore $backgroundColor="#bebebeaa" />
+                <LeoCore $backgroundColor='#bebebeaa' />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
@@ -611,13 +615,13 @@ function Interviewpage() {
           <Next onClick={handleNextButtonClick} ref={btnRef}>
             <StyledNextImage
               src={recorderControls.isRecording ? recordIcon : nextIcon}
-              alt="next"
+              alt='next'
             />
           </Next>
         </RecordBox>
       </Down>
       {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
+      <audio ref={audioRef} style={{ display: "none" }} preload='auto' />
     </>
   );
 }
