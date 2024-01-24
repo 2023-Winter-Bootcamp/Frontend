@@ -63,9 +63,11 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
   margin-top: 60px;
   @media screen and (max-width: 768px) {
     width: 180px;
+    height: 180px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 220px;
+    height: 220px;
   }
   @media screen and (min-width: 1024px) {
     width: 280px;
@@ -347,16 +349,6 @@ const Text4 = styled.div`
   margin-top: 9px;
 `;
 
-// const Button2 = styled.button`
-//   width: 25px;
-//   height: 25px;
-//   background: url(${instagramwhiteicon}) no-repeat center center;
-//   background-size: cover;
-//   border: none;
-//   margin-top: 165px;
-//   cursor: pointer;
-// `;
-
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -372,9 +364,13 @@ const Resultpage = () => {
     useRecoilState(interviewResultState);
   const { id } = useParams();
   const resumeList = useRecoilValue(resumeListState);
-
   const [isPlayingList, setIsPlayingList] = useState<boolean[]>([]);
   const audioRefs = useRef<HTMLAudioElement[]>([]);
+  const [githubLoginInfo] = useRecoilState(githubLoginInfoState);
+  // eslint-disable-next-line no-empty-pattern
+  const [] = useRecoilState(githubProfileState);
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [gitName, setGitName] = useState("");
 
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
@@ -382,6 +378,7 @@ const Resultpage = () => {
     setIsPlayingList(newIsPlayingList);
   };
 
+  //오디오 실행 함수
   const playAudio = (index: number) => {
     if (audioRefs.current[index]) {
       audioRefs.current[index].play();
@@ -392,6 +389,7 @@ const Resultpage = () => {
     }
   };
 
+  //오디오 중지 함수
   const pauseAudio = (index: number) => {
     if (audioRefs.current[index]) {
       audioRefs.current[index].pause();
@@ -402,6 +400,60 @@ const Resultpage = () => {
     }
   };
 
+  //마우스 우클릭 방지해주는 함수
+  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    return false;
+  };
+
+  //면접 결과 get 함수
+  const getResultInfo = async () => {
+    try {
+      const response = await api.get(`interviews/${id}/`, {
+        withCredentials: true,
+      });
+      setInterviewResult(response.data);
+    } catch (e) {
+      console.error(e);
+      console.log("인터뷰 결과 불러오는 중 에러 발생");
+    }
+  };
+
+  // const handleInstagramShare = () => {
+  //   // 면접 결과 페이지 URL
+  //   const resultPageUrl = encodeURIComponent(
+  //     "https://www.instagram.com/ahnnakyung/"
+  //   );
+
+  //   // 면접 결과를 설명하는 캡션
+  //   const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
+
+  //   // 인스타그램 스토리에 공유하는 URL
+  //   const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
+
+  //   // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
+  //   window.open(instagramStoryUrl, "_blank");
+  // };
+
+  //페이지 첫 렌더링 시 깃허브 사용자 프로필사진 url과 닉네임을 get
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const gitId = githubLoginInfo.html_url.split("/").slice(-1)[0];
+        const response = await axios.get(
+          `https://api.github.com/users/${gitId}`
+        );
+        setAvatarUrl(response.data.avatar_url);
+        setGitName(response.data.name);
+      } catch (error) {
+        console.error("GitHub 사용자 정보를 가져오는 중 에러 발생:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [githubLoginInfo.html_url]);
+
+  //오디오 시작 버튼을 누르면 해당하는 오디오 파일을 실행
   useEffect(() => {
     isPlayingList.forEach((isPlaying, index) => {
       const audioRef = audioRefs.current[index];
@@ -424,61 +476,7 @@ const Resultpage = () => {
     });
   }, [isPlayingList]);
 
-  const [githubLoginInfo] = useRecoilState(githubLoginInfoState);
-  // eslint-disable-next-line no-empty-pattern
-  const [] = useRecoilState(githubProfileState);
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [gitName, setGitName] = useState("");
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const gitId = githubLoginInfo.html_url.split("/").slice(-1)[0];
-        const response = await axios.get(
-          `https://api.github.com/users/${gitId}`
-        );
-        setAvatarUrl(response.data.avatar_url);
-        setGitName(response.data.name);
-      } catch (error) {
-        console.error("GitHub 사용자 정보를 가져오는 중 에러 발생:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [githubLoginInfo.html_url]);
-
-  // const handleInstagramShare = () => {
-  //   // 면접 결과 페이지 URL
-  //   const resultPageUrl = encodeURIComponent(
-  //     "https://www.instagram.com/ahnnakyung/"
-  //   );
-
-  //   // 면접 결과를 설명하는 캡션
-  //   const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
-
-  //   // 인스타그램 스토리에 공유하는 URL
-  //   const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
-
-  //   // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
-  //   window.open(instagramStoryUrl, "_blank");
-  // };
-
-  const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    return false;
-  };
-
-  const getResultInfo = async () => {
-    try {
-      const response = await api.get(`interviews/${id}/`, {
-        withCredentials: true,
-      });
-      setInterviewResult(response.data);
-    } catch (e) {
-      console.error(e);
-      console.log("인터뷰 결과 불러오는 중 에러 발생");
-    }
-  };
-
+  //페이지 첫 렌더링 시 면접결과 정보 get
   useEffect(() => {
     getResultInfo();
   }, []);
