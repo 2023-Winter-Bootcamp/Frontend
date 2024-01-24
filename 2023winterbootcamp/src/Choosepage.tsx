@@ -329,13 +329,6 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   }
 `;
 
-// Add these styles for DeleteButton and BoldText if not already defined
-const DeleteButton = styled.button`
-  background-color: transparent;
-  border: none;
-  text-decoration: underline;
-`;
-
 const TextWrapper2 = styled.div`
   width: 100%;
   display: flex;
@@ -425,10 +418,10 @@ const Start = styled.button<{ $startClicked: boolean }>`
   margin-left: 70%;
   border: none;
   user-select: none;
+  cursor: pointer;
   ${(props) =>
     props.$startClicked &&
     css`
-      cursor: pointer;
       &:hover {
         background-color: "#1a1a1a";
       }
@@ -738,9 +731,35 @@ function Choose() {
     console.log(questionState);
   };
 
+  //사용자가 선택사항들을 모두 체크했는지 확인하고 아니면 alert를 한 후 선택 안 한 선택지로 스크롤 이동
+  const checkChoices = ()=>{
+    if (title === "") {
+      window.scrollTo(0, 0);
+      window.alert("면접 제목을 입력해주세요");
+    } else if (!Boolean(projectCount || csCount || personalityCount)) {
+      window.scrollTo(0, 0);
+      window.alert("면접 종류와 개수를 선택해주세요");
+    } else if (selectedPosition === null) {
+      window.scrollTo(0, 230);
+      window.alert("Position을 선택해주세요");
+    } else if (selectedInterviewType === null) {
+      window.scrollTo(0, 420);
+      window.alert("면접 방식을 선택해주세요");
+    } else if (selectedResume === null) {
+      window.scrollTo(0, 750);
+      window.alert("이력서를 선택해주세요");
+    } else if (selectedRepos.length === 0) {
+      window.scrollTo(0, 1100);
+      window.alert("Repository를 선택해주세요");
+    }
+  }
+
   // 면접 생성 API 함수
   const createInterview = async () => {
-    if (!startClicked) return;
+    if (!startClicked) {
+      checkChoices();
+      return;
+    }
     try {
       setIsLoading(true);
       // 전체 질문 개수 update
@@ -978,10 +997,6 @@ function Choose() {
                     <br />
                     이력서 입니다.
                     <br />
-                    <DeleteButton onClick={() => handleClick(item.id)}>
-                      <br />
-                      <BoldText>삭제하기</BoldText>
-                    </DeleteButton>
                   </Text3>
                 </ResumeBox>
               ))}
