@@ -483,6 +483,20 @@ const Resultpage = () => {
     getResultInfo();
   }, []);
 
+  const [resumeTitle, setResumeTitle] = useState('');
+  useEffect(()=>{
+    if(!resumeTitle){
+      setResumeTitle("삭제된 이력서");
+      return;
+    }
+    resumeList.forEach((item,idx) => {
+      if(item.id === interviewResult.resume){
+        setResumeTitle(item.title);
+        return;
+      }
+    })
+  },[interviewResult])
+
   return (
     <>
       {interviewResult && (
@@ -549,10 +563,7 @@ const Resultpage = () => {
                       })()}
                     </Text3>
                     <Text3>
-                      {resumeList.map((item, idx) => {
-                        if (item.id === interviewResult.resume)
-                          return item.title;
-                      })}
+                      {resumeTitle}
                     </Text3>
                     <Text3>{interviewResult.repo_names.join(", ")}</Text3>
                   </TextBox3>
