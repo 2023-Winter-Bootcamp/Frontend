@@ -415,6 +415,7 @@ function Interviewpage() {
     if (questionContent !== "") {
       getQ2AudioData();
     }
+    window.scrollTo(0,0);
   }, [questionContent]);
 
   // 현재 question_type의 count 차감 및 다음 question_type으로 변경
