@@ -587,7 +587,13 @@ function Choose() {
 
   // 면접 제목 Change 이벤트 함수
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    const newTitle = e.target.value;
+    // 제목의 최대 길이를 30으로 제한
+    if (newTitle.length > 30) {
+      setTitle(newTitle.slice(0, 30));
+    } else {
+      setTitle(newTitle);
+    }
   };
 
   // question_type 중복 선택 클릭 이벤트 함수
@@ -740,7 +746,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder='' onChange={handleChange}></Input>
+          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
