@@ -373,7 +373,7 @@ const Resultpage = () => {
   const [] = useRecoilState(githubProfileState);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [gitName, setGitName] = useState("");
-
+  const [resumeTitle, setResumeTitle] = useState('');
   const toggleAudio = (index: number) => {
     const newIsPlayingList = [...isPlayingList];
     newIsPlayingList[index] = !newIsPlayingList[index];
@@ -483,6 +483,16 @@ const Resultpage = () => {
     getResultInfo();
   }, []);
 
+  //페이지 첫 렌더링 시 삭제된 이력서인지 먼저 확인하고 아니면 이력서 타이틀 설정
+  useEffect(()=>{
+    resumeList.map((item, idx) => {
+      if (item.id === interviewResult.resume)
+        setResumeTitle(item.title);
+      return;
+    })
+    setResumeTitle('삭제된 이력서');
+  }, [])
+
   return (
     <>
       {interviewResult && (
@@ -549,10 +559,7 @@ const Resultpage = () => {
                       })()}
                     </Text3>
                     <Text3>
-                      {resumeList.map((item, idx) => {
-                        if (item.id === interviewResult.resume)
-                          return item.title;
-                      })}
+                      {resumeTitle}
                     </Text3>
                     <Text3>{interviewResult.repo_names.join(", ")}</Text3>
                   </TextBox3>
