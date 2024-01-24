@@ -229,10 +229,57 @@ const ScrollContainer = styled.div<{ $len: number }>`
   display: flex;
 `;
 
+const BlackBox = styled.div`
+  width: 100%;
+  height: 0;
+  background-color: black;
+  opacity: 0.6;
+  position: absolute;
+`;
+
+const Text6 = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  text-align: left;
+  color: white;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
+const Text3 = styled.div`
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  height: auto;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+
+  &:hover {
+    opacity: 1;
+    z-index: 1;
+  }
+`;
+
+const BoldText = styled.span`
+  /* Existing styles */
+  opacity: 0;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+  font-weight: bold;
+`;
+
 const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
+  position: relative;
   width: 249px;
   height: 345px;
-  position: relative;
   background-image: url(${(props) => props.$pre_image_url});
   background-position: center;
   background-size: cover;
@@ -249,10 +296,44 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
+  //transition: all 0.3s ease-in-out;
 
   &:hover {
     border: 2px solid #000000;
+    background-color: rgba(0, 0, 0, 0.5);
   }
+
+  &:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+  }
+
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    ${BlackBox} {
+      height: 100%;
+      opacity: 0.6;
+    }
+    ${Text6}, ${Text3}, ${BoldText} {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+// Add these styles for DeleteButton and BoldText if not already defined
+const DeleteButton = styled.button`
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
 `;
 
 const TextWrapper2 = styled.div`
@@ -270,7 +351,7 @@ const TextWrapper2 = styled.div`
 //   margin-left: 29%;
 // `;
 
-const Text3 = styled.div`
+const Text33 = styled.div`
   color: lightgray;
   font-size: 14px;
   margin-top: 50px;
@@ -482,11 +563,6 @@ const DropText = styled.div`
   }
 `;
 
-interface Resume {
-  id: number;
-  pre_image_url: string;
-}
-
 function Choose() {
   const [selectedMultiButtons, setSelectedMultiButtons] = useState<string[]>(
     []
@@ -504,7 +580,8 @@ function Choose() {
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
-  const [resumeList, setResumeList] = useRecoilState<ResumeType[]>(resumeListState);
+  const [resumeList, setResumeList] =
+    useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
   const setInterviewTitle = useSetRecoilState(interviewTitleState);
 
@@ -518,6 +595,7 @@ function Choose() {
     totalQuestionCountState
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
+  const [titleError, setTitleError] = useState<string | null>(null);
 
   // question_type 관련 함수
   const handleProjectCountChange = (
@@ -586,6 +664,8 @@ function Choose() {
   // 면접 제목 Change 이벤트 함수
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
+    // 사용자가 입력할 때마다 에러 메시지를 초기화합니다.
+    setTitleError(null);
   };
 
   // question_type 중복 선택 클릭 이벤트 함수
@@ -646,6 +726,12 @@ function Choose() {
 
   // 선택 완료 버튼 클릭 이벤트 함수 (다른 페이지로 이동)
   const handleStartClick = (id: number) => {
+    if (!title.trim()) {
+      // 제목이 비어 있거나 공백만 포함되어 있다면 에러 메시지를 설정합니다.
+      setTitleError("제목을 입력해주세요.");
+      return;
+    }
+
     setStartClicked(true);
     navigate(`/start/${id}`);
     console.log(questionState);
@@ -660,6 +746,12 @@ function Choose() {
       const { project, cs, personality } = questionState.counts;
       const total = project + cs + personality;
       setTotalQuestionCountState(total);
+
+      // 유효성 검사 - 제목이 비어 있거나 공백만 포함된 경우 에러 메시지 설정
+      if (!title.trim()) {
+        setTitleError("제목을 입력해주세요.");
+        return;
+      }
 
       const response = await api.post("interviews/create/", {
         user: githubLoginInfo.id,
@@ -697,6 +789,7 @@ function Choose() {
     };
 
     getResumes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 드롭다운 메뉴 만드는 Array
@@ -728,6 +821,10 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
+  function handleClick(id: number): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -735,12 +832,19 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder="" onChange={handleChange}></Input>
+          <Input
+            placeholder=""
+            onChange={handleChange}
+            // 에러 메시지가 null이 아닌 경우에 제목 입력란의 테두리 색상을 빨간색으로 변경합니다.
+            style={{ borderColor: titleError ? "red" : "initial" }}
+          ></Input>
+          {/* 에러 메시지가 null이 아닌 경우 에러 메시지를 표시합니다. */}
+          {titleError && <div style={{ color: "red" }}>{titleError}</div>}
         </Container>
         <Container1>
           <TextWrapper1>
             <Text1>면접 종류</Text1>
-            <Text3>복수 선택이 가능합니다.</Text3>
+            <Text33>복수 선택이 가능합니다.</Text33>
           </TextWrapper1>
           <ButtonsContainer>
             <Button
@@ -858,13 +962,27 @@ function Choose() {
           </TextWrapper2>
           <ResumeContainer>
             <ScrollContainer $len={resumeList.length}>
-              {resumeList.map((resume, index) => (
+              {resumeList.map((item, idx) => (
                 <ResumeBox
-                  key={resume.id}
-                  $pre_image_url={resume.pre_image_url}
-                  $isSelected={selectedResume === resume.id}
-                  onClick={() => handleResumeSelect(resume.id)}
-                />
+                  key={idx}
+                  $pre_image_url={item.pre_image_url}
+                  $isSelected={selectedResume === item.id}
+                  onClick={() => handleResumeSelect(item.id)}
+                >
+                  <BlackBox />
+                  <Text6>{item.title}</Text6>
+                  <Text3>
+                    <br />
+                    {item.created_at.slice(0, 10)}에 등록한
+                    <br />
+                    이력서 입니다.
+                    <br />
+                    <DeleteButton onClick={() => handleClick(item.id)}>
+                      <br />
+                      <BoldText>삭제하기</BoldText>
+                    </DeleteButton>
+                  </Text3>
+                </ResumeBox>
               ))}
             </ScrollContainer>
           </ResumeContainer>
