@@ -206,19 +206,21 @@ const QnAContainer = styled.div`
 const QnABox = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 20px 20px 0px 20px;
+  padding: 20px 20px 40px 20px;
   display: flex;
   flex-direction: column;
 `;
 
 const QnAWrapper = styled.div`
   width: 100%;
-  height: 555px;
+  height: 450px;
   box-sizing: border-box;
-  margin-bottom: -60px;
   margin-top: 20px;
   @media screen and (max-width: 1023px) {
-    height: 90vh;
+    height: 510px;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 450px;
   }
 `;
 
@@ -282,7 +284,7 @@ const AnswerBox = styled.div`
   width: 60%;
   box-sizing: border-box;
   margin: 0 15% 0 25%;
-  padding: 30px 34px 0px;
+  padding: 30px 34px;
   background: #fff;
   position: relative;
   height: 240px;
