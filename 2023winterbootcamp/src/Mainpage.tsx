@@ -31,7 +31,6 @@ import picture0 from "./images/main_page_github.jpg";
 import picture1 from "./images/picture1.png";
 import picture2 from "./images/picture2.png";
 import picture3 from "./images/picture3.png";
-import ResumeModal from "./components/ResumeModal";
 import LoadingModal from "./components/LoadingModal";
 
 const FixedBackGround = styled.div<{ $imgUrl: string }>`
@@ -760,7 +759,7 @@ function Main() {
   }
 
   return (
-    <Suspense fallback={<ResumeModal />}>
+    <Suspense fallback={<LoadingModal />}>
       <>
         <ScrollContent>
           <Container onContextMenu={handleSelectStart}>
