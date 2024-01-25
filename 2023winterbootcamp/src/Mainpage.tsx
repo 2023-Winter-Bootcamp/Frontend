@@ -706,7 +706,7 @@ function Main() {
             let tmpRepoList: RepoType[] = [];
             (response2.data as GitHubRepo[]).forEach((element) => {
               if (element.fork === false) {
-                tmpRepoList.push({ id: element.id, repo_name: element.name });
+                tmpRepoList.push({ id: element.id, repo_name: element.name, language: element.language });
               }
             });
             console.log(tmpRepoList);

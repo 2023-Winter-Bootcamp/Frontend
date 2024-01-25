@@ -31,6 +31,7 @@ export const githubLoginInfoState = atom<githubLoginInfoType>({
 export type RepoType = {
   id: number;
   repo_name: string;
+  language: string;
 };
 
 export const repoListState = atom<RepoType[]>({

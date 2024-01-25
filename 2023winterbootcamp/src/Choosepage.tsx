@@ -310,7 +310,7 @@ const ResumeBox = styled.div<{
     //transform: translateY(-5px);
     border-radius: 6px;
   }
-
+  
   &:hover::before {
     content: "";
     position: absolute;
@@ -318,7 +318,7 @@ const ResumeBox = styled.div<{
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 
@@ -405,7 +405,7 @@ const Repo = styled.div<{ $isSelected: boolean }>`
   cursor: pointer;
 
   &:hover {
-    border: 2px solid black;
+    background-color: #e9e9e9;
   }
 
   @media screen and (min-width: 1400px) {
@@ -577,6 +577,31 @@ const DropText = styled.div`
   }
 `;
 
+const LanguageWrapper = styled.div`
+  width: 80%;
+  height: 30px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+`;
+const Language = styled.div`
+  width: 100%;
+  height: 20px;
+  font-weight: 600;
+  color: #333333;
+  font-size: 14px;
+  margin-left: 5px;
+`;
+
+const BlackCircle = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #333333;
+`;
+
 interface Resume {
   id: number;
   pre_image_url: string;
@@ -604,6 +629,7 @@ function Choose() {
     useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
   const setInterviewTitle = useSetRecoilState(interviewTitleState);
+  const [isCameraPossible, setIsCameraPossible] = useState(false);
 
   // question_type 관련 state
   const [projectCount, setProjectCount] = useState(0);
@@ -667,7 +693,7 @@ function Choose() {
       selectedRepos.length > 0 &&
       title !== "";
 
-    if (interviewType.showCamera === true && !checkCamera())
+    if (interviewType.showCamera === true && !isCameraPossible)
       isAllSelected = false;
     setStartClicked(isAllSelected);
   }, [
@@ -768,17 +794,17 @@ function Choose() {
   };
 
   //화상면접을 위한 카메라가 존재하는 지 여부 확인
-  const checkCamera = (): boolean => {
-    let isPossible: boolean = false;
+  const checkCamera = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
-      .then((_) => {
-        isPossible = true;
+      .then((stream) => {
+        console.log(stream);
+        if(stream !== null) setIsCameraPossible(true);
+        else setIsCameraPossible(false);
       })
       .catch((e) => {
         console.error(e);
       });
-    return isPossible;
   };
 
   //사용자가 선택사항들을 모두 체크했는지 확인하고 아니면 alert를 한 후 선택 안 한 선택지로 스크롤 이동
@@ -801,7 +827,7 @@ function Choose() {
     } else if (selectedRepos.length === 0) {
       window.scrollTo(0, 1100);
       window.alert("Repository를 선택해주세요.");
-    } else if (!checkCamera()) {
+    } else if (!isCameraPossible) {
       window.scrollTo(0, 420);
       window.alert(
         "화상면접을 위한 카메라가 없습니다.\n음성면접을 사용해주세요."
@@ -893,9 +919,10 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
-  function handleClick(id: number): void {
-    throw new Error("Function not implemented.");
-  }
+  //페이지 첫 렌더링시 사용자가 웹캠을 사용할 수 있는지 확인하는 함수 실행
+  useEffect(()=>{
+    checkCamera();
+  },[])
 
   return (
     <>
@@ -1024,6 +1051,9 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>이력서</Text1>
+            {resumeList.length === 0 ? (
+              <Text33>등록된 이력서가 없습니다.</Text33>
+            ) : null}
           </TextWrapper2>
           <ResumeContainer>
             <ScrollContainer $len={resumeList.length}>
@@ -1052,26 +1082,29 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>Github repositories</Text1>
-            <Text3>복수 선택이 가능합니다.</Text3>
+            <Text33>복수 선택이 가능합니다.</Text33>
           </TextWrapper2>
           <RepoContainer>
             {repoList.length !== 0 ? (
               repoList.map((repo, idx) => {
-                return (
-                  <Repo
-                    key={idx}
-                    $isSelected={selectedRepos.includes(repo.repo_name)}
-                    onClick={() => handleRepoSelect(repo.repo_name)}
-                  >
-                    <Reponame>{repo.repo_name}</Reponame>
-                  </Repo>
-                );
+                if (repo.language) {
+                  return (
+                    <Repo
+                      key={idx}
+                      $isSelected={selectedRepos.includes(repo.repo_name)}
+                      onClick={() => handleRepoSelect(repo.repo_name)}
+                    >
+                      <Reponame>{repo.repo_name}</Reponame>
+                      <LanguageWrapper>
+                        <BlackCircle />
+                        <Language>{repo.language}</Language>
+                      </LanguageWrapper>
+                    </Repo>
+                  );
+                }
               })
             ) : (
-              <Repo
-                $isSelected={selectedRepos.includes("")}
-                onClick={() => handleRepoSelect("")}
-              >
+              <Repo $isSelected={false}>
                 <Reponame>repository가 없습니다.</Reponame>
               </Repo>
             )}
