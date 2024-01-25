@@ -10,7 +10,6 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-//import instagramwhiteicon from "./images/instagram-white-icon.webp";
 import api from "./baseURL/baseURL";
 import playImg from "./images/resultpage_play_button.jpg";
 import stopImg from "./images/resultpage_stop_button.jpg";
@@ -29,10 +28,10 @@ const ProfileContainer = styled.div`
   justify-content: center;
   align-items: center;
   @media screen and (max-width: 768px) {
-    height: 340px;
+    height: 380px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    height: 380px;
+    height: 400px;
   }
   @media screen and (min-width: 1024px) {
     height: 420px;
@@ -43,15 +42,20 @@ const ProfileBox = styled.div`
   width: 80%;
   min-width: 460px;
   max-width: 1400px;
+  margin-left: 250px;
+  margin-bottom: 20px;
   display: flex;
   @media screen and (max-width: 768px) {
     height: 180px;
+    margin-left: 130px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     height: 220px;
+    margin-left: 220px;
   }
   @media screen and (min-width: 1024px) {
     height: 250px;
+    margin-left: 250px;
   }
 `;
 
@@ -65,8 +69,14 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
   width: 80%;
   aspect-ratio: 1;
   max-width: 250px;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 90%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 80%;
   }
 `;
 
@@ -76,11 +86,14 @@ const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 8px;
+  margin-left: 20px;
   @media screen and (max-width: 768px) {
     padding-top: 2px;
+    margin-left: 40px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     padding-top: 4px;
+    margin-left: 40px;
   }
   @media screen and (min-width: 1024px) {
     padding: 8px;
@@ -92,6 +105,7 @@ const Text1 = styled.div`
   font-weight: 700;
   color: white;
   flex-grow: 1;
+
   @media screen and (max-width: 768px) {
     height: 26px;
     font-size: 20px;
@@ -149,7 +163,6 @@ const Text3 = styled.div`
   @media screen and (min-width: 1024px) {
     height: 32px;
     font-size: 17px;
-    /* line-height: 1.5; */
   }
 `;
 
@@ -193,19 +206,21 @@ const QnAContainer = styled.div`
 const QnABox = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 20px 20px 0px 20px;
+  padding: 20px 20px 40px 20px;
   display: flex;
   flex-direction: column;
 `;
 
 const QnAWrapper = styled.div`
   width: 100%;
-  height: 555px;
+  height: 450px;
   box-sizing: border-box;
-  margin-bottom: -60px;
   margin-top: 20px;
   @media screen and (max-width: 1023px) {
-    height: 90vh;
+    height: 510px;
+  }
+  @media screen and (min-width: 1024px) {
+    height: 450px;
   }
 `;
 
@@ -254,13 +269,14 @@ const ALargeText = styled.div`
 
 const ASmallText = styled.div`
   width: 100%;
-  height: 185px;
+  height: 105px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
-  overflow: auto;
+  overflow-y: auto;
+  max-height: 185px;
   @media screen and (max-width: 1023px) {
-    height: 40vh;
+    height: 174px;
   }
 `;
 
@@ -268,12 +284,14 @@ const AnswerBox = styled.div`
   width: 60%;
   box-sizing: border-box;
   margin: 0 15% 0 25%;
-  padding: 30px 34px 0px;
+  padding: 30px 34px;
   background: #fff;
   position: relative;
+  height: 240px;
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
+    height: 310px;
   }
   @media screen and (min-width: 1024px) {
     margin: 0 15% 0 25%;
@@ -287,8 +305,8 @@ const VoiceBox = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  right: -35px;
-  bottom: 15px;
+  right: -50px;
+  bottom: 6px;
 `;
 
 interface ButtonProps {
@@ -316,10 +334,10 @@ const Button = styled.button<ButtonProps>`
 const Text4 = styled.div`
   width: 130px;
   height: 34px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  margin-top: 9px;
+  margin-top: 10px;
 `;
 
 const ImageWrapper = styled.div`
