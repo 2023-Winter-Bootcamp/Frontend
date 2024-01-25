@@ -1013,6 +1013,9 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>이력서</Text1>
+            {resumeList.length === 0 ? (
+              <Text33>등록된 이력서가 없습니다.</Text33>
+            ) : null}
           </TextWrapper2>
           <ResumeContainer>
             <ScrollContainer $len={resumeList.length}>
