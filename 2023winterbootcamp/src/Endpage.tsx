@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { interviewResultState, interviewTitleState } from "./Recoil";
+import { useRecoilValue } from "recoil";
+import { interviewTitleState } from "./Recoil";
 
 const Container = styled.div`
   width: 100%;

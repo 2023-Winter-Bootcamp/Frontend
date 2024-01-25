@@ -28,10 +28,10 @@ const ProfileContainer = styled.div`
   justify-content: center;
   align-items: center;
   @media screen and (max-width: 768px) {
-    height: 340px;
+    height: 380px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    height: 380px;
+    height: 400px;
   }
   @media screen and (min-width: 1024px) {
     height: 420px;
@@ -42,15 +42,20 @@ const ProfileBox = styled.div`
   width: 80%;
   min-width: 460px;
   max-width: 1400px;
+  margin-left: 250px;
+  margin-bottom: 20px;
   display: flex;
   @media screen and (max-width: 768px) {
     height: 180px;
+    margin-left: 130px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     height: 220px;
+    margin-left: 220px;
   }
   @media screen and (min-width: 1024px) {
     height: 250px;
+    margin-left: 250px;
   }
 `;
 
@@ -64,8 +69,14 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
   width: 80%;
   aspect-ratio: 1;
   max-width: 250px;
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
     width: 90%;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 80%;
   }
 `;
 
@@ -75,11 +86,14 @@ const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 8px;
+  margin-left: 20px;
   @media screen and (max-width: 768px) {
     padding-top: 2px;
+    margin-left: 40px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     padding-top: 4px;
+    margin-left: 40px;
   }
   @media screen and (min-width: 1024px) {
     padding: 8px;
@@ -91,6 +105,7 @@ const Text1 = styled.div`
   font-weight: 700;
   color: white;
   flex-grow: 1;
+
   @media screen and (max-width: 768px) {
     height: 26px;
     font-size: 20px;
@@ -252,14 +267,14 @@ const ALargeText = styled.div`
 
 const ASmallText = styled.div`
   width: 100%;
-  height: 110px;
+  height: 105px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
   overflow-y: auto;
   max-height: 185px;
   @media screen and (max-width: 1023px) {
-    height: 40vh;
+    height: 174px;
   }
 `;
 
@@ -274,6 +289,7 @@ const AnswerBox = styled.div`
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
+    height: 310px;
   }
   @media screen and (min-width: 1024px) {
     margin: 0 15% 0 25%;
