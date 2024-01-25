@@ -340,7 +340,7 @@ const TextWrapper2 = styled.div`
 // `;
 
 const Text33 = styled.div`
-  color: lightgray;
+  color: gray;
   font-size: 14px;
   margin-top: 50px;
   margin-left: 10px;
@@ -535,7 +535,7 @@ const DropdownSelect3 = styled.select`
 
 const DropText = styled.div`
   font-size: 14px;
-  color: lightgray;
+  color: gray;
   margin-bottom: 40px;
   user-select: none;
   @media screen and (max-width: 769px) {
@@ -887,6 +887,7 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
+  //페이지 첫 렌더링시 사용자가 웹캠을 사용할 수 있는지 확인하는 함수 실행
   useEffect(()=>{
     checkCamera();
   },[])
