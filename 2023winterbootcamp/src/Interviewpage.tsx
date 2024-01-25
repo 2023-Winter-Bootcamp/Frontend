@@ -81,6 +81,7 @@ const Next = styled.button`
   background: none;
   cursor: pointer;
   visibility: hidden;
+  margin-right: 45px;
 `;
 
 const StyledNextImage = styled.img`
@@ -94,6 +95,7 @@ const RecordBox = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
+  margin-right: 20px;
 `;
 
 const spin3D = keyframes`
@@ -113,7 +115,6 @@ const VideoContainer = styled.div`
   flex-wrap: wrap;
   align-items: flex-start;
   transform: scaleX(-1);
-  //border: 1px solid lightgray;
 `;
 
 // Common styles
@@ -170,10 +171,11 @@ const LeoCore = styled.div<LeoCoreProps>`
 
 const InstructionText = styled.div`
   width: auto;
-  height: 16px;
+  height: 18px;
   font-size: 16px;
   color: #909090;
   visibility: hidden;
+  margin-top: 5px;
 `;
 
 export interface Question {
@@ -402,7 +404,7 @@ function Interviewpage() {
         setQuestionType(response.data.question[0].question_type);
         setQuestionContent(response.data.question[0].content);
         updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
-        console.log(response.data)
+        console.log(response.data);
       }
       setIsLoading(false);
     } catch (e) {
@@ -426,7 +428,7 @@ function Interviewpage() {
       btnRef.current?.style.setProperty("visibility", "hidden");
       instRef.current?.style.setProperty("visibility", "hidden");
     }
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }, [questionContent]);
 
   // 현재 question_type의 count 차감 및 다음 question_type으로 변경
@@ -586,18 +588,18 @@ function Interviewpage() {
           <VideoContainer>
             <SpinnerBox>
               <LeoBorder
-                color='rgb(102, 102, 102)'
-                $gradientColor='102, 102, 102'
+                color="rgb(102, 102, 102)"
+                $gradientColor="102, 102, 102"
                 $animationDuration={1.8}
               >
-                <LeoCore $backgroundColor='#191919aa' />
+                <LeoCore $backgroundColor="#191919aa" />
               </LeoBorder>
               <LeoBorder
-                color='rgb(255, 215, 244)'
-                $gradientColor='255, 215, 244'
+                color="rgb(255, 215, 244)"
+                $gradientColor="255, 215, 244"
                 $animationDuration={2.2}
               >
-                <LeoCore $backgroundColor='#bebebeaa' />
+                <LeoCore $backgroundColor="#bebebeaa" />
               </LeoBorder>
             </SpinnerBox>
           </VideoContainer>
@@ -615,13 +617,13 @@ function Interviewpage() {
           <Next onClick={handleNextButtonClick} ref={btnRef}>
             <StyledNextImage
               src={recorderControls.isRecording ? recordIcon : nextIcon}
-              alt='next'
+              alt="next"
             />
           </Next>
         </RecordBox>
       </Down>
       {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: "none" }} preload='auto' />
+      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
     </>
   );
 }

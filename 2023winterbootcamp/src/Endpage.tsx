@@ -41,14 +41,14 @@ const BottomBox = styled(Box)`
 const TopText = styled(Box)`
   font-size: 32px;
   text-align: left;
-  @media screen and (max-width: 768px){
+  @media screen and (max-width: 768px) {
     font-size: 25px;
     height: 70px;
   }
 `;
 
 const BottomText = styled(Box)`
-  font-size: 28px;
+  font-size: 22px;
   text-align: center;
   text-decoration: underline;
   text-underline-position: under;
@@ -56,18 +56,19 @@ const BottomText = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width: 768px){
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
     font-size: 22px;
   }
 `;
 
 const StartButton = styled(motion.button)`
-  width: 240px;
-  height: 50px;
+  width: 180px;
+  height: 45px;
   background-color: #1a1a1a;
   color: white;
-  font-size: 21px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 500;
   text-align: center;
   border: none;
 
@@ -77,7 +78,6 @@ const StartButton = styled(motion.button)`
     transform: translateY(-0.5px);
   }
 `;
-
 
 function Endpage() {
   const { id } = useParams();
@@ -89,9 +89,9 @@ function Endpage() {
     return false;
   };
 
-  useEffect(()=>{
-    window.scrollTo(0,0);
-  },[]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Container onContextMenu={handleSelectStart}>

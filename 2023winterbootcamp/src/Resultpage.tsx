@@ -10,7 +10,6 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-//import instagramwhiteicon from "./images/instagram-white-icon.webp";
 import api from "./baseURL/baseURL";
 import playImg from "./images/resultpage_play_button.jpg";
 import stopImg from "./images/resultpage_stop_button.jpg";
@@ -133,7 +132,7 @@ const Text2 = styled.div`
     line-height: 1.2;
   }
   @media screen and (min-width: 1024px) {
-    width: 80px;
+    width: 150px;
     height: 22px;
     font-size: 18px;
     line-height: 1.5;
@@ -146,21 +145,21 @@ const Text3 = styled.div`
   line-height: 1.5;
   margin-bottom: 10px;
   @media screen and (max-width: 768px) {
-    width: 250px;
+    width: 300px;
     height: 20px;
     font-size: 15px;
     line-height: 1.2;
     margin-bottom: 7px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 250px;
+    width: 340px;
     height: 22px;
     font-size: 16px;
     line-height: 1.2;
     margin-bottom: 8px;
   }
   @media screen and (min-width: 1024px) {
-    width: 250px;
+    width: 380px;
     height: 22px;
     font-size: 18px;
   }
@@ -280,11 +279,12 @@ const ALargeText = styled.div`
 
 const ASmallText = styled.div`
   width: 100%;
-  height: 185px;
+  height: 110px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
-  overflow: auto;
+  overflow-y: auto;
+  max-height: 185px;
   @media screen and (max-width: 1023px) {
     height: 40vh;
   }
@@ -297,6 +297,7 @@ const AnswerBox = styled.div`
   padding: 30px 34px 0px;
   background: #fff;
   position: relative;
+  height: 240px;
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
@@ -313,8 +314,8 @@ const VoiceBox = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  right: -35px;
-  bottom: 15px;
+  right: -50px;
+  bottom: 6px;
 `;
 
 interface ButtonProps {
@@ -332,10 +333,7 @@ const Button = styled.button<ButtonProps>`
   background-repeat: no-repeat;
 
   background-image: ${(props) =>
-    props.$isPlaying
-      ? `url(${stopImg})`
-      : `url(${playImg})`
-  };
+    props.$isPlaying ? `url(${stopImg})` : `url(${playImg})`};
 
   &:hover {
     cursor: pointer;
@@ -345,10 +343,10 @@ const Button = styled.button<ButtonProps>`
 const Text4 = styled.div`
   width: 130px;
   height: 34px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  margin-top: 9px;
+  margin-top: 10px;
 `;
 
 function ScrollToTop() {
