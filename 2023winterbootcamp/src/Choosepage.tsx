@@ -276,7 +276,7 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
+const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean; $isResumeSelected : boolean }>`
   position: relative;
   width: 249px;
   height: 345px;
@@ -332,13 +332,13 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     }
   }
 
-  filter: none;
   ${(props) =>
-    !props.$isSelected &&
+    !props.$isSelected && props.$isResumeSelected &&
     css`
       filter: blur(1px);
+      opacity: 0.6;
     `};
-  opacity: ${(props) => (props.$isSelected ? "1" : "0.6")};
+  /* opacity: ${(props) => (props.$isSelected ? "1" : "0.6")}; */
   transition:
     filter 0.3s,
     opacity 0.3s;
@@ -1026,6 +1026,7 @@ function Choose() {
                 <ResumeBox
                   key={idx}
                   $pre_image_url={item.pre_image_url}
+                  $isResumeSelected={selectedResume !== null}
                   $isSelected={selectedResume === item.id}
                   onClick={() => handleResumeSelect(item.id)}
                 >
