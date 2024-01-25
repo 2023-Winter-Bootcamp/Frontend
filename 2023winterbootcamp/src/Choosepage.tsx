@@ -206,19 +206,22 @@ const Container4 = styled.div`
 const ResumeContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 615px;
+
   margin: 0 auto;
   overflow-x: auto;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
+    width: 70%;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     margin-left: 29%;
+    width: 50%;
   }
 
   @media screen and (min-width: 1024px) {
     margin-left: 28.87%;
+    width: 42%;
   }
 `;
 
@@ -310,7 +313,7 @@ const ResumeBox = styled.div<{
     //transform: translateY(-5px);
     border-radius: 6px;
   }
-  
+
   &:hover::before {
     content: "";
     position: absolute;
@@ -347,6 +350,21 @@ const ResumeBox = styled.div<{
   transition:
     filter 0.3s,
     opacity 0.3s;
+
+  @media screen and (max-width: 769px) {
+    width: 210px;
+    height: 310px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 229px;
+    height: 325px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 249px;
+    height: 345px;
+  }
 `;
 
 const TextWrapper2 = styled.div`
@@ -383,15 +401,18 @@ const RepoContainer = styled.div`
   user-select: none;
   margin-top: 20px;
   @media screen and (max-width: 769px) {
-    margin-left: 15%;
+    margin-left: 15.3%;
+    width: 70%;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 28%;
+    margin-left: 29%;
+    width: 50%;
   }
 
   @media screen and (min-width: 1024px) {
     margin-left: 29%;
+    width: 42%;
   }
 `;
 
@@ -408,20 +429,46 @@ const Repo = styled.div<{ $isSelected: boolean }>`
     background-color: #e9e9e9;
   }
 
-  @media screen and (min-width: 1400px) {
+  @media screen and (max-width: 769px) {
+    width: 47%;
+    height: 60px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    width: 47%;
+    height: 70px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 48%;
+    height: 100px;
   }
 `;
 
 const Reponame = styled.div`
   width: 80%;
   color: #7a7a7a;
-  font-size: 18px;
   font-weight: 500;
-  margin-left: 20px;
-  margin-top: 15px;
   overflow-wrap: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  @media screen and (max-width: 769px) {
+    margin-top: 8px;
+    margin-left: 12px;
+    font-size: 14px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-top: 10px;
+    margin-left: 15px;
+    font-size: 16px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-top: 15px;
+    margin-left: 20px;
+    font-size: 18px;
+  }
 `;
 
 const Start = styled.button<{ $startClicked: boolean }>`
@@ -436,7 +483,6 @@ const Start = styled.button<{ $startClicked: boolean }>`
   align-items: center;
   padding: 10px 20px;
   margin-bottom: 100px;
-  margin-left: 70%;
   border: none;
   user-select: none;
   cursor: pointer;
@@ -447,6 +493,17 @@ const Start = styled.button<{ $startClicked: boolean }>`
         background-color: "#1a1a1a";
       }
     `}
+  @media screen and (max-width: 769px) {
+    margin-left: 60%;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 70%;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-left: 73%;
+  }
 `;
 
 const DropdownContainer = styled.div`
@@ -564,16 +621,17 @@ const DropText = styled.div`
   color: gray;
   margin-bottom: 40px;
   user-select: none;
+  text-align: right;
   @media screen and (max-width: 769px) {
-    margin-left: 49%;
+    margin-right: 15%;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 54.5%;
+    margin-right: 20%;
   }
 
   @media screen and (min-width: 1024px) {
-    margin-left: 57.3%;
+    margin-right: 29%;
   }
 `;
 
@@ -583,9 +641,21 @@ const LanguageWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 20px;
+
   margin-left: 20px;
+  @media screen and (max-width: 769px) {
+    margin-top: 0px;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-top: 9px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    margin-top: 26px;
+  }
 `;
+
 const Language = styled.div`
   width: 100%;
   height: 20px;
@@ -593,13 +663,34 @@ const Language = styled.div`
   color: #333333;
   font-size: 14px;
   margin-left: 5px;
+  @media screen and (max-width: 769px) {
+    color: white;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-top: 5px;
+    font-size: 12px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    font-size: 14px;
+  }
 `;
 
 const BlackCircle = styled.div`
   width: 10px;
-  height: 10px;
+  height: 9px;
   border-radius: 50%;
   background-color: #333333;
+  @media screen and (max-width: 769px) {
+    background-color: white;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 interface Resume {
@@ -799,7 +890,7 @@ function Choose() {
       .getUserMedia({ video: true })
       .then((stream) => {
         console.log(stream);
-        if(stream !== null) setIsCameraPossible(true);
+        if (stream !== null) setIsCameraPossible(true);
         else setIsCameraPossible(false);
       })
       .catch((e) => {
@@ -920,9 +1011,9 @@ function Choose() {
   }, [resetCurrentQuestion]);
 
   //페이지 첫 렌더링시 사용자가 웹캠을 사용할 수 있는지 확인하는 함수 실행
-  useEffect(()=>{
+  useEffect(() => {
     checkCamera();
-  },[])
+  }, []);
 
   return (
     <>
