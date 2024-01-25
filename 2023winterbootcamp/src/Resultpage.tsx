@@ -25,6 +25,9 @@ const ProfileContainer = styled.div`
   width: 100%;
   height: 420px;
   background: #070707;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @media screen and (max-width: 768px) {
     height: 340px;
   }
@@ -37,16 +40,15 @@ const ProfileContainer = styled.div`
 `;
 
 const ProfileBox = styled.div`
-  width: 70%;
+  width: 80%;
+  min-width: 460px;
+  max-width: 1400px;
   display: flex;
-  margin-left: 18%;
   @media screen and (max-width: 768px) {
     height: 180px;
-    margin-left: 12%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     height: 220px;
-    margin-left: 14%;
   }
   @media screen and (min-width: 1024px) {
     height: 250px;
@@ -60,48 +62,36 @@ const ProfileImage = styled.div<{ avatarUrl?: string }>`
   background-position: center;
   background-size: cover;
   border: none;
+  width: 80%;
   aspect-ratio: 1;
-  margin-top: 60px;
-  @media screen and (max-width: 768px) {
-    width: 180px;
-    height: 180px;
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 220px;
-    height: 220px;
-  }
-  @media screen and (min-width: 1024px) {
-    width: 280px;
-    height: 280px;
+  max-width: 250px;
+  @media screen and (max-width: 1023px) {
+    width: 90%;
   }
 `;
 
 const ProfileInfo = styled.div`
-  height: inherit;
-  aspect-ratio: 1;
-  margin-top: 60px;
+  width: 70%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
   @media screen and (max-width: 768px) {
-    width: 350px;
-    margin-top: 0;
-    margin-left: 30px;
+    padding-top: 2px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 400px;
-    margin-top: 0;
-    margin-left: 50px;
+    padding-top: 4px;
   }
   @media screen and (min-width: 1024px) {
-    width: 450px;
-    margin-top: 10px;
-    margin-left: 70px;
+    padding: 8px;
   }
 `;
 
 const Text1 = styled.div`
-  width: 100%;
+  width: 90%;
   font-weight: 700;
   color: white;
-  margin-top: 60px;
+  flex-grow: 1;
   @media screen and (max-width: 768px) {
     height: 26px;
     font-size: 20px;
@@ -117,97 +107,81 @@ const Text1 = styled.div`
 `;
 
 const Text2 = styled.div`
+  width: 100%;
   font-weight: 600;
-  margin-bottom: 10px;
   color: white;
   @media screen and (max-width: 768px) {
-    width: 70px;
-    height: 17px;
-    font-size: 14px;
-    line-height: 1.1;
+    height: 25px;
+    font-size: 15px;
+    /* line-height: 1.1; */
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 70px;
-    height: 20px;
+    height: 27px;
     font-size: 16px;
-    line-height: 1.2;
+    /* line-height: 1.2; */
   }
   @media screen and (min-width: 1024px) {
-    width: 80px;
-    height: 22px;
-    font-size: 18px;
-    line-height: 1.5;
+    height: 32px;
+    font-size: 17px;
+    /* line-height: 1.5; */
   }
 `;
 
 const Text3 = styled.div`
+  width: 100%;
   font-weight: 500;
   color: white;
-  line-height: 1.5;
-  margin-bottom: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
   @media screen and (max-width: 768px) {
-    width: 250px;
-    height: 20px;
+    height: 25px;
     font-size: 15px;
-    line-height: 1.2;
-    margin-bottom: 7px;
+    /* line-height: 1.2;
+    margin-bottom: 7px; */
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 250px;
-    height: 22px;
+    height: 27px;
     font-size: 16px;
-    line-height: 1.2;
-    margin-bottom: 8px;
+    /* line-height: 1.2;
+    margin-bottom: 8px; */
   }
   @media screen and (min-width: 1024px) {
-    width: 250px;
-    height: 22px;
-    font-size: 18px;
+    height: 32px;
+    font-size: 17px;
+    /* line-height: 1.5; */
   }
 `;
 
 const TextBox1 = styled.div`
   display: flex;
+  width: 90%;
+  flex-grow: 4;
   @media screen and (max-width: 768px) {
-    width: 300px;
     height: 140px;
-    margin-top: 10px;
+    padding-top: 5px;
   }
   @media screen and (min-width: 769px) {
-    width: 400px;
     height: 200px;
-    margin-top: 20px;
+    padding-top: 15px;
   }
 `;
 
 const TextBox2 = styled.div`
-  width: 100px;
+  width: 20%;
   height: inherit;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  @media screen and (max-width: 768px) {
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 80px;
-  }
-  @media screen and (min-width: 1024px) {
-    width: 100px;
-  }
+  flex-basis: 100px;
 `;
 
 const TextBox3 = styled.div`
-  width: 270px;
+  width: 70%;
   height: inherit;
   display: flex;
   flex-direction: column;
-  @media screen and (max-width: 768px) {
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 10px;
-  }
-  @media screen and (min-width: 1024px) {
-    margin-left: 20px;
-  }
+  flex-grow: 4;
 `;
 
 const QnAContainer = styled.div`
@@ -332,10 +306,7 @@ const Button = styled.button<ButtonProps>`
   background-repeat: no-repeat;
 
   background-image: ${(props) =>
-    props.$isPlaying
-      ? `url(${stopImg})`
-      : `url(${playImg})`
-  };
+    props.$isPlaying ? `url(${stopImg})` : `url(${playImg})`};
 
   &:hover {
     cursor: pointer;
@@ -349,6 +320,17 @@ const Text4 = styled.div`
   font-weight: 400;
   line-height: 1.4;
   margin-top: 9px;
+`;
+
+const ImageWrapper = styled.div`
+  width: 30%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media screen and (max-width: 1023px) {
+    justify-content: start;
+  }
 `;
 
 function ScrollToTop() {
@@ -483,19 +465,19 @@ const Resultpage = () => {
     getResultInfo();
   }, []);
 
-  const [resumeTitle, setResumeTitle] = useState('');
-  useEffect(()=>{
-    if(!resumeTitle){
+  const [resumeTitle, setResumeTitle] = useState("");
+  useEffect(() => {
+    if (!resumeTitle) {
       setResumeTitle("삭제된 이력서");
       return;
     }
-    resumeList.forEach((item,idx) => {
-      if(item.id === interviewResult.resume){
+    resumeList.forEach((item, idx) => {
+      if (item.id === interviewResult.resume) {
         setResumeTitle(item.title);
         return;
       }
-    })
-  },[interviewResult])
+    });
+  }, [interviewResult]);
 
   return (
     <>
@@ -504,7 +486,9 @@ const Resultpage = () => {
           <ScrollToTop />
           <ProfileContainer onContextMenu={handleSelectStart}>
             <ProfileBox>
-              <ProfileImage avatarUrl={avatarUrl} />
+              <ImageWrapper>
+                <ProfileImage avatarUrl={avatarUrl} />
+              </ImageWrapper>
               <ProfileInfo>
                 <Text1>{gitName}</Text1>
                 <TextBox1>
@@ -562,9 +546,7 @@ const Resultpage = () => {
                         }
                       })()}
                     </Text3>
-                    <Text3>
-                      {resumeTitle}
-                    </Text3>
+                    <Text3>{resumeTitle}</Text3>
                     <Text3>{interviewResult.repo_names.join(", ")}</Text3>
                   </TextBox3>
                   {/* <Button2 onClick={handleInstagramShare} /> */}
