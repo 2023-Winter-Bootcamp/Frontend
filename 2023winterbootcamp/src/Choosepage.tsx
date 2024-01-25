@@ -298,11 +298,6 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
   //transition: all 0.3s ease-in-out;
 
-  &:hover {
-    border: 2px solid #000000;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
   &:hover::before {
     content: "";
     position: absolute;
@@ -310,7 +305,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 
@@ -384,7 +379,7 @@ const Repo = styled.div<{ $isSelected: boolean }>`
   cursor: pointer;
 
   &:hover {
-    border: 2px solid black;
+    background-color: #e9e9e9;
   }
 
   @media screen and (min-width: 1400px) {
@@ -1024,7 +1019,7 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>Github repositories</Text1>
-            <Text3>복수 선택이 가능합니다.</Text3>
+            <Text33>복수 선택이 가능합니다.</Text33>
           </TextWrapper2>
           <RepoContainer>
             {repoList.length !== 0 ? (
