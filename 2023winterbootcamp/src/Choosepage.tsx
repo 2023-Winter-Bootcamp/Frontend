@@ -575,7 +575,7 @@ function Choose() {
   const [selectedRepos, setSelectedRepos] = useState<string[]>([]);
   const githubLoginInfo = useRecoilValue(githubLoginInfoState);
   const [title, setTitle] = useState<string>("");
-  const [, setInterviewType] = useRecoilState(interviewTypeState);
+  const [interviewType, setInterviewType] = useRecoilState(interviewTypeState);
   const [, setShowVideoComponent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const repoList = useRecoilValue(repoListState);
@@ -638,7 +638,7 @@ function Choose() {
 
   // 모든 칸이 입력돼야 면접을 시작할 수 있음
   useEffect(() => {
-    const isAllSelected =
+    let isAllSelected =
       Boolean(projectCount || csCount || personalityCount) &&
       selectedPosition !== null &&
       selectedInterviewType !== null &&
@@ -646,6 +646,8 @@ function Choose() {
       selectedRepos.length > 0 &&
       title !== "";
 
+    if (interviewType.showCamera === true && !checkCamera())
+      isAllSelected = false;
     setStartClicked(isAllSelected);
   }, [
     selectedMultiButtons,
@@ -738,28 +740,47 @@ function Choose() {
     console.log(questionState);
   };
 
+  //화상면접을 위한 카메라가 존재하는 지 여부 확인
+  const checkCamera = (): boolean => {
+    let isPossible: boolean = false;
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((_) => {
+        isPossible = true;
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+    return isPossible;
+  };
+
   //사용자가 선택사항들을 모두 체크했는지 확인하고 아니면 alert를 한 후 선택 안 한 선택지로 스크롤 이동
-  const checkChoices = ()=>{
+  const checkChoices = () => {
     if (title === "") {
       window.scrollTo(0, 0);
-      window.alert("면접 제목을 입력해주세요");
+      window.alert("면접 제목을 입력해주세요.");
     } else if (!Boolean(projectCount || csCount || personalityCount)) {
       window.scrollTo(0, 0);
-      window.alert("면접 종류와 개수를 선택해주세요");
+      window.alert("면접 종류와 개수를 선택해주세요.");
     } else if (selectedPosition === null) {
       window.scrollTo(0, 230);
-      window.alert("Position을 선택해주세요");
+      window.alert("Position을 선택해주세요.");
     } else if (selectedInterviewType === null) {
       window.scrollTo(0, 420);
-      window.alert("면접 방식을 선택해주세요");
+      window.alert("면접 방식을 선택해주세요.");
     } else if (selectedResume === null) {
       window.scrollTo(0, 750);
-      window.alert("이력서를 선택해주세요");
+      window.alert("이력서를 선택해주세요.");
     } else if (selectedRepos.length === 0) {
       window.scrollTo(0, 1100);
-      window.alert("Repository를 선택해주세요");
+      window.alert("Repository를 선택해주세요.");
+    } else if (!checkCamera()) {
+      window.scrollTo(0, 420);
+      window.alert(
+        "화상면접을 위한 카메라가 없습니다.\n음성면접을 사용해주세요."
+      );
     }
-  }
+  };
 
   // 면접 생성 API 함수
   const createInterview = async () => {
@@ -856,7 +877,7 @@ function Choose() {
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
+          <Input placeholder="" maxLength={30} onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
