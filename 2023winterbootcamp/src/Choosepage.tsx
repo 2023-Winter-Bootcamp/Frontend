@@ -1065,10 +1065,7 @@ function Choose() {
                 }
               })
             ) : (
-              <Repo
-                $isSelected={selectedRepos.includes("")}
-                onClick={() => handleRepoSelect("")}
-              >
+              <Repo $isSelected={false}>
                 <Reponame>repository가 없습니다.</Reponame>
               </Repo>
             )}
