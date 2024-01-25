@@ -298,11 +298,6 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
   //transition: all 0.3s ease-in-out;
 
-  &:hover {
-    border: 2px solid #000000;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
   &:hover::before {
     content: "";
     position: absolute;
@@ -310,7 +305,7 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
   }
 
@@ -384,7 +379,7 @@ const Repo = styled.div<{ $isSelected: boolean }>`
   cursor: pointer;
 
   &:hover {
-    border: 2px solid black;
+    background-color: #e9e9e9;
   }
 
   @media screen and (min-width: 1400px) {
@@ -554,6 +549,31 @@ const DropText = styled.div`
   @media screen and (min-width: 1024px) {
     margin-left: 57.3%;
   }
+`;
+
+const LanguageWrapper = styled.div`
+  width: 80%;
+  height: 30px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+`;
+const Language = styled.div`
+  width: 100%;
+  height: 20px;
+  font-weight: 600;
+  color: #333333;
+  font-size: 14px;
+  margin-left: 5px;
+`;
+
+const BlackCircle = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #333333;
 `;
 
 interface Resume {
@@ -866,10 +886,6 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
-  function handleClick(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -997,6 +1013,9 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>이력서</Text1>
+            {resumeList.length === 0 ? (
+              <Text33>등록된 이력서가 없습니다.</Text33>
+            ) : null}
           </TextWrapper2>
           <ResumeContainer>
             <ScrollContainer $len={resumeList.length}>
@@ -1024,26 +1043,29 @@ function Choose() {
         <Container4>
           <TextWrapper2>
             <Text1>Github repositories</Text1>
-            <Text3>복수 선택이 가능합니다.</Text3>
+            <Text33>복수 선택이 가능합니다.</Text33>
           </TextWrapper2>
           <RepoContainer>
             {repoList.length !== 0 ? (
               repoList.map((repo, idx) => {
-                return (
-                  <Repo
-                    key={idx}
-                    $isSelected={selectedRepos.includes(repo.repo_name)}
-                    onClick={() => handleRepoSelect(repo.repo_name)}
-                  >
-                    <Reponame>{repo.repo_name}</Reponame>
-                  </Repo>
-                );
+                if (repo.language) {
+                  return (
+                    <Repo
+                      key={idx}
+                      $isSelected={selectedRepos.includes(repo.repo_name)}
+                      onClick={() => handleRepoSelect(repo.repo_name)}
+                    >
+                      <Reponame>{repo.repo_name}</Reponame>
+                      <LanguageWrapper>
+                        <BlackCircle />
+                        <Language>{repo.language}</Language>
+                      </LanguageWrapper>
+                    </Repo>
+                  );
+                }
               })
             ) : (
-              <Repo
-                $isSelected={selectedRepos.includes("")}
-                onClick={() => handleRepoSelect("")}
-              >
+              <Repo $isSelected={false}>
                 <Reponame>repository가 없습니다.</Reponame>
               </Repo>
             )}
