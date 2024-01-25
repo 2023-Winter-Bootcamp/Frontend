@@ -276,7 +276,11 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
+const ResumeBox = styled.div<{
+  $pre_image_url: string;
+  $isSelected: boolean;
+  $isResumeSelected: boolean;
+}>`
   position: relative;
   width: 249px;
   height: 345px;
@@ -293,11 +297,20 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
   margin-left: 5px;
   border-radius: 4px;
   margin-bottom: 20px;
+  margin-top: 20px;
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
-  //transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
 
+  &:hover {
+    border: 2px solid #000000;
+    background-color: rgba(0, 0, 0, 0.5);
+    //transform: translateY(-5px);
+    border-radius: 6px;
+  }
+  
   &:hover::before {
     content: "";
     position: absolute;
@@ -309,10 +322,10 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
     border-radius: 4px;
   }
 
-  position: relative;
-  overflow: hidden;
-
   &:hover {
+    filter: none;
+    opacity: 1;
+
     ${BlackBox} {
       height: 100%;
       opacity: 0.6;
@@ -322,13 +335,25 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean }>`
       transform: translateY(0);
     }
   }
+
+  ${(props) =>
+    !props.$isSelected &&
+    props.$isResumeSelected &&
+    css`
+      filter: blur(1px);
+      opacity: 0.6;
+    `};
+  /* opacity: ${(props) => (props.$isSelected ? "1" : "0.6")}; */
+  transition:
+    filter 0.3s,
+    opacity 0.3s;
 `;
 
 const TextWrapper2 = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  height: 90px;
+  height: 60px;
   margin-top: 20px;
 `;
 
@@ -356,6 +381,7 @@ const RepoContainer = styled.div`
   flex-wrap: wrap;
   gap: 20px 2%;
   user-select: none;
+  margin-top: 20px;
   @media screen and (max-width: 769px) {
     margin-left: 15%;
   }
@@ -737,7 +763,13 @@ function Choose() {
 
   // 이력서 선택 클릭 이벤트 함수
   const handleResumeSelect = (resumeId: number) => {
-    setSelectedResume(resumeId);
+    // 만약 클릭한 이력서가 이미 선택된 상태라면, 선택 해제
+    if (selectedResume === resumeId) {
+      setSelectedResume(null);
+    } else {
+      // 그렇지 않다면, 이력서 선택
+      setSelectedResume(resumeId);
+    }
   };
 
   // Repository 선택 클릭 이벤트 함수
@@ -1029,6 +1061,7 @@ function Choose() {
                 <ResumeBox
                   key={idx}
                   $pre_image_url={item.pre_image_url}
+                  $isResumeSelected={selectedResume !== null}
                   $isSelected={selectedResume === item.id}
                   onClick={() => handleResumeSelect(item.id)}
                 >

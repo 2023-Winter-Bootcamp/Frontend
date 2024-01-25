@@ -62,7 +62,7 @@ function App() {
   return (
     <FooterContainer onContextMenu={handleSelectStart}>
       <TextBox>
-        <MainText>teamA.</MainText>
+        <MainText>Giterview</MainText>
         <SubText $margin_bottom={40}>문의 - 제안 teama@gmail.com</SubText>
         <SubText $margin_bottom={5}>2023-Winter-Techeer-SW-Bootcamp</SubText>
         <SubText $margin_bottom={0}>

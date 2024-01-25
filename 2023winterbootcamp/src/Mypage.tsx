@@ -507,6 +507,7 @@ function Mypage() {
   useEffect(() => {
     getResumes();
     getInterviewList();
+    window.scroll(0, 0);
   }, []);
 
   const scrollConRef = useRef<HTMLDivElement>(null);
@@ -526,6 +527,33 @@ function Mypage() {
     return false;
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [resumeResponse, interviewResponse] = await Promise.all([
+          api.get("resumes/", { withCredentials: true }),
+          api.get("interviews/", { withCredentials: true }),
+        ]);
+
+        const sortedResumeData = resumeResponse.data.sort(
+          (a: Resume, b: Resume) => b.created_at.localeCompare(a.created_at)
+        );
+
+        const sortedInterviewData = interviewResponse.data.sort(
+          (a: Interview, b: Interview) =>
+            b.created_at.localeCompare(a.created_at)
+        );
+
+        setResumeList(sortedResumeData);
+        setInterviewList(sortedInterviewData);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <Container onContextMenu={handleSelectStart}>
@@ -542,36 +570,33 @@ function Mypage() {
                   <input type="file" {...getInputProps()} />
                   <Text7>
                     이 곳을 클릭해
+                <br />
+                이력서를 등록해주세요!
+              </Text7>
+            </ResumePreview1>
+            {isModalOpen && (
+              <Modal
+                ref={modalRef}
+                onClose={handleModalClose}
+                onRegister={handleModalRegister}
+              />
+            )}
+            {resumeList.map((item, idx) => {
+              return (
+                <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
+                  <BlackBox />
+                  <Text6>{item.title}</Text6>
+                  <Text3>
                     <br />
-                    이력서를 등록해주세요!
-                  </Text7>
-                </ResumePreview1>
-                {isModalOpen && (
-                  <Modal
-                    ref={modalRef}
-                    onClose={handleModalClose}
-                    onRegister={handleModalRegister}
-                  />
-                )}
-                {resumeList.map((item, idx) => {
-                  return (
-                    <ResumePreview
-                      key={idx}
-                      $pre_image_url={item.pre_image_url}
-                    >
-                      <BlackBox />
-                      <Text6>{item.title}</Text6>
-                      <Text3>
-                        <br />
-                        {item.created_at.slice(0, 10)}에 등록한
-                        <br />
-                        이력서 입니다.
-                        <br />
-                        <DeleteButton onClick={() => handleClick(item.id)}>
-                          <BoldText>삭제하기</BoldText>
-                        </DeleteButton>
-                      </Text3>
-                    </ResumePreview>
+                    {item.created_at.slice(0, 10)}에 등록한
+                     <br />
+                     이력서 입니다.
+                     <br />
+                     <DeleteButton onClick={() => handleClick(item.id)}>
+                      <BoldText>삭제하기</BoldText>
+                    </DeleteButton>
+                  </Text3>
+                  </ResumePreview>
                   );
                 })}
               </>

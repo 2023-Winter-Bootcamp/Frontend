@@ -15,7 +15,6 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 10px;
   background-color: white;
   width: 100%;
   height: 80px;
@@ -29,12 +28,11 @@ const Logo = styled(motion(Link))`
   text-decoration: none;
   color: black;
   font-size: 28px;
-  margin-bottom: 20px;
-  margin-top: 50px;
   background: url(${logo}) no-repeat;
   background-size: contain;
   width: 150px;
-  height: 80px;
+  height: 38px;
+  align-items: center;
   @media screen and (max-width: 768px) {
     margin-left: 15%;
   }
@@ -47,23 +45,21 @@ const Logo = styled(motion(Link))`
 `;
 
 const Navigationbar = styled.div`
+  align-items: center;
   @media screen and (max-width: 768px) {
     display: flex;
     gap: 20px;
     margin-right: 10%;
-    margin-top: -10px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
     margin-right: 14%;
-    margin-top: -10px;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
     margin-right: 20%;
-    margin-top: -10px;
   }
 `;
 
