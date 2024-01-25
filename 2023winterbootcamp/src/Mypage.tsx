@@ -51,7 +51,7 @@ const Text1 = styled.div`
 `;
 
 const ResumeContainer = styled.div`
-  width: 60%;
+  width: 70%;
   display: flex;
   margin-bottom: 20px;
   overflow-x: auto;
@@ -382,6 +382,9 @@ const BoldText = styled.b`
   cursor: pointer;
 `;
 
+const Text5 = styled(Text4)`
+  color: black;
+`
 type Interview = {
   id: number;
   title: string;
@@ -402,6 +405,8 @@ function Mypage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const githubLoginInfo = useRecoilValue(githubLoginInfoState);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResumeLoading, setIsResumeLoading] = useState(true);
+  const [isInterviewLoading, setIsInterviewLoading] = useState(true);
 
   const handleInterviewClick = async (id: number) => {
     try {
@@ -465,6 +470,7 @@ function Mypage() {
     } catch (e) {
       console.error(e);
     }
+    setIsInterviewLoading(false);
   };
 
   const getResumes = async () => {
@@ -478,6 +484,7 @@ function Mypage() {
     } catch (e) {
       console.error(e);
     }
+    setIsResumeLoading(false);
   };
 
   function handleClick(id: number) {
@@ -525,39 +532,50 @@ function Mypage() {
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview1 $pre_image_url='' {...getRootProps()}>
-              <input type='file' {...getInputProps()} />
-              <Text7>
-                이 곳을 클릭해
-                <br />
-                이력서를 등록해주세요!
-              </Text7>
-            </ResumePreview1>
-            {isModalOpen && (
-              <Modal
-                ref={modalRef}
-                onClose={handleModalClose}
-                onRegister={handleModalRegister}
-              />
+            {isResumeLoading ? (
+              <TextContainer>
+                <Text5>이력서를 불러오는 중입니다.</Text5>
+              </TextContainer>
+            ) : (
+              <>
+                <ResumePreview1 $pre_image_url="" {...getRootProps()}>
+                  <input type="file" {...getInputProps()} />
+                  <Text7>
+                    이 곳을 클릭해
+                    <br />
+                    이력서를 등록해주세요!
+                  </Text7>
+                </ResumePreview1>
+                {isModalOpen && (
+                  <Modal
+                    ref={modalRef}
+                    onClose={handleModalClose}
+                    onRegister={handleModalRegister}
+                  />
+                )}
+                {resumeList.map((item, idx) => {
+                  return (
+                    <ResumePreview
+                      key={idx}
+                      $pre_image_url={item.pre_image_url}
+                    >
+                      <BlackBox />
+                      <Text6>{item.title}</Text6>
+                      <Text3>
+                        <br />
+                        {item.created_at.slice(0, 10)}에 등록한
+                        <br />
+                        이력서 입니다.
+                        <br />
+                        <DeleteButton onClick={() => handleClick(item.id)}>
+                          <BoldText>삭제하기</BoldText>
+                        </DeleteButton>
+                      </Text3>
+                    </ResumePreview>
+                  );
+                })}
+              </>
             )}
-            {resumeList.map((item, idx) => {
-              return (
-                <ResumePreview key={idx} $pre_image_url={item.pre_image_url}>
-                  <BlackBox />
-                  <Text6>{item.title}</Text6>
-                  <Text3>
-                    <br />
-                    {item.created_at.slice(0, 10)}에 등록한
-                    <br />
-                    이력서 입니다.
-                    <br />
-                    <DeleteButton onClick={() => handleClick(item.id)}>
-                      <BoldText>삭제하기</BoldText>
-                    </DeleteButton>
-                  </Text3>
-                </ResumePreview>
-              );
-            })}
           </ScrollContainer>
         </ResumeContainer>
       </Container>
@@ -565,24 +583,30 @@ function Mypage() {
       <InterviewContainer onContextMenu={handleSelectStart}>
         <InterviewContainer2 ref={interviewConRef}>
           <ScrollContainer len={interviewList.length || 2} ref={scrollConRef}>
-            <InterviewBox boxWidth={interviewList.length * 400 || 400}>
-              {interviewList.length !== 0 ? (
-                interviewList.map((item, idx) => {
-                  return (
-                    <InterviewWrapper
-                      key={idx}
-                      onClick={() => handleInterviewClick(item.id)}
-                    >
-                      <InterviewTitle>{item.title}</InterviewTitle>
-                    </InterviewWrapper>
-                  );
-                })
-              ) : (
-                <TextContainer>
-                  <Text4>진행된 면접이 없습니다.</Text4>
-                </TextContainer>
-              )}
-            </InterviewBox>
+            {isInterviewLoading ? (
+              <TextContainer>
+                <Text4>면접 결과를 불러오는 중입니다.</Text4>
+              </TextContainer>
+            ) : (
+              <InterviewBox boxWidth={interviewList.length * 400 || 400}>
+                {interviewList.length !== 0 ? (
+                  interviewList.map((item, idx) => {
+                    return (
+                      <InterviewWrapper
+                        key={idx}
+                        onClick={() => handleInterviewClick(item.id)}
+                      >
+                        <InterviewTitle>{item.title}</InterviewTitle>
+                      </InterviewWrapper>
+                    );
+                  })
+                ) : (
+                  <TextContainer>
+                    <Text4>진행된 면접이 없습니다.</Text4>
+                  </TextContainer>
+                )}
+              </InterviewBox>
+            )}
           </ScrollContainer>
         </InterviewContainer2>
       </InterviewContainer>
