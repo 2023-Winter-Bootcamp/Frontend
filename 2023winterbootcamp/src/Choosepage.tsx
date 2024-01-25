@@ -603,6 +603,7 @@ function Choose() {
     useRecoilState<ResumeType[]>(resumeListState);
   const navigate = useNavigate();
   const setInterviewTitle = useSetRecoilState(interviewTitleState);
+  const [isCameraPossible, setIsCameraPossible] = useState(false);
 
   // question_type 관련 state
   const [projectCount, setProjectCount] = useState(0);
@@ -666,7 +667,7 @@ function Choose() {
       selectedRepos.length > 0 &&
       title !== "";
 
-    if (interviewType.showCamera === true && !checkCamera())
+    if (interviewType.showCamera === true && !isCameraPossible)
       isAllSelected = false;
     setStartClicked(isAllSelected);
   }, [
@@ -761,17 +762,17 @@ function Choose() {
   };
 
   //화상면접을 위한 카메라가 존재하는 지 여부 확인
-  const checkCamera = (): boolean => {
-    let isPossible: boolean = false;
+  const checkCamera = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true })
-      .then((_) => {
-        isPossible = true;
+      .then((stream) => {
+        console.log(stream);
+        if(stream !== null) setIsCameraPossible(true);
+        else setIsCameraPossible(false);
       })
       .catch((e) => {
         console.error(e);
       });
-    return isPossible;
   };
 
   //사용자가 선택사항들을 모두 체크했는지 확인하고 아니면 alert를 한 후 선택 안 한 선택지로 스크롤 이동
@@ -794,7 +795,7 @@ function Choose() {
     } else if (selectedRepos.length === 0) {
       window.scrollTo(0, 1100);
       window.alert("Repository를 선택해주세요.");
-    } else if (!checkCamera()) {
+    } else if (!isCameraPossible) {
       window.scrollTo(0, 420);
       window.alert(
         "화상면접을 위한 카메라가 없습니다.\n음성면접을 사용해주세요."
@@ -885,6 +886,10 @@ function Choose() {
   useEffect(() => {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
+
+  useEffect(()=>{
+    checkCamera();
+  },[])
 
   return (
     <>
