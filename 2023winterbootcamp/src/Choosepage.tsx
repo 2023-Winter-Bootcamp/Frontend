@@ -551,6 +551,31 @@ const DropText = styled.div`
   }
 `;
 
+const LanguageWrapper = styled.div`
+  width: 80%;
+  height: 30px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 20px;
+`;
+const Language = styled.div`
+  width: 100%;
+  height: 20px;
+  font-weight: 600;
+  color: #333333;
+  font-size: 14px;
+  margin-left: 5px;
+`;
+
+const BlackCircle = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #333333;
+`;
+
 interface Resume {
   id: number;
   pre_image_url: string;
@@ -861,10 +886,6 @@ function Choose() {
     resetCurrentQuestion();
   }, [resetCurrentQuestion]);
 
-  function handleClick(id: number): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
@@ -1031,6 +1052,14 @@ function Choose() {
                     onClick={() => handleRepoSelect(repo.repo_name)}
                   >
                     <Reponame>{repo.repo_name}</Reponame>
+                    <LanguageWrapper>
+                      {repo.language !== null ? (
+                        <>
+                          <BlackCircle />
+                          <Language>{repo.language}</Language>
+                        </>
+                      ) : null}
+                    </LanguageWrapper>
                   </Repo>
                 );
               })
