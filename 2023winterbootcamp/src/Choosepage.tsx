@@ -276,7 +276,11 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean; $isResumeSelected : boolean }>`
+const ResumeBox = styled.div<{
+  $pre_image_url: string;
+  $isSelected: boolean;
+  $isResumeSelected: boolean;
+}>`
   position: relative;
   width: 249px;
   height: 345px;
@@ -333,7 +337,8 @@ const ResumeBox = styled.div<{ $pre_image_url: string; $isSelected: boolean; $is
   }
 
   ${(props) =>
-    !props.$isSelected && props.$isResumeSelected &&
+    !props.$isSelected &&
+    props.$isResumeSelected &&
     css`
       filter: blur(1px);
       opacity: 0.6;
