@@ -1048,23 +1048,21 @@ function Choose() {
           <RepoContainer>
             {repoList.length !== 0 ? (
               repoList.map((repo, idx) => {
-                return (
-                  <Repo
-                    key={idx}
-                    $isSelected={selectedRepos.includes(repo.repo_name)}
-                    onClick={() => handleRepoSelect(repo.repo_name)}
-                  >
-                    <Reponame>{repo.repo_name}</Reponame>
-                    <LanguageWrapper>
-                      {repo.language !== null ? (
-                        <>
-                          <BlackCircle />
-                          <Language>{repo.language}</Language>
-                        </>
-                      ) : null}
-                    </LanguageWrapper>
-                  </Repo>
-                );
+                if (repo.language) {
+                  return (
+                    <Repo
+                      key={idx}
+                      $isSelected={selectedRepos.includes(repo.repo_name)}
+                      onClick={() => handleRepoSelect(repo.repo_name)}
+                    >
+                      <Reponame>{repo.repo_name}</Reponame>
+                      <LanguageWrapper>
+                        <BlackCircle />
+                        <Language>{repo.language}</Language>
+                      </LanguageWrapper>
+                    </Repo>
+                  );
+                }
               })
             ) : (
               <Repo
