@@ -18,7 +18,6 @@ import { DropzoneInputProps, useDropzone } from "react-dropzone";
 import axios from "axios";
 import api from "./baseURL/baseURL";
 import Modal from "./components/Modal";
-//import LoadingModal from "./components/LoadingModal";
 import {
   RepoType,
   githubLoginInfoState,
@@ -763,7 +762,7 @@ function Main() {
       <>
         <ScrollContent>
           <Container onContextMenu={handleSelectStart}>
-          <FixedBackGround $imgUrl={picture0} />
+            <FixedBackGround $imgUrl={picture0} />
             <ScrollWrapper>
               <ScrollContent id="scrollContent">
                 <motion.div
@@ -916,14 +915,6 @@ function Main() {
               <Text10>
                 Giterview와 함께 개발자 커리어 준비를 시작해보세요
               </Text10>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={control3}
-              transition={{ duration: 10 }}
-            >
-              <Text9 onClick={handleAIInterviewClick}>면접보러 가기</Text9>
             </motion.div>
           </Container2>
         </ScrollContent>

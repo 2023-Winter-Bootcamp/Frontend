@@ -500,6 +500,7 @@ function Mypage() {
   useEffect(() => {
     getResumes();
     getInterviewList();
+    window.scroll(0, 0);
   }, []);
 
   const scrollConRef = useRef<HTMLDivElement>(null);
@@ -519,14 +520,41 @@ function Mypage() {
     return false;
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [resumeResponse, interviewResponse] = await Promise.all([
+          api.get("resumes/", { withCredentials: true }),
+          api.get("interviews/", { withCredentials: true }),
+        ]);
+
+        const sortedResumeData = resumeResponse.data.sort(
+          (a: Resume, b: Resume) => b.created_at.localeCompare(a.created_at)
+        );
+
+        const sortedInterviewData = interviewResponse.data.sort(
+          (a: Interview, b: Interview) =>
+            b.created_at.localeCompare(a.created_at)
+        );
+
+        setResumeList(sortedResumeData);
+        setInterviewList(sortedInterviewData);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <Container onContextMenu={handleSelectStart}>
         <Text1>내 이력서</Text1>
         <ResumeContainer>
           <ScrollContainer len={resumeList.length}>
-            <ResumePreview1 $pre_image_url='' {...getRootProps()}>
-              <input type='file' {...getInputProps()} />
+            <ResumePreview1 $pre_image_url="" {...getRootProps()}>
+              <input type="file" {...getInputProps()} />
               <Text7>
                 이 곳을 클릭해
                 <br />
