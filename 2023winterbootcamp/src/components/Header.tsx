@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import api from "../baseURL/baseURL";
-import { useResetRecoilState } from "recoil";
+import { useRecoilValue, useResetRecoilState } from "recoil";
 import {
   githubLoginInfoState,
   githubProfileState,
+  interviewHeaderPoint,
+  mypageHeaderPoint,
   repoListState,
 } from "../Recoil";
 import logo from "../images/logo.png";
@@ -126,6 +128,15 @@ const MotionNavItem = styled(motion(NavItem))`
   }
 `;
 
+const ActiveBox = styled.div<{ $isActive: boolean }>`
+  ${props => props.$isActive && css`
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-position: under;
+    text-decoration-thickness: 2px;
+  `}
+`;
+
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedNavItem, setSelectedNavItem] = useState("");
@@ -156,6 +167,8 @@ function Header() {
   const infoReset = useResetRecoilState(githubLoginInfoState);
   const profileReset = useResetRecoilState(githubProfileState);
   const repoListReset = useResetRecoilState(repoListState);
+  const _interviewHeaderPoint = useRecoilValue(interviewHeaderPoint);
+  const _mypageHeaderPoint = useRecoilValue(mypageHeaderPoint);
 
   const resetRecoilWhenLogout = () => {
     infoReset(); // 호출해야 하는 함수로 수정
@@ -193,22 +206,26 @@ function Header() {
       <Navigationbar>
         {isLoggedIn ? (
           <>
-            <MotionNavItem
-              to="/choose"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.7 }}
-            >
-              면접보기
-            </MotionNavItem>
-            <MotionNavItem
-              to="/mypage"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.7 }}
-            >
-              마이페이지
-            </MotionNavItem>
+            <ActiveBox $isActive={_interviewHeaderPoint}>
+              <MotionNavItem
+                to="/choose"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.7 }}
+              >
+                면접보기
+              </MotionNavItem>
+            </ActiveBox>
+            <ActiveBox $isActive={_mypageHeaderPoint}>
+              <MotionNavItem
+                to="/mypage"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.7 }}
+              >
+                마이페이지
+              </MotionNavItem>
+            </ActiveBox>
             <MotionNavItem
               to="/"
               onClick={handleLogout}
