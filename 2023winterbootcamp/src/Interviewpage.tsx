@@ -19,6 +19,10 @@ import recordIcon from "./images/recordbutton.png";
 import LoadingModal from "./components/LoadingModal";
 import { useRecoilState } from "recoil";
 
+const Container = styled.div`
+  width: 100%;
+  height: 90vh;
+`
 const Up = styled.div`
   user-select: none;
   width: 100%;
@@ -190,7 +194,7 @@ const InstructionText = styled.div`
   width: auto;
   height: 18px;
   font-size: 14px;
-  color: #909090;
+  color: #3b3b3b;
   visibility: hidden;
   margin-top: 8px;
 `;
@@ -614,7 +618,7 @@ function Interviewpage() {
   }, []);
 
   return (
-    <>
+    <Container>
       <Up onContextMenu={handleSelectStart}>
         {selectedInterviewType.showCamera === false ? (
           <VideoContainer>
@@ -661,7 +665,7 @@ function Interviewpage() {
       </Down>
       {isLoading ? <LoadingModal /> : null}
       <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
-    </>
+    </Container>
   );
 }
 export default Interviewpage;
