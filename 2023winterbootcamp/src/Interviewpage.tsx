@@ -41,7 +41,7 @@ const Down = styled.div`
   user-select: none;
   width: 70%;
   min-width: 500px;
-  max-width: 1000px;
+  max-width: 900px;
   //height: 200px;
   background-color: #ffffff;
   display: flex;
@@ -124,7 +124,7 @@ const spin3D = keyframes`
 
 const VideoContainer = styled.div`
   width: 70%;
-  max-width: 660px ;
+  max-width: 660px;
   min-height: 400px;
   background-color: #ffffff;
   display: flex;
@@ -209,7 +209,7 @@ function Interviewpage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [, setInterviewData] = useRecoilState(interviewResultState);
-
+  const [throttler, setThrottler] = useState(false);
   //질문 관련
   const [, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
@@ -231,6 +231,8 @@ function Interviewpage() {
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [cameraWidth, setCameraWidth] = useState(800);
+  const [cameraHeight, setCameraHeight] = useState(600);
 
   // 첫 질문 조회
   const fetchCommonQuestion = async () => {
@@ -409,13 +411,6 @@ function Interviewpage() {
 
       console.log(response?.data);
 
-      // 새로운 question ID를 questionId 상태에 업데이트
-      // if (response?.data && response.data.questions) {
-      //   setQuestionId(response.data.questions[0].id);
-      //   setQuestionType(response.data.questions[0].question_type);
-      //   setQuestionContent(response.data.questions[0].content);
-      //   updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
-      // }
       if (response?.data && response.data.question) {
         setQuestionId(response.data.question[0].id);
         setQuestionType(response.data.question[0].question_type);
@@ -514,11 +509,6 @@ function Interviewpage() {
     file.append("record_url", blob);
     file.append("is_last", "true");
     try {
-      // await api.post(
-      //   `interviews/questions/${questionId}/answers/create/`,
-      //   file
-      // );
-
       await api
         .post(
           `interviews/${parseInt(id)}/questions/${questionId}/process/`,
@@ -598,6 +588,31 @@ function Interviewpage() {
       setQuestionTypeTitle("인성 면접 질문");
   }, [questionType]);
 
+  useEffect(() => {
+    const cameraResize = () => {
+      let wh = { width: 600, height: 400 };
+      if (window.innerWidth < 900) {
+        wh = { width: 450, height: 340 };
+      }
+      setCameraWidth(wh.width);
+      setCameraHeight(wh.height);
+    };
+
+    const handleResize = () => {
+      if(throttler) return;
+      setThrottler(true);
+      setTimeout(()=>{
+        cameraResize();
+        setThrottler(false)
+      },500)
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <Up onContextMenu={handleSelectStart}>
@@ -621,7 +636,12 @@ function Interviewpage() {
             </SpinnerBox>
           </VideoContainer>
         ) : (
-          <Camera elapsedTime={elapsedTime} children={undefined} />
+          <Camera
+            elapsedTime={elapsedTime}
+            children={undefined}
+            cameraWidth={cameraWidth}
+            cameraHeight={cameraHeight}
+          />
         )}
       </Up>
       <Down onContextMenu={handleSelectStart}>
