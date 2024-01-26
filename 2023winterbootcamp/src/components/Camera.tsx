@@ -3,11 +3,12 @@ import React, { ReactNode, useEffect, useRef } from "react";
 interface CameraProps {
   children: ReactNode;
   elapsedTime?: number;
+  cameraWidth: number;
+  cameraHeight: number;
 }
 
-const Camera = ({ children, elapsedTime }: CameraProps) => {
+const Camera = ({ children, elapsedTime, cameraWidth, cameraHeight }: CameraProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-
   useEffect(() => {
     let currentVideoRef = videoRef.current; // 현재 videoRef 값을 변수에 복사
 
@@ -37,8 +38,8 @@ const Camera = ({ children, elapsedTime }: CameraProps) => {
     <div style={{ display: "flex", justifyContent: "center" }}>
       <video
         ref={videoRef}
-        width="800px"
-        height="500px"
+        width={`${cameraWidth}px`}
+        height={`${cameraHeight}px`}
         autoPlay
         style={{ marginLeft: "5px", transform: "scaleX(-1)" }}
       />

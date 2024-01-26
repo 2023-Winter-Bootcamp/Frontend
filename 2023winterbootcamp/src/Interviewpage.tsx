@@ -18,7 +18,12 @@ import nextIcon from "./images/nextbutton.png";
 import recordIcon from "./images/recordbutton.png";
 import LoadingModal from "./components/LoadingModal";
 import { useRecoilState } from "recoil";
+import { Line } from "rc-progress";
 
+const Container = styled.div`
+  width: 100%;
+  height: 90vh;
+`;
 const Up = styled.div`
   user-select: none;
   width: 100%;
@@ -39,7 +44,9 @@ const Up = styled.div`
 
 const Down = styled.div`
   user-select: none;
-  width: 740px;
+  width: 70%;
+  min-width: 500px;
+  max-width: 900px;
   //height: 200px;
   background-color: #ffffff;
   display: flex;
@@ -121,6 +128,8 @@ const spin3D = keyframes`
 `;
 
 const VideoContainer = styled.div`
+  width: 70%;
+  max-width: 660px;
   min-height: 400px;
   background-color: #ffffff;
   display: flex;
@@ -150,7 +159,7 @@ interface LeoBorderProps {
 }
 
 const SpinnerBox = styled.div`
-  width: 660px;
+  width: 100%;
   height: 380px;
   display: flex;
   justify-content: center;
@@ -186,10 +195,23 @@ const InstructionText = styled.div`
   width: auto;
   height: 18px;
   font-size: 14px;
-  color: #909090;
+  color: #3b3b3b;
   visibility: hidden;
   margin-top: 8px;
 `;
+
+const ProgressBar = styled.div`
+  width: 90%;
+  height: 20px;
+  margin: 0 auto 20px;
+`;
+
+const QuestionNum = styled.div`
+  width: auto;
+  height: 20px;
+  font-size: 16px;
+  margin: 0 auto;
+`
 
 export interface Question {
   id: number;
@@ -205,7 +227,7 @@ function Interviewpage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [, setInterviewData] = useRecoilState(interviewResultState);
-
+  const [throttler, setThrottler] = useState(false);
   //질문 관련
   const [, setQuestion] = useState<Question[]>([]);
   const [questionId, setQuestionId] = useState<number>(0);
@@ -216,6 +238,8 @@ function Interviewpage() {
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
   const [responseCount, setResponseCount] = useState(0);
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
+  const [linePercent, setLinePercent] = useState(0);
 
   //음성녹음 관련
   const recorderControls = useAudioRecorder();
@@ -227,6 +251,8 @@ function Interviewpage() {
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [cameraWidth, setCameraWidth] = useState(600);
+  const [cameraHeight, setCameraHeight] = useState(400);
 
   // 첫 질문 조회
   const fetchCommonQuestion = async () => {
@@ -405,13 +431,6 @@ function Interviewpage() {
 
       console.log(response?.data);
 
-      // 새로운 question ID를 questionId 상태에 업데이트
-      // if (response?.data && response.data.questions) {
-      //   setQuestionId(response.data.questions[0].id);
-      //   setQuestionType(response.data.questions[0].question_type);
-      //   setQuestionContent(response.data.questions[0].content);
-      //   updateQuestionState(); // question_type count 차감 및 다음 question_type 변경
-      // }
       if (response?.data && response.data.question) {
         setQuestionId(response.data.question[0].id);
         setQuestionType(response.data.question[0].question_type);
@@ -440,6 +459,8 @@ function Interviewpage() {
       getQ2AudioData();
       btnRef.current?.style.setProperty("visibility", "hidden");
       instRef.current?.style.setProperty("visibility", "hidden");
+      //TTS가 실행된 후 현재 질문의 번호가 1 증가
+      setCurrentQuestionNumber((prev) => prev + 1);
     }
     window.scrollTo(0, 0);
   }, [questionContent]);
@@ -510,11 +531,6 @@ function Interviewpage() {
     file.append("record_url", blob);
     file.append("is_last", "true");
     try {
-      // await api.post(
-      //   `interviews/questions/${questionId}/answers/create/`,
-      //   file
-      // );
-
       await api
         .post(
           `interviews/${parseInt(id)}/questions/${questionId}/process/`,
@@ -594,8 +610,38 @@ function Interviewpage() {
       setQuestionTypeTitle("인성 면접 질문");
   }, [questionType]);
 
+  useEffect(() => {
+    const cameraResize = () => {
+      let wh = { width: 600, height: 400 };
+      if (window.innerWidth < 900) {
+        wh = { width: 450, height: 340 };
+      }
+      setCameraWidth(wh.width);
+      setCameraHeight(wh.height);
+    };
+
+    const handleResize = () => {
+      if (throttler) return;
+      setThrottler(true);
+      setTimeout(() => {
+        cameraResize();
+        setThrottler(false);
+      }, 500);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  //현재 질문 번호가 바뀔 때마다 면접 진행 상태(progress bar 상태) 업데이트
+  useEffect(()=> {
+    setLinePercent(currentQuestionNumber/(questionTotalCount+1) * 100)
+  },[currentQuestionNumber])
+
   return (
-    <>
+    <Container>
       <Up onContextMenu={handleSelectStart}>
         {selectedInterviewType.showCamera === false ? (
           <VideoContainer>
@@ -617,10 +663,20 @@ function Interviewpage() {
             </SpinnerBox>
           </VideoContainer>
         ) : (
-          <Camera elapsedTime={elapsedTime} children={undefined} />
+          <Camera
+            elapsedTime={elapsedTime}
+            children={undefined}
+            cameraWidth={cameraWidth}
+            cameraHeight={cameraHeight}
+          />
         )}
       </Up>
+
       <Down onContextMenu={handleSelectStart}>
+        <QuestionNum>{`${questionTotalCount+1}개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
+        <ProgressBar>
+          <Line percent={linePercent} strokeWidth={1} strokeColor={"#6e6e6e"} style={{transition : 'all 1s ease-out'}}></Line>
+        </ProgressBar>
         <Q>
           <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
@@ -637,7 +693,7 @@ function Interviewpage() {
       </Down>
       {isLoading ? <LoadingModal /> : null}
       <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
-    </>
+    </Container>
   );
 }
 export default Interviewpage;
