@@ -430,17 +430,17 @@ const Repo = styled.div<{ $isSelected: boolean }>`
   }
 
   @media screen and (max-width: 769px) {
-    width: 47%;
+    width: 48%;
     height: 60px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 47%;
+    width: 48%;
     height: 70px;
   }
 
   @media screen and (min-width: 1024px) {
-    width: 48%;
+    width: 48.2%;
     height: 100px;
   }
 `;
@@ -452,6 +452,9 @@ const Reponame = styled.div`
   overflow-wrap: normal;
   overflow: hidden;
   text-overflow: ellipsis;
+  &:hover {
+    background-color: #e9e9e9;
+  }
   @media screen and (max-width: 769px) {
     margin-top: 8px;
     margin-left: 12px;
@@ -641,10 +644,9 @@ const LanguageWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-
   margin-left: 20px;
   @media screen and (max-width: 769px) {
-    margin-top: 0px;
+    margin-top: 5px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -664,7 +666,9 @@ const Language = styled.div`
   font-size: 14px;
   margin-left: 5px;
   @media screen and (max-width: 769px) {
-    color: white;
+    //color: white;
+    margin-top: 7px;
+    font-size: 10px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -683,7 +687,7 @@ const BlackCircle = styled.div`
   border-radius: 50%;
   background-color: #333333;
   @media screen and (max-width: 769px) {
-    background-color: white;
+    //background-color: white;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {

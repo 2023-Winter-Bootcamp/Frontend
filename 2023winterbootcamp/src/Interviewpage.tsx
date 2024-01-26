@@ -22,45 +22,57 @@ import { useRecoilState } from "recoil";
 const Up = styled.div`
   user-select: none;
   width: 100%;
-  height: 400px;
+  //height: 400px;
   box-sizing: border-box;
   margin-top: 50px;
   display: flex;
   justify-content: center;
   position: relative;
+  margin-bottom: 20px;
+  @media screen and (max-width: 768px) {
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+  @media screen and (min-width: 1024px) {
+  }
 `;
 
 const Down = styled.div`
   user-select: none;
   width: 740px;
-  height: 300px;
+  //height: 200px;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   margin-left: 50.3%;
   transform: translateX(-50%);
-  margin-top: 120px;
-  margin-bottom: 50px;
+  //margin-top: 120px;
+  margin-bottom: 40px;
 `;
 
 const Q = styled.div`
   width: 90%;
-  height: 220px;
+  //height: 220px;
   margin: 0 auto;
+  background-color: #f0f0f0;
+  border-radius: 10px;
 `;
 
 const QuestionText = styled.div`
   font-weight: bold;
   font-size: 20px;
-  margin-bottom: 10px;
+  margin-top: 20px;
+  margin-left: 24px;
 `;
 
 const ContentText = styled.div`
-  width: 100%;
-  height: 100px;
+  width: 94%;
   color: #5a5a5a;
-  font-size: 18px;
+  font-size: 16px;
+  margin-top: 4px;
+  margin-left: 24px;
+  margin-bottom: 20px;
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -70,7 +82,7 @@ const ContentText = styled.div`
   }
 
   @media screen and (min-width: 1024px) {
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 
@@ -81,7 +93,7 @@ const Next = styled.button`
   background: none;
   cursor: pointer;
   visibility: hidden;
-  margin-right: 45px;
+  margin-right: 24px;
 `;
 
 const StyledNextImage = styled.img`
@@ -91,11 +103,12 @@ const StyledNextImage = styled.img`
 
 const RecordBox = styled.div`
   width: 100%;
-  height: 300px;
+  //height: 50px;
   display: flex;
   justify-content: end;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 8px;
+  margin-bottom: 10px;
 `;
 
 const spin3D = keyframes`
@@ -137,8 +150,8 @@ interface LeoBorderProps {
 }
 
 const SpinnerBox = styled.div`
-  width: 670px;
-  height: 400px;
+  width: 660px;
+  height: 380px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -172,10 +185,10 @@ const LeoCore = styled.div<LeoCoreProps>`
 const InstructionText = styled.div`
   width: auto;
   height: 18px;
-  font-size: 16px;
+  font-size: 14px;
   color: #909090;
   visibility: hidden;
-  margin-top: 5px;
+  margin-top: 8px;
 `;
 
 export interface Question {
@@ -611,16 +624,16 @@ function Interviewpage() {
         <Q>
           <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
+          <RecordBox>
+            <InstructionText ref={instRef}>{instText}</InstructionText>
+            <Next onClick={handleNextButtonClick} ref={btnRef}>
+              <StyledNextImage
+                src={recorderControls.isRecording ? recordIcon : nextIcon}
+                alt="next"
+              />
+            </Next>
+          </RecordBox>
         </Q>
-        <RecordBox>
-          <InstructionText ref={instRef}>{instText}</InstructionText>
-          <Next onClick={handleNextButtonClick} ref={btnRef}>
-            <StyledNextImage
-              src={recorderControls.isRecording ? recordIcon : nextIcon}
-              alt="next"
-            />
-          </Next>
-        </RecordBox>
       </Down>
       {isLoading ? <LoadingModal /> : null}
       <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
