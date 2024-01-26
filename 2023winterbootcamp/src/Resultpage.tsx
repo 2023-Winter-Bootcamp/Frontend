@@ -230,6 +230,7 @@ const QuestionBox = styled.div`
   padding: 25px 34px 15px;
   margin: 0 25% 20px 15%;
   background: #fff;
+  border-radius: 10px;
   @media screen and (max-width: 1023px) {
     margin: 0 12% 20px 12%;
     width: 75%;
@@ -243,27 +244,31 @@ const QuestionBox = styled.div`
 const QLargeText = styled.div`
   width: 100%;
   height: 34px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   overflow: auto;
 `;
 
 const QSmallText = styled.div`
   width: 100%;
-  height: 100px;
+  height: 105px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
   overflow: auto;
+  max-height: 185px;
+  @media screen and (max-width: 1023px) {
+    height: 174px;
+  }
 `;
 
 const ALargeText = styled.div`
   width: 100%;
   height: 34px;
   font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 10px;
+  font-weight: 700;
+  margin-bottom: 4px;
   overflow: auto;
 `;
 
@@ -288,6 +293,7 @@ const AnswerBox = styled.div`
   background: #fff;
   position: relative;
   height: 240px;
+  border-radius: 10px;
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
@@ -306,7 +312,7 @@ const VoiceBox = styled.div`
   display: flex;
   justify-content: center;
   right: -50px;
-  bottom: 6px;
+  bottom: 10px;
 `;
 
 interface ButtonProps {

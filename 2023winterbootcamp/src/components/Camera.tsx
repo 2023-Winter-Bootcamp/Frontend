@@ -1,5 +1,4 @@
 import React, { ReactNode, useEffect, useRef } from "react";
-//import Timer from "./Timer";
 
 interface CameraProps {
   children: ReactNode;
@@ -38,7 +37,7 @@ const Camera = ({ children, elapsedTime }: CameraProps) => {
     <div style={{ display: "flex", justifyContent: "center" }}>
       <video
         ref={videoRef}
-        width="2000px"
+        width="800px"
         height="500px"
         autoPlay
         style={{ marginLeft: "5px", transform: "scaleX(-1)" }}

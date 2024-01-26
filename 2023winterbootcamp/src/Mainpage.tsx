@@ -248,7 +248,7 @@ const Textb = styled.div`
   }
   @media screen and (min-width: 1024px) {
     width: 350px;
-    height: 100px;
+    height: 90px;
   }
 `;
 
@@ -471,7 +471,7 @@ const ImageBoxImage = styled.div<ImageProps>`
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
 
   @media screen and (max-width: 1023px) {
     width: 100%;
@@ -487,7 +487,7 @@ const ImageBoxImage2 = styled.div<ImageProps>`
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
   margin-left: 5px;
 
   @media screen and (max-width: 1023px) {
@@ -506,7 +506,7 @@ const ImageBoxImage3 = styled.img<ImageProps>`
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
 
   @media screen and (max-width: 1023px) {
     width: 100%;
@@ -706,7 +706,11 @@ function Main() {
             let tmpRepoList: RepoType[] = [];
             (response2.data as GitHubRepo[]).forEach((element) => {
               if (element.fork === false) {
-                tmpRepoList.push({ id: element.id, repo_name: element.name, language: element.language });
+                tmpRepoList.push({
+                  id: element.id,
+                  repo_name: element.name,
+                  language: element.language,
+                });
               }
             });
             console.log(tmpRepoList);
@@ -884,7 +888,7 @@ function Main() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={control2}
-                transition={{ duration: 1, delay: 0.5 }}
+                transition={{ duration: 1, delay: 0.8 }}
               >
                 <ImageBox2>
                   <ImageBoxText2>
@@ -896,7 +900,7 @@ function Main() {
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={control2}
-                transition={{ duration: 1, delay: 0.8 }}
+                transition={{ duration: 1, delay: 1.4 }}
               >
                 <ImageBox3>
                   <ImageBoxText3>면접 결과 확인, 보관</ImageBoxText3>
