@@ -18,11 +18,12 @@ import nextIcon from "./images/nextbutton.png";
 import recordIcon from "./images/recordbutton.png";
 import LoadingModal from "./components/LoadingModal";
 import { useRecoilState } from "recoil";
+import { Line } from "rc-progress";
 
 const Container = styled.div`
   width: 100%;
   height: 90vh;
-`
+`;
 const Up = styled.div`
   user-select: none;
   width: 100%;
@@ -199,6 +200,19 @@ const InstructionText = styled.div`
   margin-top: 8px;
 `;
 
+const ProgressBar = styled.div`
+  width: 90%;
+  height: 20px;
+  margin: 0 auto 20px;
+`;
+
+const QuestionNum = styled.div`
+  width: auto;
+  height: 20px;
+  font-size: 16px;
+  margin: 0 auto;
+`
+
 export interface Question {
   id: number;
   type_name: string;
@@ -224,6 +238,8 @@ function Interviewpage() {
     useRecoilState(currentQuestionState);
   const questionTotalCount = useRecoilValue(totalQuestionCountState);
   const [responseCount, setResponseCount] = useState(0);
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
+  const [linePercent, setLinePercent] = useState(0);
 
   //음성녹음 관련
   const recorderControls = useAudioRecorder();
@@ -443,6 +459,8 @@ function Interviewpage() {
       getQ2AudioData();
       btnRef.current?.style.setProperty("visibility", "hidden");
       instRef.current?.style.setProperty("visibility", "hidden");
+      //TTS가 실행된 후 현재 질문의 번호가 1 증가
+      setCurrentQuestionNumber((prev) => prev + 1);
     }
     window.scrollTo(0, 0);
   }, [questionContent]);
@@ -603,19 +621,24 @@ function Interviewpage() {
     };
 
     const handleResize = () => {
-      if(throttler) return;
+      if (throttler) return;
       setThrottler(true);
-      setTimeout(()=>{
+      setTimeout(() => {
         cameraResize();
-        setThrottler(false)
-      },500)
-    }
+        setThrottler(false);
+      }, 500);
+    };
 
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  //현재 질문 번호가 바뀔 때마다 면접 진행 상태(progress bar 상태) 업데이트
+  useEffect(()=> {
+    setLinePercent(currentQuestionNumber/(questionTotalCount+1) * 100)
+  },[currentQuestionNumber])
 
   return (
     <Container>
@@ -648,7 +671,12 @@ function Interviewpage() {
           />
         )}
       </Up>
+
       <Down onContextMenu={handleSelectStart}>
+        <QuestionNum>{`${questionTotalCount+1}개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
+        <ProgressBar>
+          <Line percent={linePercent} strokeWidth={1} strokeColor={"#6e6e6e"} style={{transition : 'all 1s ease-out'}}></Line>
+        </ProgressBar>
         <Q>
           <QuestionText>{questionTypeTitle}</QuestionText>
           <ContentText>{questionContent}</ContentText>
