@@ -39,7 +39,9 @@ const Up = styled.div`
 
 const Down = styled.div`
   user-select: none;
-  width: 740px;
+  width: 70%;
+  min-width: 500px;
+  max-width: 1000px;
   //height: 200px;
   background-color: #ffffff;
   display: flex;
@@ -121,6 +123,8 @@ const spin3D = keyframes`
 `;
 
 const VideoContainer = styled.div`
+  width: 70%;
+  max-width: 660px ;
   min-height: 400px;
   background-color: #ffffff;
   display: flex;
@@ -150,7 +154,7 @@ interface LeoBorderProps {
 }
 
 const SpinnerBox = styled.div`
-  width: 660px;
+  width: 100%;
   height: 380px;
   display: flex;
   justify-content: center;
