@@ -128,6 +128,7 @@ const MotionNavItem = styled(motion(NavItem))`
 
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedNavItem, setSelectedNavItem] = useState("");
 
   useEffect(() => {
     const checkLoginStatus = async () => {

@@ -447,7 +447,7 @@ const Repo = styled.div<{ $isSelected: boolean }>`
 
 const Reponame = styled.div`
   width: 80%;
-  color: #7a7a7a;
+  color: #474747;
   font-weight: 500;
   overflow-wrap: normal;
   overflow: hidden;
@@ -661,8 +661,8 @@ const LanguageWrapper = styled.div`
 const Language = styled.div`
   width: 100%;
   height: 20px;
-  font-weight: 600;
-  color: #333333;
+  font-weight: 500;
+  color: #6a6a6a;
   font-size: 14px;
   margin-left: 5px;
   @media screen and (max-width: 769px) {
@@ -682,8 +682,8 @@ const Language = styled.div`
 `;
 
 const BlackCircle = styled.div`
-  width: 10px;
-  height: 9px;
+  width: 12px;
+  height: 11px;
   border-radius: 50%;
   background-color: #333333;
   @media screen and (max-width: 769px) {

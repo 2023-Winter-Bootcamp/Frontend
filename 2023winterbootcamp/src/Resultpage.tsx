@@ -213,14 +213,13 @@ const QnABox = styled.div`
 
 const QnAWrapper = styled.div`
   width: 100%;
-  height: 450px;
+  //height: 450px;
   box-sizing: border-box;
-  margin-top: 20px;
   @media screen and (max-width: 1023px) {
-    height: 510px;
+    //height: 510px;
   }
   @media screen and (min-width: 1024px) {
-    height: 450px;
+    //height: 450px;
   }
 `;
 
@@ -242,47 +241,59 @@ const QuestionBox = styled.div`
 `;
 
 const QLargeText = styled.div`
-  width: 100%;
-  height: 34px;
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   overflow: auto;
+  margin-top: 40px;
+  @media screen and (max-width: 768px) {
+    margin-left: 12%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 12.5%;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-left: 15.5%;
+  }
 `;
 
 const QSmallText = styled.div`
   width: 100%;
-  height: 105px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
   overflow: auto;
   max-height: 185px;
-  @media screen and (max-width: 1023px) {
-    height: 174px;
-  }
+  margin-bottom: 10px;
 `;
 
 const ALargeText = styled.div`
-  width: 100%;
-  height: 34px;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 4px;
   overflow: auto;
+  align-self: flex-end;
+  text-align: right;
+  @media screen and (max-width: 768px) {
+    margin-right: 13%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-right: 12.5%;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-right: 15.5%;
+  }
 `;
 
 const ASmallText = styled.div`
   width: 100%;
-  height: 105px;
   font-size: 18px;
   font-weight: 400;
   color: #3a3a3a;
-  overflow-y: auto;
-  max-height: 185px;
-  @media screen and (max-width: 1023px) {
-    height: 174px;
-  }
+  overflow-y: visible;
+  white-space: pre-line;
+  margin-bottom: 20px;
+  text-align: left;
 `;
 
 const AnswerBox = styled.div`
@@ -292,12 +303,13 @@ const AnswerBox = styled.div`
   padding: 30px 34px;
   background: #fff;
   position: relative;
-  height: 240px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  //bottom: 40px;
   @media screen and (max-width: 1023px) {
     width: 75%;
     margin: 0 12% 0 12%;
-    height: 310px;
   }
   @media screen and (min-width: 1024px) {
     margin: 0 15% 0 25%;
@@ -311,7 +323,7 @@ const VoiceBox = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  right: -50px;
+  right: -40px;
   bottom: 10px;
 `;
 
@@ -323,7 +335,7 @@ const Button = styled.button<ButtonProps>`
   width: 15px;
   height: 18px;
   background-size: contain;
-  margin-right: 8px;
+  margin-right: 4px;
   margin-top: 13px;
   border: none;
   outline: none;
@@ -339,7 +351,6 @@ const Button = styled.button<ButtonProps>`
 
 const Text4 = styled.div`
   width: 130px;
-  height: 34px;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
@@ -426,22 +437,6 @@ const Resultpage = () => {
       console.log("인터뷰 결과 불러오는 중 에러 발생");
     }
   };
-
-  // const handleInstagramShare = () => {
-  //   // 면접 결과 페이지 URL
-  //   const resultPageUrl = encodeURIComponent(
-  //     "https://www.instagram.com/ahnnakyung/"
-  //   );
-
-  //   // 면접 결과를 설명하는 캡션
-  //   const caption = encodeURIComponent("면접 결과를 공유합니다. #Giterview");
-
-  //   // 인스타그램 스토리에 공유하는 URL
-  //   const instagramStoryUrl = `https://www.instagram.com/stories/?url=${resultPageUrl}&caption=${caption}`;
-
-  //   // 새 창에서 인스타그램 스토리 공유 페이지를 엽니다.
-  //   window.open(instagramStoryUrl, "_blank");
-  // };
 
   //페이지 첫 렌더링 시 깃허브 사용자 프로필사진 url과 닉네임을 get
   useEffect(() => {
@@ -582,22 +577,22 @@ const Resultpage = () => {
             <QnABox>
               {interviewResult.questions.map((question, index) => (
                 <QnAWrapper key={index}>
+                  <QLargeText>
+                    {question.type_name === "common"
+                      ? "자기소개"
+                      : question.type_name === "project"
+                        ? "프로젝트 질문"
+                        : question.type_name === "cs"
+                          ? "CS 질문"
+                          : question.type_name === "personality"
+                            ? "인성 면접 질문"
+                            : question.type_name}
+                  </QLargeText>
                   <QuestionBox>
-                    <QLargeText>
-                      {question.type_name === "common"
-                        ? "자기소개"
-                        : question.type_name === "project"
-                          ? "프로젝트 질문"
-                          : question.type_name === "cs"
-                            ? "CS 질문"
-                            : question.type_name === "personality"
-                              ? "인성 면접 질문"
-                              : question.type_name}
-                    </QLargeText>
                     <QSmallText>{question.content}</QSmallText>
                   </QuestionBox>
+                  <ALargeText>나의 답변</ALargeText>
                   <AnswerBox>
-                    <ALargeText>나의 답변</ALargeText>
                     <ASmallText>
                       {interviewResult.answers[index].content}
                     </ASmallText>

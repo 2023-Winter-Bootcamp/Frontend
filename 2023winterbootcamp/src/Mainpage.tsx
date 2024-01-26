@@ -72,8 +72,10 @@ const ScrollContent = styled.div`
 
 const Text1 = styled.div`
   font-weight: bold;
-  font-size: 40px;
-  margin-top: 120px;
+  font-size: 70px;
+  margin-top: 90px;
+  color: #1a1a1a;
+  margin-bottom: 10px;
   @media screen and (max-width: 768px) {
     font-size: 32px;
   }
@@ -81,35 +83,9 @@ const Text1 = styled.div`
     font-size: 35px;
   }
   @media screen and (min-width: 1024px) {
-    font-size: 40px;
+    font-size: 50px;
   }
 `;
-
-const Text2 = styled.div`
-  color: #3a3a3a;
-  font-size: 16px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  @media screen and (max-width: 1023px) {
-    font-size: 15px;
-  }
-  @media screen and (min-width: 1024px) {
-    font-size: 16px;
-  }
-`;
-
-// const Text3 = styled.div`
-//   color: #4a4a4a;
-//   font-weight: 700;
-//   font-size: 16px;
-//   margin-top: 4px;
-//   @media screen and (max-width: 1023px) {
-//     font-size: 14px;
-//   }
-//   @media screen and (min-width: 1024px) {
-//     font-size: 16px;
-//   }
-// `;
 
 const Image = styled.img`
   width: 200px;
@@ -179,16 +155,16 @@ const ButtonImage = styled.img`
 `;
 
 const TextField = styled.div`
-  text-align: left;
+  text-align: right;
   margin-top: 300px;
   @media screen and (max-width: 768px) {
-    margin-left: 80px;
+    margin-right: 80px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 150px;
+    margin-right: 150px;
   }
   @media screen and (min-width: 1024px) {
-    margin-left: 267px;
+    margin-right: 210px;
   }
 `;
 
@@ -774,26 +750,16 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
                 >
-                  <Text1>깃허브를 이용한 AI면접</Text1>
+                  <Text1>
+                    깃허브를 이용한
+                    <br />
+                    AI면접
+                  </Text1>
                 </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 2, delay: 1 }}
-                >
-                  <Text2>깃허브 기반 AI면접. Giterview입니다.</Text2>
-                </motion.div>
-                {/* <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 2, delay: 1.5 }}
-                >
-                  <Text3>다양한 컨텐츠를 경험해 보세요.</Text3>
-                </motion.div> */}
                 <motion.div
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 2.5, delay: 2.5 }}
+                  transition={{ duration: 2 }}
                 >
                   <Image
                     src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
@@ -805,7 +771,7 @@ function Main() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 1 }}
+                    transition={{ duration: 1.5 }}
                   >
                     <Button onClick={handleMyGitHubClick}>
                       <ButtonContent>
@@ -820,7 +786,7 @@ function Main() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 1 }}
+                    transition={{ duration: 1.5 }}
                   >
                     <Button onClick={handleAIInterviewClick}>AI 면접</Button>
                   </motion.div>
@@ -838,7 +804,6 @@ function Main() {
                     />
                   )}
                 </ButtonWrapper>
-
                 <TextField>
                   <Text4>깃허브 연동</Text4>
                   <Text4>개발자 필수 면접 플랫폼</Text4>
@@ -942,7 +907,7 @@ const ResumeButton = (props: ResumeModalProps) => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
+          transition={{ duration: 1.5 }}
         >
           <Button onClick={props.handleModalClose}>
             <ButtonContent>
