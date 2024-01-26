@@ -211,7 +211,7 @@ const QuestionNum = styled.div`
   height: 20px;
   font-size: 16px;
   margin: 0 auto;
-`
+`;
 
 export interface Question {
   id: number;
@@ -636,9 +636,9 @@ function Interviewpage() {
   }, []);
 
   //현재 질문 번호가 바뀔 때마다 면접 진행 상태(progress bar 상태) 업데이트
-  useEffect(()=> {
-    setLinePercent(currentQuestionNumber/(questionTotalCount+1) * 100)
-  },[currentQuestionNumber])
+  useEffect(() => {
+    setLinePercent((currentQuestionNumber / (questionTotalCount + 1)) * 100);
+  }, [currentQuestionNumber]);
 
   return (
     <Container>
@@ -673,9 +673,16 @@ function Interviewpage() {
       </Up>
 
       <Down onContextMenu={handleSelectStart}>
-        <QuestionNum>{`${questionTotalCount+1}개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
+        <QuestionNum>{`${
+          questionTotalCount + 1
+        }개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
         <ProgressBar>
-          <Line percent={linePercent} strokeWidth={1} strokeColor={"#6e6e6e"} style={{transition : 'all 1s ease-out'}}></Line>
+          <Line
+            percent={linePercent}
+            strokeWidth={1}
+            strokeColor={"#6e6e6e"}
+            style={{ transition: "all 1s ease-out" }}
+          ></Line>
         </ProgressBar>
         <Q>
           <QuestionText>{questionTypeTitle}</QuestionText>

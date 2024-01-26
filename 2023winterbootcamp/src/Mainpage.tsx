@@ -72,8 +72,8 @@ const ScrollContent = styled.div`
 
 const Text1 = styled.div`
   font-weight: bold;
-  font-size: 70px;
-  margin-top: 90px;
+  font-size: 40px;
+  margin-top: 110px;
   color: #1a1a1a;
   margin-bottom: 10px;
   @media screen and (max-width: 768px) {
@@ -83,7 +83,7 @@ const Text1 = styled.div`
     font-size: 35px;
   }
   @media screen and (min-width: 1024px) {
-    font-size: 50px;
+    font-size: 40px;
   }
 `;
 
@@ -750,11 +750,7 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
                 >
-                  <Text1>
-                    깃허브를 이용한
-                    <br />
-                    AI면접
-                  </Text1>
+                  <Text1>깃허브를 이용한 AI면접</Text1>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 5 }}
