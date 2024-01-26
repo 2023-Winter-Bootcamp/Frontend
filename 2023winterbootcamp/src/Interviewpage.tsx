@@ -231,8 +231,8 @@ function Interviewpage() {
   //스탑워치 관련
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [cameraWidth, setCameraWidth] = useState(800);
-  const [cameraHeight, setCameraHeight] = useState(600);
+  const [cameraWidth, setCameraWidth] = useState(600);
+  const [cameraHeight, setCameraHeight] = useState(400);
 
   // 첫 질문 조회
   const fetchCommonQuestion = async () => {
