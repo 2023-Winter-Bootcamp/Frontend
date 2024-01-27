@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { interviewHeaderPoint } from './Recoil';
+import { useSetRecoilState } from 'recoil';
 
 const StartModal = styled.div`
   width: 100%;
@@ -75,6 +77,7 @@ const fadeIn = {
 function Startpage() {
   const navigate = useNavigate();
   const { id } = useParams(); // 면접 ID
+  const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
 
   const handleStartButtonClick = () => {
     navigate('/interview/' + id);
@@ -82,6 +85,14 @@ function Startpage() {
 
   useEffect(()=>{
     window.scrollTo(0,0);
+  },[])
+
+  //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
+  useEffect(()=>{
+    setInterviewHeaderPoint(true);
+    return () => {
+      setInterviewHeaderPoint(false);
+    }
   },[])
   
   return (

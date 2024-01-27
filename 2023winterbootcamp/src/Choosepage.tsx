@@ -7,6 +7,7 @@ import {
   ResumeType,
   currentQuestionState,
   githubLoginInfoState,
+  interviewHeaderPoint,
   interviewTitleState,
   repoListState,
   resumeListState,
@@ -736,6 +737,8 @@ function Choose() {
     totalQuestionCountState
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
+  const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
+  
   // question_type 관련 함수
   const handleProjectCountChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -1018,6 +1021,14 @@ function Choose() {
   useEffect(() => {
     checkCamera();
   }, []);
+
+  //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
+  useEffect(()=>{
+    setInterviewHeaderPoint(true);
+    return () => {
+      setInterviewHeaderPoint(false);
+    }
+  },[])
 
   return (
     <>
