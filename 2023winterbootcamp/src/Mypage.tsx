@@ -51,7 +51,7 @@ const Text1 = styled.div`
 `;
 
 const ResumeContainer = styled.div`
-  width: 70%;
+  width: 69.3%;
   display: flex;
   margin-bottom: 20px;
   overflow-x: auto;

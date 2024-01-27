@@ -22,12 +22,10 @@ import { Line } from "rc-progress";
 
 const Container = styled.div`
   width: 100%;
-  height: 90vh;
 `;
 const Up = styled.div`
   user-select: none;
   width: 100%;
-  //height: 400px;
   box-sizing: border-box;
   margin-top: 50px;
   display: flex;
@@ -612,10 +610,13 @@ function Interviewpage() {
 
   useEffect(() => {
     const cameraResize = () => {
-      let wh = { width: 1000, height: 500 };
-      if (window.innerWidth < 1000) {
-        wh = { width: 1000, height: 500 };
+      let wh = { width: 2500, height: 500 };
+
+      // 미디어쿼리를 사용하여 뷰포트 크기에 따라 가로 길이 설정
+      if (window.matchMedia("(max-width: 1000px)").matches) {
+        wh = { width: 800, height: 400 };
       }
+
       setCameraWidth(wh.width);
       setCameraHeight(wh.height);
     };
@@ -629,11 +630,17 @@ function Interviewpage() {
       }, 500);
     };
 
+    // 초기 렌더링 시 실행
+    cameraResize();
+
+    // 창 크기가 변경될 때마다 실행
     window.addEventListener("resize", handleResize);
+
+    // 컴포넌트가 언마운트되거나 업데이트되기 전에 이벤트 리스너 정리
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [throttler]);
 
   //현재 질문 번호가 바뀔 때마다 면접 진행 상태(progress bar 상태) 업데이트
   useEffect(() => {
