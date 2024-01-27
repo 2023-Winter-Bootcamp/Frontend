@@ -37,53 +37,40 @@ const TextWrapper = styled.div`
   user-select: none;
 `;
 
-// const Text = styled.div`
-//   font-size: 24px;
-//   font-weight: 600;
-//   margin-top: 40px;
-//   margin-left: 29%;
-
-//   @media screen and (max-width: 769px) {
-//     margin-left: 15%;
-//   }
-
-//   @media screen and (min-width: 769px) and (max-width: 1023px) {
-//     margin-left: 28%;
-//   }
-
-//   @media screen and (min-width: 1024px) {
-//   }
-// `;
-
 const Input = styled.input`
-  width: 41%;
-  height: 40px;
+  width: 41.5%;
+  height: 35px;
   user-select: none;
+  border-bottom: 1px solid #1a1a1a;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  outline: none;
+  margin-top: 4px;
+
+  &:focus {
+    border: 1px solid #dadada;
+    height: 35px;
+  }
+
   @media screen and (max-width: 768px) {
-    border: none;
-    border-bottom: 1px solid #1a1a1a;
-    outline: none;
     width: 68%;
+
     &::placeholder {
       color: #c1c1c1;
     }
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    border: none;
-    border-bottom: 1px solid #1a1a1a;
-    outline: none;
     width: 51%;
     margin-left: 9%;
+
     &::placeholder {
       color: #c1c1c1;
     }
   }
 
   @media screen and (min-width: 1024px) {
-    border: none;
-    border-bottom: 1px solid #1a1a1a;
-    outline: none;
     &::placeholder {
       color: #c1c1c1;
     }
@@ -417,7 +404,28 @@ const RepoContainer = styled.div`
   }
 `;
 
-const Repo = styled.div<{ $isSelected: boolean }>`
+const Circle = styled.div`
+  width: 12px;
+  height: 11px;
+  border-radius: 50%;
+
+  @media screen and (max-width: 769px) {
+    //background-color: white;
+  }
+
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+  }
+
+  @media screen and (min-width: 1024px) {
+  }
+`;
+
+interface RepoProps extends React.HTMLAttributes<HTMLDivElement> {
+  $isSelected: boolean;
+  language?: string;
+}
+
+const Repo = styled.div<RepoProps>`
   width: 299px;
   height: 100px;
   background-color: white;
@@ -430,13 +438,17 @@ const Repo = styled.div<{ $isSelected: boolean }>`
     background-color: #e9e9e9;
   }
 
+  ${Circle} {
+    background-color: ${(props) => getLanguageColor(props.language)};
+  }
+
   @media screen and (max-width: 769px) {
-    width: 48%;
+    width: 47.4%;
     height: 60px;
   }
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    width: 48%;
+    width: 47.5%;
     height: 70px;
   }
 
@@ -445,6 +457,379 @@ const Repo = styled.div<{ $isSelected: boolean }>`
     height: 100px;
   }
 `;
+
+const getLanguageColor = (language: any) => {
+  switch (language) {
+    case "JavaScript":
+      return "#f1e05a";
+    case "Python":
+      return "#3572A5";
+    case "HTML":
+      return "#e34c26";
+    case "Java":
+      return "#b07219";
+    case "C#":
+      return "#178600";
+    case "TypeScript":
+      return "#2b7489";
+    case "Ruby":
+      return "#701516";
+    case "Go":
+      return "#00ADD8";
+    case "Swift":
+      return "#ffac45";
+    case "Kotlin":
+      return "#F18E33";
+    case "C++":
+      return "#f34b7d";
+    case "Rust":
+      return "#dea584";
+    case "PHP":
+      return "#4F5D95";
+    case "Objective-C":
+      return "#438eff";
+    case "Scala":
+      return "#c22d40";
+    case "mercury":
+      return "#abcdef";
+    case "typescript":
+      return "#31859c";
+    case "purebasic":
+      return "#5a6986";
+    case "objective-c++":
+      return "#4886FC";
+    case "self":
+      return "#0579aa";
+    case "edn":
+      return "#db5855";
+    case "newlisp":
+      return "#eedd66";
+    case "rebol":
+      return "#358a5b";
+    case "frege":
+      return "#00cafe";
+    case "dart":
+      return "#98BAD6";
+    case "aspectj":
+      return "#1957b0";
+    case "shell":
+      return "#89e051";
+    case "web ontology language":
+      return "#3994bc";
+    case "xbase":
+      return "#3a4040";
+    case "eiffel":
+      return "#946d57";
+    case "nix":
+      return "#7070ff";
+    case "supercollider":
+      return "#46390b";
+    case "mtml":
+      return "#0095d9";
+    case "racket":
+      return "#ae17ff";
+    case "elixir":
+      return "#6e4a7e";
+    case "sas":
+      return "#1E90FF";
+    case "agda":
+      return "#467C91";
+    case "d":
+      return "#fcd46d";
+    case "opal":
+      return "#f7ede0";
+    case "standard ml":
+      return "#dc566d";
+    case "objective-c":
+      return "#438eff";
+    case "coldfusion cfc":
+      return "#ed2cd6";
+    case "oz":
+      return "#fcaf3e";
+    case "mirah":
+      return "#c7a938";
+    case "objective-j":
+      return "#ff0c5a";
+    case "gosu":
+      return "#82937f";
+    case "ruby":
+      return "#701516";
+    case "component pascal":
+      return "#b0ce4e";
+    case "arc":
+      return "#ca2afe";
+    case "systemverilog":
+      return "#343761";
+    case "apl":
+      return "#8a0707";
+    case "go":
+      return "#375eab";
+    case "visual basic":
+      return "#945db7";
+    case "php":
+      return "#4F5D95";
+    case "cirru":
+      return "#aaaaff";
+    case "sqf":
+      return "#FFCB1F";
+    case "glyph":
+      return "#e4cc98";
+    case "java":
+      return "#b07219";
+    case "scala":
+      return "#7dd3b0";
+    case "coldfusion":
+      return "#ed2cd6";
+    case "perl":
+      return "#0298c3";
+    case "elm":
+      return "#60B5CC";
+    case "lua":
+      return "#fa1fa1";
+    case "verilog":
+      return "#848bf3";
+    case "factor":
+      return "#636746";
+    case "haxe":
+      return "#f7941e";
+    case "pure data":
+      return "#91de79";
+    case "forth":
+      return "#341708";
+    case "red":
+      return "#ee0000";
+    case "hy":
+      return "#7891b1";
+    case "volt":
+      return "#0098db";
+    case "lsl":
+      return "#3d9970";
+    case "coffeescript":
+      return "#244776";
+    case "html":
+      return "#e44b23";
+    case "unrealscript":
+      return "#a54c4d";
+    case "swift":
+      return "#ffac45";
+    case "c":
+      return "#555";
+    case "autohotkey":
+      return "#6594b9";
+    case "isabelle":
+      return "#fdcd00";
+    case "boo":
+      return "#d4bec1";
+    case "autoit":
+      return "#36699B";
+    case "clojure":
+      return "#db5855";
+    case "rust":
+      return "#dea584";
+    case "prolog":
+      return "#74283c";
+    case "sourcepawn":
+      return "#f69e1d";
+    case "antlr":
+      return "#9DC3FF";
+    case "harbour":
+      return "#0e60e3";
+    case "tcl":
+      return "#e4cc98";
+    case "blitzmax":
+      return "#cd6400";
+    case "piglatin":
+      return "#fcd7de";
+    case "lasso":
+      return "#2584c3";
+    case "ecl":
+      return "#8a1267";
+    case "vhdl":
+      return "#543978";
+    case "arduino":
+      return "#bd79d1";
+    case "propeller spin":
+      return "#2b446d";
+    case "idl":
+      return "#e3592c";
+    case "ats":
+      return "#1ac620";
+    case "ada":
+      return "#02f88c";
+    case "nu":
+      return "#c9df40";
+    case "lfe":
+      return "#004200";
+    case "raml":
+      return "#77d9fb";
+    case "oxygene":
+      return "#5a63a3";
+    case "asp":
+      return "#6a40fd";
+    case "assembly":
+      return "#6E4C13";
+    case "gnuplot":
+      return "#f0a9f0";
+    case "turing":
+      return "#45f715";
+    case "vala":
+      return "#ee7d06";
+    case "processing":
+      return "#2779ab";
+    case "flux":
+      return "#33CCFF";
+    case "netlogo":
+      return "#ff2b2b";
+    case "c sharp":
+      return "#178600";
+    case "css":
+      return "#563d7c";
+    case "livescript":
+      return "#499886";
+    case "qml":
+      return "#44a51c";
+    case "pike":
+      return "#066ab2";
+    case "lolcode":
+      return "#cc9900";
+    case "ooc":
+      return "#b0b77e";
+    case "mask":
+      return "#f97732";
+    case "emberscript":
+      return "#f64e3e";
+    case "tex":
+      return "#3D6117";
+    case "nemerle":
+      return "#0d3c6e";
+    case "krl":
+      return "#f5c800";
+    case "unified parallel c":
+      return "#755223";
+    case "golo":
+      return "#f6a51f";
+    case "perl6":
+      return "#0298c3";
+    case "fancy":
+      return "#7b9db4";
+    case "ocaml":
+      return "#3be133";
+    case "wisp":
+      return "#7582D1";
+    case "pascal":
+      return "#b0ce4e";
+    case "f#":
+      return "#b845fc";
+    case "puppet":
+      return "#cc5555";
+    case "actionscript":
+      return "#e3491a";
+    case "ragel in ruby host":
+      return "#ff9c2e";
+    case "fantom":
+      return "#dbded5";
+    case "zephir":
+      return "#118f9e";
+    case "smalltalk":
+      return "#596706";
+    case "dm":
+      return "#075ff1";
+    case "ioke":
+      return "#078193";
+    case "pogoscript":
+      return "#d80074";
+    case "emacs lisp":
+      return "#c065db";
+    case "javascript":
+      return "#f1e05a";
+    case "viml":
+      return "#199c4b";
+    case "matlab":
+      return "#bb92ac";
+    case "slash":
+      return "#007eff";
+    case "r":
+      return "#198ce7";
+    case "erlang":
+      return "#0faf8d";
+    case "pan":
+      return "#cc0000";
+    case "lookml":
+      return "#652B81";
+    case "eagle":
+      return "#3994bc";
+    case "scheme":
+      return "#1e4aec";
+    case "pawn":
+      return "#dbb284";
+    case "python":
+      return "#3581ba";
+    case "max":
+      return "#ce279c";
+    case "common lisp":
+      return "#3fb68b";
+    case "latte":
+      return "#A8FF97";
+    case "xquery":
+      return "#2700e2";
+    case "omgrofl":
+      return "#cabbff";
+    case "nimrod":
+      return "#37775b";
+    case "nit":
+      return "#0d8921";
+    case "chapel":
+      return "#8dc63f";
+    case "groovy":
+      return "#e69f56";
+    case "dylan":
+      return "#3ebc27";
+    case "e":
+      return "#ccce35";
+    case "parrot":
+      return "#f3ca0a";
+    case "grammatical framework":
+      return "#ff0000";
+    case "game maker language":
+      return "#8ad353";
+    case "vcl":
+      return "#0298c3";
+    case "papyrus":
+      return "#6600cc";
+    case "fortran":
+      return "#4d41b1";
+    case "clean":
+      return "#3a81ad";
+    case "alloy":
+      return "#cc5c24";
+    case "ags script":
+      return "#B9D9FF";
+    case "slim":
+      return "#ff8877";
+    case "purescript":
+      return "#bcdc53";
+    case "julia":
+      return "#a270ba";
+    case "haskell":
+      return "#29b544";
+    case "io":
+      return "#a9188d";
+    case "rouge":
+      return "#cc0088";
+    case "cpp":
+      return "#f34b7d";
+    case "shen":
+      return "#120F14";
+    case "dogescript":
+      return "#cca760";
+    case "nesc":
+      return "#ffce3b";
+    case "other":
+      return "#ededed";
+    default:
+      return "#6a6a6a";
+  }
+};
 
 const Reponame = styled.div`
   width: 80%;
@@ -679,22 +1064,6 @@ const Language = styled.div`
 
   @media screen and (min-width: 1024px) {
     font-size: 14px;
-  }
-`;
-
-const BlackCircle = styled.div`
-  width: 12px;
-  height: 11px;
-  border-radius: 50%;
-  background-color: #333333;
-  @media screen and (max-width: 769px) {
-    //background-color: white;
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-  }
-
-  @media screen and (min-width: 1024px) {
   }
 `;
 
@@ -1199,10 +1568,11 @@ function Choose() {
                       key={idx}
                       $isSelected={selectedRepos.includes(repo.repo_name)}
                       onClick={() => handleRepoSelect(repo.repo_name)}
+                      language={repo.language}
                     >
                       <Reponame>{repo.repo_name}</Reponame>
                       <LanguageWrapper>
-                        <BlackCircle />
+                        <Circle />
                         <Language>{repo.language}</Language>
                       </LanguageWrapper>
                     </Repo>

@@ -7,7 +7,12 @@ interface CameraProps {
   cameraHeight: number;
 }
 
-const Camera = ({ children, elapsedTime, cameraWidth, cameraHeight }: CameraProps) => {
+const Camera = ({
+  children,
+  elapsedTime,
+  cameraWidth,
+  cameraHeight,
+}: CameraProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     let currentVideoRef = videoRef.current; // 현재 videoRef 값을 변수에 복사

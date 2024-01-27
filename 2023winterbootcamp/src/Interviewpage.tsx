@@ -23,12 +23,10 @@ import { Line } from "rc-progress";
 
 const Container = styled.div`
   width: 100%;
-  height: 90vh;
 `;
 const Up = styled.div`
   user-select: none;
   width: 100%;
-  //height: 400px;
   box-sizing: border-box;
   margin-top: 50px;
   display: flex;
@@ -212,7 +210,7 @@ const QuestionNum = styled.div`
   height: 20px;
   font-size: 16px;
   margin: 0 auto;
-`
+`;
 
 export interface Question {
   id: number;
@@ -615,10 +613,13 @@ function Interviewpage() {
 
   useEffect(() => {
     const cameraResize = () => {
-      let wh = { width: 600, height: 400 };
-      if (window.innerWidth < 900) {
-        wh = { width: 450, height: 340 };
+      let wh = { width: 2500, height: 500 };
+
+      // 미디어쿼리를 사용하여 뷰포트 크기에 따라 가로 길이 설정
+      if (window.matchMedia("(max-width: 1000px)").matches) {
+        wh = { width: 800, height: 400 };
       }
+
       setCameraWidth(wh.width);
       setCameraHeight(wh.height);
     };
@@ -632,16 +633,22 @@ function Interviewpage() {
       }, 500);
     };
 
+    // 초기 렌더링 시 실행
+    cameraResize();
+
+    // 창 크기가 변경될 때마다 실행
     window.addEventListener("resize", handleResize);
+
+    // 컴포넌트가 언마운트되거나 업데이트되기 전에 이벤트 리스너 정리
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [throttler]);
 
   //현재 질문 번호가 바뀔 때마다 면접 진행 상태(progress bar 상태) 업데이트
-  useEffect(()=> {
-    setLinePercent(currentQuestionNumber/(questionTotalCount+1) * 100)
-  },[currentQuestionNumber])
+  useEffect(() => {
+    setLinePercent((currentQuestionNumber / (questionTotalCount + 1)) * 100);
+  }, [currentQuestionNumber]);
 
   //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
   useEffect(()=>{
@@ -684,9 +691,16 @@ function Interviewpage() {
       </Up>
 
       <Down onContextMenu={handleSelectStart}>
-        <QuestionNum>{`${questionTotalCount+1}개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
+        <QuestionNum>{`${
+          questionTotalCount + 1
+        }개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
         <ProgressBar>
-          <Line percent={linePercent} strokeWidth={1} strokeColor={"#6e6e6e"} style={{transition : 'all 1s ease-out'}}></Line>
+          <Line
+            percent={linePercent}
+            strokeWidth={1}
+            strokeColor={"#6e6e6e"}
+            style={{ transition: "all 1s ease-out" }}
+          ></Line>
         </ProgressBar>
         <Q>
           <QuestionText>{questionTypeTitle}</QuestionText>
