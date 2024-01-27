@@ -508,7 +508,7 @@ const ImageBoxImage2 = styled.div<ImageProps>`
 `;
 
 const ImageBoxImage3 = styled.img<ImageProps>`
-  aspect-ratio: 1 / 1.34;
+  aspect-ratio: 1 / 1.26;
   background-image: url(${(props) => props.imageurl});
   background-size: contain;
   background-position: center;
