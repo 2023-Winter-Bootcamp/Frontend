@@ -6,13 +6,14 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
 import api from "./baseURL/baseURL";
 import Camera from "./components/Camera";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   interviewTypeState,
   currentQuestionState,
   QuestionType,
   totalQuestionCountState,
   interviewResultState,
+  interviewHeaderPoint,
 } from "./Recoil";
 import nextIcon from "./images/nextbutton.png";
 import recordIcon from "./images/recordbutton.png";
@@ -251,6 +252,8 @@ function Interviewpage() {
   const [isRunning, setIsRunning] = useState(false);
   const [cameraWidth, setCameraWidth] = useState(600);
   const [cameraHeight, setCameraHeight] = useState(400);
+
+  const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
 
   // 첫 질문 조회
   const fetchCommonQuestion = async () => {
@@ -646,6 +649,14 @@ function Interviewpage() {
   useEffect(() => {
     setLinePercent((currentQuestionNumber / (questionTotalCount + 1)) * 100);
   }, [currentQuestionNumber]);
+
+  //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
+  useEffect(()=>{
+    setInterviewHeaderPoint(true);
+    return () => {
+      setInterviewHeaderPoint(false);
+    }
+  },[])
 
   return (
     <Container>

@@ -136,3 +136,13 @@ export const interviewTitleState = atom<string>({
   default: '',
   effects_UNSTABLE: [persistAtom],
 })
+
+export const interviewHeaderPoint = atom<boolean>({
+  key: "interviewHeaderPoint",
+  default: false,
+})
+
+export const mypageHeaderPoint = atom<boolean>({
+  key: "mypageHeaderPoint",
+  default: false,
+})

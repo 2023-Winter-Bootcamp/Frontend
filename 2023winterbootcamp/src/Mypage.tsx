@@ -5,8 +5,8 @@ import api from "./baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
-import { githubLoginInfoState, resumeListState } from "./Recoil";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { githubLoginInfoState, interviewHeaderPoint, mypageHeaderPoint, resumeListState } from "./Recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import LoadingModal from "./components/LoadingModal";
 
 const Container = styled.div`
@@ -407,6 +407,8 @@ function Mypage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isResumeLoading, setIsResumeLoading] = useState(true);
   const [isInterviewLoading, setIsInterviewLoading] = useState(true);
+  const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
+  const setMypageHeaderPoint = useSetRecoilState(mypageHeaderPoint);
 
   const handleInterviewClick = async (id: number) => {
     try {
@@ -553,6 +555,14 @@ function Mypage() {
 
     fetchData();
   }, []);
+
+  //Mypage가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
+  useEffect(()=>{
+    setMypageHeaderPoint(true);
+    return () => {
+      setMypageHeaderPoint(false);
+    }
+  },[])
 
   return (
     <>

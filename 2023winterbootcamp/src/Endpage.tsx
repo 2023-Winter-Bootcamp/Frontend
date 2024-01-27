@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { interviewTitleState } from "./Recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { interviewHeaderPoint, interviewTitleState } from "./Recoil";
 
 const Container = styled.div`
   width: 100%;
@@ -83,6 +83,7 @@ function Endpage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const interviewTitle = useRecoilValue(interviewTitleState);
+  const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
 
   const handleSelectStart = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -92,6 +93,14 @@ function Endpage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
+  useEffect(()=>{
+    setInterviewHeaderPoint(true);
+    return () => {
+      setInterviewHeaderPoint(false);
+    }
+  },[])
 
   return (
     <Container onContextMenu={handleSelectStart}>
