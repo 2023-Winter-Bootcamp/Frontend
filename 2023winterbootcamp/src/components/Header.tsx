@@ -205,7 +205,7 @@ function Header() {
               to="/mypage"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.7 }}
+              transition={{ duration: 1, delay: 0.8 }}
             >
               마이페이지
             </MotionNavItem>
@@ -214,7 +214,7 @@ function Header() {
               onClick={handleLogout}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.7 }}
+              transition={{ duration: 1, delay: 0.9 }}
             >
               로그아웃
             </MotionNavItem>
@@ -225,7 +225,7 @@ function Header() {
             onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.7 }}
+            transition={{ duration: 1, delay: 0.8 }}
           >
             로그인
           </MotionNavItem>

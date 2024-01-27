@@ -5,7 +5,7 @@ import React, {
   startTransition,
   Suspense,
 } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import {
   motion,
@@ -32,6 +32,12 @@ import picture2 from "./images/picture2.png";
 import picture3 from "./images/picture3.png";
 import LoadingModal from "./components/LoadingModal";
 
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
+
 const FixedBackGround = styled.div<{ $imgUrl: string }>`
   width: 100vw;
   height: 100vh;
@@ -52,6 +58,8 @@ const Container = styled.div`
   background-repeat: no-repeat;
   position: relative;
   user-select: none;
+  /* background-size: contain;
+  background-position: center; */
 `;
 
 const ScrollWrapper = styled.div`
@@ -72,42 +80,62 @@ const ScrollContent = styled.div`
 
 const Text1 = styled.div`
   font-weight: bold;
-  font-size: 40px;
-  margin-top: 110px;
+  font-size: 58px;
+  margin-top: 160px;
   color: #1a1a1a;
   margin-bottom: 10px;
+  text-align: left;
   @media screen and (max-width: 768px) {
     font-size: 32px;
+    margin-left: 15%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-weight: 700;
     font-size: 35px;
+    margin-left: 20%;
   }
   @media screen and (min-width: 1024px) {
-    font-size: 40px;
+    font-size: 58px;
+    margin-left: 25%;
   }
 `;
 
-const Image = styled.img`
-  width: 200px;
-  height: 200px;
-  margin-top: 40px;
-  user-select: none;
-  @media screen and (max-width: 1023px) {
-    width: 180px;
-    height: 180px;
+const Text2 = styled.div`
+  font-weight: 400;
+  font-size: 20px;
+  margin-top: 10px;
+  color: #ffffff;
+  margin-bottom: 4px;
+  text-align: left;
+  @media screen and (max-width: 768px) {
+    font-size: 16px;
+    margin-left: 15%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    font-size: 18px;
+    margin-left: 20%;
   }
   @media screen and (min-width: 1024px) {
-    width: 200px;
-    height: 200px;
+    font-size: 20px;
+    margin-left: 25%;
   }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: left;
   margin-top: 84px;
   margin-bottom: 76px;
+  @media screen and (max-width: 768px) {
+    margin-left: 14.7%;
+  }
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
+    margin-left: 19.7%;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-left: 24.7%;
+  }
 `;
 
 const Button = styled.div`
@@ -115,8 +143,6 @@ const Button = styled.div`
   color: #fff;
   font-weight: bold;
   font-size: 14px;
-  width: 150px;
-  height: 28px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,10 +156,15 @@ const Button = styled.div`
     background-color: #333;
     transform: translateY(-5px);
   }
-
+  @media screen and (max-width: 768px) {
+    width: 90px;
+    height: 24px;
+    font-weight: 500;
+  }
   @media screen and (max-width: 1023px) {
     width: 128.4px;
     height: 24px;
+    font-weight: 600;
   }
   @media screen and (min-width: 1024px) {
     width: 150px;
@@ -524,20 +555,6 @@ const MiddleContainer = styled.div`
   background: linear-gradient(#fff, #000);
 `;
 
-const Text9 = styled.button`
-  width: 180px;
-  color: #ffffff;
-  font-size: 24px;
-  font-weight: 500;
-  text-align: center;
-  margin: 0 auto;
-  background-color: black;
-  border: none;
-  text-decoration: underline;
-  cursor: pointer;
-  user-select: none;
-`;
-
 function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -740,6 +757,7 @@ function Main() {
   return (
     <Suspense fallback={<LoadingModal />}>
       <>
+        <GlobalStyle />
         <ScrollContent>
           <Container onContextMenu={handleSelectStart}>
             <FixedBackGround $imgUrl={picture0} />
@@ -750,18 +768,22 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
                 >
-                  <Text1>깃허브를 이용한 AI면접</Text1>
+                  <Text1>
+                    깃허브를 이용한
+                    <br />
+                    AI면접
+                  </Text1>
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, y: 5 }}
+                  initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 2 }}
+                  transition={{ duration: 1 }}
                 >
-                  <Image
-                    src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
-                    alt="GitHub Logo"
-                    draggable={false}
-                  />
+                  <Text2>
+                    내 깃허브 레포지토리와 이력서 기반의 1:1 맞춤형
+                    <br />
+                    면접 서비스를 이용해보세요.
+                  </Text2>
                 </motion.div>
                 <ButtonWrapper>
                   <motion.div

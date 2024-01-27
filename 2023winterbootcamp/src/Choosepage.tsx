@@ -460,33 +460,33 @@ const Repo = styled.div<RepoProps>`
 const getLanguageColor = (language: any) => {
   switch (language) {
     case "JavaScript":
-      return "#f1e05a"; // JavaScript: 노란색
+      return "#f1e05a";
     case "Python":
-      return "#3572A5"; // Python: 파란색
+      return "#3572A5";
     case "HTML":
-      return "#e34c26"; // HTML: 주황색
+      return "#e34c26";
     case "Java":
-      return "#b07219"; // Java: 갈색
+      return "#b07219";
     case "C#":
-      return "#178600"; // C#: 초록색
+      return "#178600";
     case "TypeScript":
-      return "#2b7489"; // TypeScript: 청록색
+      return "#2b7489";
     case "Ruby":
-      return "#701516"; // Ruby: 빨간색
+      return "#701516";
     case "Go":
-      return "#00ADD8"; // Go: 청색
+      return "#00ADD8";
     case "Swift":
-      return "#ffac45"; // Swift: 주황-노란색
+      return "#ffac45";
     case "Kotlin":
-      return "#F18E33"; // Kotlin: 주황색
+      return "#F18E33";
     case "C++":
-      return "#f34b7d"; // C++: 핑크색
+      return "#f34b7d";
     case "Rust":
-      return "#dea584"; // Rust: 진한 주황색
+      return "#dea584";
     case "PHP":
-      return "#4F5D95"; // PHP: 남색
+      return "#4F5D95";
     case "Objective-C":
-      return "#438eff"; // Objective-C: 진한 파란색
+      return "#438eff";
     case "Scala":
       return "#c22d40";
     case "mercury":
@@ -826,7 +826,7 @@ const getLanguageColor = (language: any) => {
     case "other":
       return "#ededed";
     default:
-      return "#6a6a6a"; // 기본값 색상 (회색) 또는 다른 정의되지 않은 언어의 경우
+      return "#6a6a6a";
   }
 };
 

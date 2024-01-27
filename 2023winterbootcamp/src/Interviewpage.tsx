@@ -612,9 +612,9 @@ function Interviewpage() {
 
   useEffect(() => {
     const cameraResize = () => {
-      let wh = { width: 600, height: 400 };
-      if (window.innerWidth < 900) {
-        wh = { width: 450, height: 340 };
+      let wh = { width: 1000, height: 500 };
+      if (window.innerWidth < 1000) {
+        wh = { width: 1000, height: 500 };
       }
       setCameraWidth(wh.width);
       setCameraHeight(wh.height);
