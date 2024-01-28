@@ -243,7 +243,7 @@ const QuestionBox = styled.div`
 const QLargeText = styled.div`
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   overflow: auto;
   margin-top: 40px;
   @media screen and (max-width: 768px) {
@@ -265,12 +265,13 @@ const QSmallText = styled.div`
   overflow: auto;
   max-height: 185px;
   margin-bottom: 10px;
+  line-height: 24px;
 `;
 
 const ALargeText = styled.div`
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   overflow: auto;
   align-self: flex-end;
   text-align: right;
@@ -294,6 +295,7 @@ const ASmallText = styled.div`
   white-space: pre-line;
   margin-bottom: 20px;
   text-align: left;
+  line-height: 26px;
 `;
 
 const AnswerBox = styled.div`

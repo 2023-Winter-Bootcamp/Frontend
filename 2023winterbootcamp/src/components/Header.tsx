@@ -129,12 +129,14 @@ const MotionNavItem = styled(motion(NavItem))`
 `;
 
 const ActiveBox = styled.div<{ $isActive: boolean }>`
-  ${props => props.$isActive && css`
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-position: under;
-    text-decoration-thickness: 2px;
-  `}
+  ${(props) =>
+    props.$isActive &&
+    css`
+      font-weight: 800;
+      text-decoration: underline;
+      text-underline-position: under;
+      text-decoration-thickness: 2px;
+    `}
 `;
 
 function Header() {
@@ -221,20 +223,22 @@ function Header() {
                 to="/mypage"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.7 }}
+                transition={{ duration: 1, delay: 0.8 }}
               >
                 마이페이지
               </MotionNavItem>
             </ActiveBox>
-            <MotionNavItem
-              to="/"
-              onClick={handleLogout}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.9 }}
-            >
-              로그아웃
-            </MotionNavItem>
+            <ActiveBox $isActive={false}>
+              <MotionNavItem
+                to="/"
+                onClick={handleLogout}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.9 }}
+              >
+                로그아웃
+              </MotionNavItem>
+            </ActiveBox>
           </>
         ) : (
           <MotionNavItem
@@ -242,7 +246,7 @@ function Header() {
             onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
+            transition={{ duration: 1, delay: 0.9 }}
           >
             로그인
           </MotionNavItem>

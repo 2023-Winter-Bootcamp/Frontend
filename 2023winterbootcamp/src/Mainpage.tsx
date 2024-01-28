@@ -81,9 +81,9 @@ const ScrollContent = styled.div`
 const Text1 = styled.div`
   font-weight: bold;
   font-size: 58px;
-  margin-top: 160px;
+  margin-top: 180px;
   color: #1a1a1a;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   text-align: left;
   @media screen and (max-width: 768px) {
     font-size: 32px;
@@ -105,7 +105,6 @@ const Text2 = styled.div`
   font-size: 20px;
   margin-top: 10px;
   color: #ffffff;
-  margin-bottom: 4px;
   text-align: left;
   @media screen and (max-width: 768px) {
     font-size: 16px;
