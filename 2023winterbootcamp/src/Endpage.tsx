@@ -1,9 +1,15 @@
 import { motion } from "framer-motion";
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { interviewHeaderPoint, interviewTitleState } from "./Recoil";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -95,43 +101,46 @@ function Endpage() {
   }, []);
 
   //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
-  useEffect(()=>{
+  useEffect(() => {
     setInterviewHeaderPoint(true);
     return () => {
       setInterviewHeaderPoint(false);
-    }
-  },[])
+    };
+  }, []);
 
   return (
-    <Container onContextMenu={handleSelectStart}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 2 }}
-      >
-        <TopBox width="60%" height="100px">
-          <TopText width="100%" height="90px">
-            본인이 지원한 면접의
-            <br />
-            <b>결과를 확인</b>하실 수 있습니다.
-          </TopText>
-        </TopBox>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 3 }}
-      >
-        <BottomBox width="60%" height="270px">
-          <BottomText width="80%" height="100px">
-            {interviewTitle}
-          </BottomText>
-          <StartButton onClick={() => navigate(`/result/${id}`)}>
-            결과 보기
-          </StartButton>
-        </BottomBox>
-      </motion.div>
-    </Container>
+    <>
+      <GlobalStyle />
+      <Container onContextMenu={handleSelectStart}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+        >
+          <TopBox width="60%" height="100px">
+            <TopText width="100%" height="90px">
+              본인이 지원한 면접의
+              <br />
+              <b>결과를 확인</b>하실 수 있습니다.
+            </TopText>
+          </TopBox>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 3 }}
+        >
+          <BottomBox width="60%" height="270px">
+            <BottomText width="80%" height="100px">
+              {interviewTitle}
+            </BottomText>
+            <StartButton onClick={() => navigate(`/result/${id}`)}>
+              결과 보기
+            </StartButton>
+          </BottomBox>
+        </motion.div>
+      </Container>
+    </>
   );
 }
 

@@ -1,9 +1,15 @@
-import { motion } from 'framer-motion';
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { interviewHeaderPoint } from './Recoil';
-import { useSetRecoilState } from 'recoil';
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import { interviewHeaderPoint } from "./Recoil";
+import { useSetRecoilState } from "recoil";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const StartModal = styled.div`
   width: 100%;
@@ -80,62 +86,65 @@ function Startpage() {
   const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
 
   const handleStartButtonClick = () => {
-    navigate('/interview/' + id);
+    navigate("/interview/" + id);
   };
 
-  useEffect(()=>{
-    window.scrollTo(0,0);
-  },[])
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
-  useEffect(()=>{
+  useEffect(() => {
     setInterviewHeaderPoint(true);
     return () => {
       setInterviewHeaderPoint(false);
-    }
-  },[])
-  
+    };
+  }, []);
+
   return (
-    <StartModal>
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 2 }}
-      >
-        <TextContent variants={fadeIn} initial='hidden' animate='visible'>
-          <AnswerPoint>답변포인트</AnswerPoint>
-          <PointText>
-            <b>본인을 설명하는 키워드</b>가 회사의 조직문화나
+    <>
+      <GlobalStyle />
+      <StartModal>
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+        >
+          <TextContent variants={fadeIn} initial="hidden" animate="visible">
+            <AnswerPoint>답변포인트</AnswerPoint>
+            <PointText>
+              <b>본인을 설명하는 키워드</b>가 회사의 조직문화나
+              <br />
+              <b>지원 직무와 어떤 연관성이 있는지</b>를 염두해 두고,
+              <br />
+              면접관의 긍정적인 판단에 도움이 되는 답변일지
+              <br />
+              고려해 봅시다.
+            </PointText>
+          </TextContent>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 3 }}
+        >
+          <StartButton onClick={handleStartButtonClick} variants={fadeIn}>
+            면접 시작
+          </StartButton>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 4 }}
+        >
+          <Dot variants={fadeIn}>
+            *면접할 준비가 되셨다면,
             <br />
-            <b>지원 직무와 어떤 연관성이 있는지</b>를 염두해 두고,
-            <br />
-            면접관의 긍정적인 판단에 도움이 되는 답변일지
-            <br />
-            고려해 봅시다.
-          </PointText>
-        </TextContent>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 3 }}
-      >
-        <StartButton onClick={handleStartButtonClick} variants={fadeIn}>
-          면접 시작
-        </StartButton>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 4 }}
-      >
-        <Dot variants={fadeIn}>
-          *면접할 준비가 되셨다면,
-          <br />
-          면접 시작 버튼을 눌러주세요!
-        </Dot>
-      </motion.div>
-    </StartModal>
+            면접 시작 버튼을 눌러주세요!
+          </Dot>
+        </motion.div>
+      </StartModal>
+    </>
   );
 }
 
