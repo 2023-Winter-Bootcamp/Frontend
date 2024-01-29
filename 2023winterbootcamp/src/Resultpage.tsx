@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import {
   githubLoginInfoState,
   githubProfileState,
@@ -18,6 +18,12 @@ declare global {
     onInstagramLogin?: () => void;
   }
 }
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const ProfileContainer = styled.div`
   user-select: none;
@@ -504,6 +510,7 @@ const Resultpage = () => {
     <>
       {interviewResult && (
         <>
+          <GlobalStyle />
           <ScrollToTop />
           <ProfileContainer onContextMenu={handleSelectStart}>
             <ProfileBox>

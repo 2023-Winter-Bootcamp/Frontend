@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import styled, { css } from "styled-components";
+import styled, { createGlobalStyle, css } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import api from "./baseURL/baseURL";
 import LoadingModal from "./components/LoadingModal";
@@ -20,6 +20,12 @@ import {
   useResetRecoilState,
 } from "recoil";
 import { interviewTypeState } from "./Recoil";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const Container = styled.div`
   user-select: none;
@@ -1107,7 +1113,7 @@ function Choose() {
   );
   const resetCurrentQuestion = useResetRecoilState(currentQuestionState);
   const setInterviewHeaderPoint = useSetRecoilState(interviewHeaderPoint);
-  
+
   // question_type 관련 함수
   const handleProjectCountChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -1392,15 +1398,16 @@ function Choose() {
   }, []);
 
   //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
-  useEffect(()=>{
+  useEffect(() => {
     setInterviewHeaderPoint(true);
     return () => {
       setInterviewHeaderPoint(false);
-    }
-  },[])
+    };
+  }, []);
 
   return (
     <>
+      <GlobalStyle />
       <Suspense fallback={<div>Loading...</div>}>
         <Container>
           <TextWrapper>

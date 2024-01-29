@@ -1,13 +1,24 @@
 import React, { useEffect, useState, useRef } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useDropzone } from "react-dropzone";
 import api from "./baseURL/baseURL";
 import { useNavigate } from "react-router-dom";
 import interview_image from "./images/interview_image.jpg";
 import Modal from "./components/Modal";
-import { githubLoginInfoState, interviewHeaderPoint, mypageHeaderPoint, resumeListState } from "./Recoil";
+import {
+  githubLoginInfoState,
+  interviewHeaderPoint,
+  mypageHeaderPoint,
+  resumeListState,
+} from "./Recoil";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import LoadingModal from "./components/LoadingModal";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -557,15 +568,16 @@ function Mypage() {
   }, []);
 
   //Mypage가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
-  useEffect(()=>{
+  useEffect(() => {
     setMypageHeaderPoint(true);
     return () => {
       setMypageHeaderPoint(false);
-    }
-  },[])
+    };
+  }, []);
 
   return (
     <>
+      <GlobalStyle />
       <Container onContextMenu={handleSelectStart}>
         <Text1>내 이력서</Text1>
         <ResumeContainer>

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { createGlobalStyle, keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import axios from "axios";
@@ -20,6 +20,12 @@ import recordIcon from "./images/recordbutton.png";
 import LoadingModal from "./components/LoadingModal";
 import { useRecoilState } from "recoil";
 import { Line } from "rc-progress";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -651,74 +657,77 @@ function Interviewpage() {
   }, [currentQuestionNumber]);
 
   //interview 관련 페이지가 렌더링되면 헤더에 강조해서 표현하고 다른 곳으로 이동시 강조 해제
-  useEffect(()=>{
+  useEffect(() => {
     setInterviewHeaderPoint(true);
     return () => {
       setInterviewHeaderPoint(false);
-    }
-  },[])
+    };
+  }, []);
 
   return (
-    <Container>
-      <Up onContextMenu={handleSelectStart}>
-        {selectedInterviewType.showCamera === false ? (
-          <VideoContainer>
-            <SpinnerBox>
-              <LeoBorder
-                color="rgb(102, 102, 102)"
-                $gradientColor="102, 102, 102"
-                $animationDuration={1.8}
-              >
-                <LeoCore $backgroundColor="#191919aa" />
-              </LeoBorder>
-              <LeoBorder
-                color="rgb(255, 215, 244)"
-                $gradientColor="255, 215, 244"
-                $animationDuration={2.2}
-              >
-                <LeoCore $backgroundColor="#bebebeaa" />
-              </LeoBorder>
-            </SpinnerBox>
-          </VideoContainer>
-        ) : (
-          <Camera
-            elapsedTime={elapsedTime}
-            children={undefined}
-            cameraWidth={cameraWidth}
-            cameraHeight={cameraHeight}
-          />
-        )}
-      </Up>
+    <>
+      <GlobalStyle />
+      <Container>
+        <Up onContextMenu={handleSelectStart}>
+          {selectedInterviewType.showCamera === false ? (
+            <VideoContainer>
+              <SpinnerBox>
+                <LeoBorder
+                  color="rgb(102, 102, 102)"
+                  $gradientColor="102, 102, 102"
+                  $animationDuration={1.8}
+                >
+                  <LeoCore $backgroundColor="#191919aa" />
+                </LeoBorder>
+                <LeoBorder
+                  color="rgb(255, 215, 244)"
+                  $gradientColor="255, 215, 244"
+                  $animationDuration={2.2}
+                >
+                  <LeoCore $backgroundColor="#bebebeaa" />
+                </LeoBorder>
+              </SpinnerBox>
+            </VideoContainer>
+          ) : (
+            <Camera
+              elapsedTime={elapsedTime}
+              children={undefined}
+              cameraWidth={cameraWidth}
+              cameraHeight={cameraHeight}
+            />
+          )}
+        </Up>
 
-      <Down onContextMenu={handleSelectStart}>
-        <QuestionNum>{`${
-          questionTotalCount + 1
-        }개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
-        <ProgressBar>
-          <Line
-            percent={linePercent}
-            strokeWidth={1}
-            strokeColor={"#6e6e6e"}
-            style={{ transition: "all 1s ease-out" }}
-          ></Line>
-        </ProgressBar>
-        <Q>
-          <QuestionText>{questionTypeTitle}</QuestionText>
-          <ContentText>{questionContent}</ContentText>
-          <RecordBox>
-            <InstructionText ref={instRef}>{instText}</InstructionText>
-            <Next onClick={handleNextButtonClick} ref={btnRef}>
-              <StyledNextImage
-                src={recorderControls.isRecording ? recordIcon : nextIcon}
-                alt="next"
-              />
-            </Next>
-          </RecordBox>
-        </Q>
-      </Down>
-      {isLoading ? <LoadingModal /> : null}
-      <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
-    </Container>
+        <Down onContextMenu={handleSelectStart}>
+          <QuestionNum>{`${
+            questionTotalCount + 1
+          }개의 질문 중 ${currentQuestionNumber}번째 질문`}</QuestionNum>
+          <ProgressBar>
+            <Line
+              percent={linePercent}
+              strokeWidth={1}
+              strokeColor={"#6e6e6e"}
+              style={{ transition: "all 1s ease-out" }}
+            ></Line>
+          </ProgressBar>
+          <Q>
+            <QuestionText>{questionTypeTitle}</QuestionText>
+            <ContentText>{questionContent}</ContentText>
+            <RecordBox>
+              <InstructionText ref={instRef}>{instText}</InstructionText>
+              <Next onClick={handleNextButtonClick} ref={btnRef}>
+                <StyledNextImage
+                  src={recorderControls.isRecording ? recordIcon : nextIcon}
+                  alt="next"
+                />
+              </Next>
+            </RecordBox>
+          </Q>
+        </Down>
+        {isLoading ? <LoadingModal /> : null}
+        <audio ref={audioRef} style={{ display: "none" }} preload="auto" />
+      </Container>
+    </>
   );
 }
 export default Interviewpage;
