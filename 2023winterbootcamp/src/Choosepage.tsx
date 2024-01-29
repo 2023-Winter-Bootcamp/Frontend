@@ -1273,9 +1273,9 @@ function Choose() {
       .then((stream) => {
         console.log(stream);
         if (stream !== null) setIsCameraPossible(true);
+        else setIsCameraPossible(false);
       })
       .catch((e) => {
-        setIsCameraPossible(false);
         console.error(e);
       });
   };

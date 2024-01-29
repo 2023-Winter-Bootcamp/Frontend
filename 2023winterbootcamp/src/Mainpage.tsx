@@ -20,11 +20,9 @@ import api from "./baseURL/baseURL";
 import Modal from "./components/Modal";
 import {
   RepoType,
-  ResumeType,
   githubLoginInfoState,
   githubProfileState,
   repoListState,
-  resumeListState,
 } from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
 import { useSetRecoilState, useRecoilState } from "recoil";
@@ -556,12 +554,6 @@ const MiddleContainer = styled.div`
   background: linear-gradient(#fff, #000);
 `;
 
-interface Resume {
-  id: number;
-  pre_image_url: string;
-  created_at: string;
-}
-
 function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -639,26 +631,11 @@ function Main() {
 
   const navigate = useNavigate();
 
-  const [resumeList, setResumeList] =
-    useRecoilState<ResumeType[]>(resumeListState);
-
-  const handleAIInterviewClick = async () => {
+  const handleAIInterviewClick = () => {
     if (githubInfo.id === -1) {
       window.alert("로그인이 필요한 기능입니다.");
       return;
     }
-    if (resumeList.length !== 0) {
-      navigate("/choose");
-    }
-    const response = await api.get("resumes/", { withCredentials: true });
-    if(response.data.length === 0){
-      window.alert("이력서 등록이 필요합니다.");
-      return;
-    }
-    const sortedData = response.data.sort((a: Resume, b: Resume) =>
-      b.created_at.localeCompare(a.created_at)
-    );
-    setResumeList(sortedData);
     navigate("/choose");
   };
 
