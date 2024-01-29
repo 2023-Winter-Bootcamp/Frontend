@@ -268,10 +268,6 @@ function Header() {
     navigate('/mypage');
   }
 
-  const goToLogout = () => {
-    navigate('/');
-  }
-
   return (
     <HeaderContainer onContextMenu={handleSelectStart}>
       <Logo
@@ -307,7 +303,7 @@ function Header() {
             </ActiveBox>
             <ActiveBox $isActive={false}>
               <MotionDiv
-                onClick={goToLogout}
+                onClick={handleLogout}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.9 }}
