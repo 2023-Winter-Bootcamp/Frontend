@@ -14,6 +14,7 @@ import {
 import logo from "../images/logo.png";
 
 const HeaderContainer = styled.div`
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,7 +23,7 @@ const HeaderContainer = styled.div`
   height: 80px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   user-select: none;
-  z-index: 1;
+  z-index: 5;
 `;
 
 const Logo = styled(motion(Link))`
@@ -36,13 +37,13 @@ const Logo = styled(motion(Link))`
   height: 38px;
   align-items: center;
   @media screen and (max-width: 768px) {
-    margin-left: 15%;
+    margin-left: 14%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 20%;
+    margin-left: 18%;
   }
   @media screen and (min-width: 1024px) {
-    margin-left: 18.1%;
+    margin-left: 16.1%;
   }
 `;
 
@@ -56,12 +57,12 @@ const Navigationbar = styled.div`
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
-    margin-right: 14%;
+    margin-right: 12%;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
-    margin-right: 20%;
+    margin-right: 14%;
   }
 `;
 

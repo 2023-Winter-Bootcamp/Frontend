@@ -39,12 +39,25 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const FixedBackGround = styled.div<{ $imgUrl: string }>`
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
-  position: fixed;
-  top: 0px;
   background-image: url(${(props) => props.$imgUrl});
+  background-size: cover;
+  background-position: center;
   z-index: -1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+  }
 `;
 
 const Container = styled.div`
@@ -60,6 +73,7 @@ const Container = styled.div`
   user-select: none;
   /* background-size: contain;
   background-position: center; */
+  margin-top: 40px;
 `;
 
 const ScrollWrapper = styled.div`
@@ -80,60 +94,66 @@ const ScrollContent = styled.div`
 
 const Text1 = styled.div`
   font-weight: bold;
-  font-size: 58px;
-  margin-top: 180px;
+  font-size: 60px;
+  margin-top: 140px;
   color: #1a1a1a;
   margin-bottom: 20px;
-  text-align: left;
+  text-align: center;
   @media screen and (max-width: 768px) {
     font-size: 32px;
-    margin-left: 15%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-weight: 700;
     font-size: 35px;
-    margin-left: 20%;
   }
   @media screen and (min-width: 1024px) {
-    font-size: 58px;
-    margin-left: 25%;
+    font-size: 60px;
   }
 `;
 
 const Text2 = styled.div`
   font-weight: 400;
   font-size: 20px;
-  margin-top: 10px;
   color: #ffffff;
-  text-align: left;
+  text-align: center;
+  margin-bottom: 20px;
   @media screen and (max-width: 768px) {
     font-size: 16px;
-    margin-left: 15%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-size: 18px;
-    margin-left: 20%;
   }
   @media screen and (min-width: 1024px) {
     font-size: 20px;
-    margin-left: 25%;
+  }
+`;
+
+const Image = styled.img`
+  width: 200px;
+  height: 200px;
+  margin-top: 10px;
+  user-select: none;
+  @media screen and (max-width: 1023px) {
+    width: 200px;
+    height: 200px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: 240px;
+    height: 240px;
   }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: left;
-  margin-top: 84px;
+  justify-content: center;
+  margin-top: 44px;
   margin-bottom: 76px;
   @media screen and (max-width: 768px) {
-    margin-left: 14.7%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 19.7%;
   }
   @media screen and (min-width: 1024px) {
-    margin-left: 24.7%;
   }
 `;
 
@@ -200,13 +220,13 @@ const TextField = styled.div`
 
 const Text4 = styled.div`
   font-weight: bold;
-  font-size: 40px;
+  font-size: 44px;
   color: white;
 `;
 
 const Text5 = styled.div`
   font-weight: bold;
-  font-size: 80px;
+  font-size: 96px;
   color: white;
 `;
 
@@ -235,7 +255,7 @@ const Page2 = styled(motion.div)`
 `;
 
 const TextComponents = styled.div`
-  width: 300px;
+  width: 400px;
   display: flex;
   align-items: center;
 `;
@@ -274,8 +294,9 @@ const Text6 = styled.div`
   @media screen and (min-width: 1024px) {
     color: black;
     font-weight: bold;
-    font-size: 30px;
-    margin-left: 10px;
+    font-size: 34px;
+    margin-left: 15px;
+    line-height: 1.4;
   }
 `;
 
@@ -294,10 +315,10 @@ const Text8 = styled.div`
     margin-top: 22px;
   }
   @media screen and (min-width: 1024px) {
-    width: 350px;
-    font-size: 22px;
-    line-height: 1.8;
-    margin-top: 30px;
+    width: 410px;
+    font-size: 28px;
+    line-height: 1.5;
+    margin-top: 26px;
   }
 `;
 
@@ -323,6 +344,7 @@ const Image2 = styled.div`
 const TextComponents2 = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 40px;
 `;
 
 const Container1 = styled.div`
@@ -332,6 +354,7 @@ const Container1 = styled.div`
   display: flex;
   align-items: center;
   z-index: 3;
+  margin-top: 200px;
   @media screen and (max-width: 768px) {
     height: 1900px;
   }
@@ -418,11 +441,12 @@ const ImageBoxText = styled.div`
   height: 90px;
   box-sizing: border-box;
   padding: 10px 10px;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   text-align: center;
   line-height: 1.4;
   user-select: none;
+  margin-bottom: 20px;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     padding: 0;
@@ -433,11 +457,12 @@ const ImageBoxText2 = styled.div`
   width: 100%;
   height: 90px;
   box-sizing: border-box;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   text-align: center;
   line-height: 1.7;
   margin-top: 10px;
+  margin-bottom: 20px;
   user-select: none;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
@@ -454,11 +479,12 @@ const ImageBoxText3 = styled.div`
   height: 70px;
   box-sizing: border-box;
   padding: 10px 28px;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: 700;
   text-align: center;
   line-height: 1.7;
   margin-top: 10px;
+  margin-bottom: 20px;
   user-select: none;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
@@ -767,11 +793,7 @@ function Main() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
                 >
-                  <Text1>
-                    깃허브를 이용한
-                    <br />
-                    AI면접
-                  </Text1>
+                  <Text1>깃허브를 이용한 AI면접</Text1>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 50 }}
@@ -783,6 +805,17 @@ function Main() {
                     <br />
                     면접 서비스를 이용해보세요.
                   </Text2>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 2 }}
+                >
+                  <Image
+                    src="https://i.postimg.cc/26rVTrmW/github-logo-icon-147285.png"
+                    alt="GitHub Logo"
+                    draggable={false}
+                  />
                 </motion.div>
                 <ButtonWrapper>
                   <motion.div
@@ -845,7 +878,7 @@ function Main() {
                     이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
                     지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트
                     경험, 협업 능력 등을 정확하게 평가하여 나만의 면접을
-                    제공합니다
+                    제공합니다.
                   </Text8>
                 </TextComponents2>
                 <Image2 />
@@ -899,7 +932,7 @@ function Main() {
               transition={{ duration: 1 }}
             >
               <Text10>
-                Giterview와 함께 개발자 커리어 준비를 시작해보세요
+                Giterview와 함께 개발자 커리어 준비를 시작해보세요.
               </Text10>
             </motion.div>
           </Container2>
