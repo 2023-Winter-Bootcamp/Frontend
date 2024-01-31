@@ -30,6 +30,7 @@ const GlobalStyle = createGlobalStyle`
 const Container = styled.div`
   width: 100%;
 `;
+
 const Up = styled.div`
   user-select: none;
   width: 100%;

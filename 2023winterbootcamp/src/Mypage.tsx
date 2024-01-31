@@ -13,6 +13,7 @@ import {
 } from "./Recoil";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import LoadingModal from "./components/LoadingModal";
+import Header from "./components/Header";
 
 const GlobalStyle = createGlobalStyle`
   body {

@@ -273,11 +273,13 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-const ResumeBox = styled.div<{
+type ResumeBoxType = {
   $pre_image_url: string;
   $isSelected: boolean;
   $isResumeSelected: boolean;
-}>`
+};
+
+const ResumeBox = styled.div<ResumeBoxType>`
   position: relative;
   width: 249px;
   height: 345px;
@@ -298,28 +300,15 @@ const ResumeBox = styled.div<{
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
-  position: relative;
   overflow: hidden;
+  transition:
+    filter 0.3s,
+    opacity 0.3s;
 
   &:hover {
     border: 2px solid #000000;
     background-color: rgba(0, 0, 0, 0.5);
-    //transform: translateY(-5px);
     border-radius: 6px;
-  }
-
-  &:hover::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
-
-  &:hover {
     filter: none;
     opacity: 1;
 
@@ -333,6 +322,17 @@ const ResumeBox = styled.div<{
     }
   }
 
+  &:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
   ${(props) =>
     !props.$isSelected &&
     props.$isResumeSelected &&
@@ -340,10 +340,6 @@ const ResumeBox = styled.div<{
       filter: blur(1px);
       opacity: 0.6;
     `};
-  /* opacity: ${(props) => (props.$isSelected ? "1" : "0.6")}; */
-  transition:
-    filter 0.3s,
-    opacity 0.3s;
 
   @media screen and (max-width: 769px) {
     width: 210px;
@@ -1597,6 +1593,7 @@ function Choose() {
           선택 완료
         </Start>
         {isLoading ? <LoadingModal /> : null}
+        {/* </All> */}
       </Suspense>
     </>
   );
