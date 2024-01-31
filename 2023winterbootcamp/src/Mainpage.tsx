@@ -20,9 +20,11 @@ import api from "./baseURL/baseURL";
 import Modal from "./components/Modal";
 import {
   RepoType,
+  ResumeType,
   githubLoginInfoState,
   githubProfileState,
   repoListState,
+  resumeListState,
 } from "./Recoil";
 import { GitHubRepo } from "./components/githubLogin";
 import { useSetRecoilState, useRecoilState } from "recoil";
@@ -579,6 +581,12 @@ const MiddleContainer = styled.div`
   background: linear-gradient(#fff, #000);
 `;
 
+interface Resume {
+  id: number;
+  pre_image_url: string;
+  created_at: string;
+}
+
 function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -656,11 +664,26 @@ function Main() {
 
   const navigate = useNavigate();
 
-  const handleAIInterviewClick = () => {
+  const [resumeList, setResumeList] =
+    useRecoilState<ResumeType[]>(resumeListState);
+
+  const handleAIInterviewClick = async () => {
     if (githubInfo.id === -1) {
       window.alert("로그인이 필요한 기능입니다.");
       return;
     }
+    if (resumeList.length !== 0) {
+      navigate("/choose");
+    }
+    const response = await api.get("resumes/", { withCredentials: true });
+    if (response.data.length === 0) {
+      window.alert("이력서 등록이 필요합니다.");
+      return;
+    }
+    const sortedData = response.data.sort((a: Resume, b: Resume) =>
+      b.created_at.localeCompare(a.created_at)
+    );
+    setResumeList(sortedData);
     navigate("/choose");
   };
 
@@ -839,12 +862,18 @@ function Main() {
                   >
                     <Button onClick={handleAIInterviewClick}>AI 면접</Button>
                   </motion.div>
-                  <ResumeButton
-                    id={githubInfo.id}
-                    getRootProps={getRootProps}
-                    getInputProps={getInputProps}
-                    handleModalClose={handleModalClose}
-                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1.5 }}
+                  >
+                    <ResumeButton
+                      id={githubInfo.id}
+                      getRootProps={getRootProps}
+                      getInputProps={getInputProps}
+                      handleModalClose={handleModalClose}
+                    />
+                  </motion.div>
                   {isModalOpen && (
                     <Modal
                       ref={modalRef}
@@ -953,30 +982,6 @@ const ResumeButton = (props: ResumeModalProps) => {
     return (
       <div {...props.getRootProps()}>
         <input {...props.getInputProps()} />
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5 }}
-        >
-          <Button onClick={props.handleModalClose}>
-            <ButtonContent>
-              <ButtonImage
-                src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                alt="Document Icon"
-              />
-              이력서 업로드
-            </ButtonContent>
-          </Button>
-        </motion.div>
-      </div>
-    );
-  } else {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1 }}
-      >
         <Button onClick={props.handleModalClose}>
           <ButtonContent>
             <ButtonImage
@@ -986,7 +991,19 @@ const ResumeButton = (props: ResumeModalProps) => {
             이력서 업로드
           </ButtonContent>
         </Button>
-      </motion.div>
+      </div>
+    );
+  } else {
+    return (
+      <Button onClick={props.handleModalClose}>
+        <ButtonContent>
+          <ButtonImage
+            src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+            alt="Document Icon"
+          />
+          이력서 업로드
+        </ButtonContent>
+      </Button>
     );
   }
 };
