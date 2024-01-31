@@ -73,7 +73,6 @@ const Container = styled.div`
   user-select: none;
   /* background-size: contain;
   background-position: center; */
-  margin-top: 40px;
 `;
 
 const ScrollWrapper = styled.div`
