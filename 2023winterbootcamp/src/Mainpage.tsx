@@ -50,6 +50,7 @@ const FixedBackGround = styled.div<{ $imgUrl: string }>`
   background-size: cover;
   background-position: center;
   z-index: -1;
+  filter: blur(4px);
 
   &::before {
     content: "";
@@ -101,11 +102,11 @@ const Text1 = styled.div`
   margin-bottom: 20px;
   text-align: center;
   @media screen and (max-width: 768px) {
-    font-size: 32px;
+    font-size: 47px;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     font-weight: 700;
-    font-size: 35px;
+    font-size: 50px;
   }
   @media screen and (min-width: 1024px) {
     font-size: 60px;
@@ -118,6 +119,7 @@ const Text2 = styled.div`
   color: #ffffff;
   text-align: center;
   margin-bottom: 20px;
+  line-height: 1.3;
   @media screen and (max-width: 768px) {
     font-size: 16px;
   }
@@ -223,12 +225,18 @@ const Text4 = styled.div`
   font-weight: bold;
   font-size: 44px;
   color: white;
+  @media screen and (max-width: 1023px) {
+    font-size: 35px;
+  }
 `;
 
 const Text5 = styled.div`
   font-weight: bold;
   font-size: 96px;
   color: white;
+  @media screen and (max-width: 1023px) {
+    font-size: 75px;
+  }
 `;
 
 const Page2Container = styled.div`
@@ -441,16 +449,20 @@ const ImageBoxText = styled.div`
   width: 100%;
   height: 90px;
   box-sizing: border-box;
-  padding: 10px 10px;
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   text-align: center;
   line-height: 1.4;
   user-select: none;
   margin-bottom: 20px;
+  padding: 10px 0;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     padding: 0;
+  }
+  @media screen and (min-width: 1024px) and (max-width: 1500px){
+    font-size: 20px;
+    margin-bottom: 0px;
   }
 `;
 
@@ -465,13 +477,15 @@ const ImageBoxText2 = styled.div`
   margin-top: 10px;
   margin-bottom: 20px;
   user-select: none;
+  padding: 10px 0;
   @media screen and (max-width: 1023px) {
     font-size: 24px;
     height: 60px;
   }
-  @media screen and (min-width: 1024px) {
-    padding: 10px 28px;
+  @media screen and (min-width: 1024px) and (max-width: 1500px) {
+    font-size: 20px;
     height: 90px;
+    margin-bottom: 0px;
   }
 `;
 
@@ -479,7 +493,7 @@ const ImageBoxText3 = styled.div`
   width: 100%;
   height: 70px;
   box-sizing: border-box;
-  padding: 10px 28px;
+  padding: 10px 0;
   font-size: 26px;
   font-weight: 700;
   text-align: center;
@@ -491,6 +505,10 @@ const ImageBoxText3 = styled.div`
     font-size: 24px;
     padding: 0;
     height: 60px;
+  }
+  @media screen and (min-width: 1024px) and (max-width: 1500px){
+    font-size: 20px;
+    margin-bottom: 0px;
   }
 `;
 
@@ -507,7 +525,8 @@ const ImageBoxImage = styled.div<ImageProps>`
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
 
   @media screen and (max-width: 1023px) {
-    width: 100%;
+    margin: 0 auto;
+    width: 90%;
   }
   @media screen and (min-width: 1024px) {
     width: 26vw;
@@ -529,7 +548,6 @@ const ImageBoxImage2 = styled.div<ImageProps>`
   @media screen and (min-width: 1024px) {
     width: 31vw;
     margin-top: 10%;
-    height: 290px;
   }
 `;
 
@@ -542,7 +560,8 @@ const ImageBoxImage3 = styled.img<ImageProps>`
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.25);
 
   @media screen and (max-width: 1023px) {
-    width: 100%;
+    width: 90%;
+    margin: 0 auto;
   }
   @media screen and (min-width: 1024px) {
     width: 22vw;
@@ -904,7 +923,7 @@ function Main() {
                   </TextComponents>
                   <Text8>
                     이제 GitHub 계정과 이력서만 제출하면 강력한 언어 처리 능력을
-                    지닌 AI가 면접을 진행합니다. 당신의 개발 역량, 프로젝트
+                    지닌 AI가 면접을 진행합니다. <br/>당신의 개발 역량, 프로젝트
                     경험, 협업 능력 등을 정확하게 평가하여 나만의 면접을
                     제공합니다.
                   </Text8>
