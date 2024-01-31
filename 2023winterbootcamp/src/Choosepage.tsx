@@ -277,11 +277,13 @@ const BoldText = styled.span`
   font-weight: bold;
 `;
 
-const ResumeBox = styled.div<{
+type ResumeBoxType = {
   $pre_image_url: string;
   $isSelected: boolean;
   $isResumeSelected: boolean;
-}>`
+};
+
+const ResumeBox = styled.div<ResumeBoxType>`
   position: relative;
   width: 249px;
   height: 345px;
@@ -302,7 +304,6 @@ const ResumeBox = styled.div<{
   cursor: pointer;
   border: ${(props) =>
     props.$isSelected ? "2px solid black" : "2px solid #ffffff"};
-  position: relative;
   overflow: hidden;
 
   &:hover {
@@ -1413,200 +1414,196 @@ function Choose() {
     <>
       <GlobalStyle />
       <Suspense fallback={<div>Loading...</div>}>
-        <All>
-          <Container>
-            <TextWrapper>
-              <Text1>면접 제목</Text1>
-            </TextWrapper>
-            <Input
-              placeholder=""
-              maxLength={30}
-              onChange={handleChange}
-            ></Input>
-          </Container>
-          <Container1>
-            <TextWrapper1>
-              <Text1>면접 종류</Text1>
-              <Text33>복수 선택이 가능합니다.</Text33>
-            </TextWrapper1>
-            <ButtonsContainer>
-              <Button
-                $isSelected={selectedMultiButtons.includes("project")}
-                onClick={() => handleMultiButtonClick("project")}
-              >
-                프로젝트
-              </Button>
-              <Button
-                $isSelected={selectedMultiButtons.includes("cs")}
-                onClick={() => handleMultiButtonClick("cs")}
-              >
-                CS 질문
-              </Button>
-              <Button
-                $isSelected={selectedMultiButtons.includes("personality")}
-                onClick={() => handleMultiButtonClick("personality")}
-              >
-                인성 면접
-              </Button>
-            </ButtonsContainer>
-          </Container1>
-          <DropdownContainer>
-            <DropdownWrapper>
-              <DropdownLabel>Project Label</DropdownLabel>
-              <DropdownSelect1
-                value={projectCount}
-                disabled={!selectedMultiButtons.includes("project")}
-                onChange={handleProjectCountChange}
-              >
-                {options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </DropdownSelect1>
-            </DropdownWrapper>
-            <DropdownWrapper>
-              <DropdownLabel>CS Label</DropdownLabel>
-              <DropdownSelect2
-                value={csCount}
-                disabled={!selectedMultiButtons.includes("cs")}
-                onChange={handleCsCountChange}
-              >
-                {options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </DropdownSelect2>
-            </DropdownWrapper>
-            <DropdownWrapper>
-              <DropdownLabel>Personality Label</DropdownLabel>
-              <DropdownSelect3
-                value={personalityCount}
-                disabled={!selectedMultiButtons.includes("personality")}
-                onChange={handlePersonalityCountChange}
-              >
-                {options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </DropdownSelect3>
-            </DropdownWrapper>
-          </DropdownContainer>
-          <DropText>*원하는 질문의 개수를 선택해주세요</DropText>
-          <Container2>
-            <TextWrapper1>
-              <Text1>Position</Text1>
-            </TextWrapper1>
-            <ButtonsContainer>
-              <Button
-                $isSelected={selectedPosition === "frontend"}
-                onClick={() => handlePositionClick("frontend")}
-              >
-                Frontend
-              </Button>
-              <Button
-                $isSelected={selectedPosition === "backend"}
-                onClick={() => handlePositionClick("backend")}
-              >
-                Backend
-              </Button>
-              <Button
-                $isSelected={selectedPosition === "fullstack"}
-                onClick={() => handlePositionClick("fullstack")}
-              >
-                Fullstack
-              </Button>
-            </ButtonsContainer>
-          </Container2>
-          <Container3>
-            <TextWrapper1>
-              <Text1>면접 방식</Text1>
-            </TextWrapper1>
-            <ButtonsContainer>
-              <Button
-                $isSelected={selectedInterviewType === "video"}
-                onClick={() => handleInterviewTypeClick("video")}
-              >
-                화상 면접
-              </Button>
-              <Button
-                $isSelected={selectedInterviewType === "voice"}
-                onClick={() => handleInterviewTypeClick("voice")}
-              >
-                음성 면접
-              </Button>
-            </ButtonsContainer>
-          </Container3>
-          <Container4>
-            <TextWrapper2>
-              <Text1>이력서</Text1>
-              {resumeList.length === 0 ? (
-                <Text33>등록된 이력서가 없습니다.</Text33>
-              ) : null}
-            </TextWrapper2>
-            <ResumeContainer>
-              <ScrollContainer $len={resumeList.length}>
-                {resumeList.map((item, idx) => (
-                  <ResumeBox
-                    key={idx}
-                    $pre_image_url={item.pre_image_url}
-                    $isResumeSelected={selectedResume !== null}
-                    $isSelected={selectedResume === item.id}
-                    onClick={() => handleResumeSelect(item.id)}
-                  >
-                    <BlackBox />
-                    <Text6>{item.title}</Text6>
-                    <Text3>
-                      <br />
-                      {item.created_at.slice(0, 10)}에 등록한
-                      <br />
-                      이력서 입니다.
-                      <br />
-                    </Text3>
-                  </ResumeBox>
-                ))}
-              </ScrollContainer>
-            </ResumeContainer>
-          </Container4>
-          <Container4>
-            <TextWrapper2>
-              <Text1>Github repositories</Text1>
-              <Text33>복수 선택이 가능합니다.</Text33>
-            </TextWrapper2>
-            <RepoContainer>
-              {repoList.length !== 0 ? (
-                repoList.map((repo, idx) => {
-                  if (repo.language) {
-                    return (
-                      <Repo
-                        key={idx}
-                        $isSelected={selectedRepos.includes(repo.repo_name)}
-                        onClick={() => handleRepoSelect(repo.repo_name)}
-                        language={repo.language}
-                      >
-                        <Reponame>{repo.repo_name}</Reponame>
-                        <LanguageWrapper>
-                          <Circle />
-                          <Language>{repo.language}</Language>
-                        </LanguageWrapper>
-                      </Repo>
-                    );
-                  }
-                })
-              ) : (
-                <Repo $isSelected={false}>
-                  <Reponame>repository가 없습니다.</Reponame>
-                </Repo>
-              )}
-            </RepoContainer>
-          </Container4>
-          <Start $startClicked={startClicked} onClick={createInterview}>
-            선택 완료
-          </Start>
-          {isLoading ? <LoadingModal /> : null}
-        </All>
+        {/* <All> */}
+        <Container>
+          <TextWrapper>
+            <Text1>면접 제목</Text1>
+          </TextWrapper>
+          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
+        </Container>
+        <Container1>
+          <TextWrapper1>
+            <Text1>면접 종류</Text1>
+            <Text33>복수 선택이 가능합니다.</Text33>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              $isSelected={selectedMultiButtons.includes("project")}
+              onClick={() => handleMultiButtonClick("project")}
+            >
+              프로젝트
+            </Button>
+            <Button
+              $isSelected={selectedMultiButtons.includes("cs")}
+              onClick={() => handleMultiButtonClick("cs")}
+            >
+              CS 질문
+            </Button>
+            <Button
+              $isSelected={selectedMultiButtons.includes("personality")}
+              onClick={() => handleMultiButtonClick("personality")}
+            >
+              인성 면접
+            </Button>
+          </ButtonsContainer>
+        </Container1>
+        <DropdownContainer>
+          <DropdownWrapper>
+            <DropdownLabel>Project Label</DropdownLabel>
+            <DropdownSelect1
+              value={projectCount}
+              disabled={!selectedMultiButtons.includes("project")}
+              onChange={handleProjectCountChange}
+            >
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </DropdownSelect1>
+          </DropdownWrapper>
+          <DropdownWrapper>
+            <DropdownLabel>CS Label</DropdownLabel>
+            <DropdownSelect2
+              value={csCount}
+              disabled={!selectedMultiButtons.includes("cs")}
+              onChange={handleCsCountChange}
+            >
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </DropdownSelect2>
+          </DropdownWrapper>
+          <DropdownWrapper>
+            <DropdownLabel>Personality Label</DropdownLabel>
+            <DropdownSelect3
+              value={personalityCount}
+              disabled={!selectedMultiButtons.includes("personality")}
+              onChange={handlePersonalityCountChange}
+            >
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </DropdownSelect3>
+          </DropdownWrapper>
+        </DropdownContainer>
+        <DropText>*원하는 질문의 개수를 선택해주세요</DropText>
+        <Container2>
+          <TextWrapper1>
+            <Text1>Position</Text1>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              $isSelected={selectedPosition === "frontend"}
+              onClick={() => handlePositionClick("frontend")}
+            >
+              Frontend
+            </Button>
+            <Button
+              $isSelected={selectedPosition === "backend"}
+              onClick={() => handlePositionClick("backend")}
+            >
+              Backend
+            </Button>
+            <Button
+              $isSelected={selectedPosition === "fullstack"}
+              onClick={() => handlePositionClick("fullstack")}
+            >
+              Fullstack
+            </Button>
+          </ButtonsContainer>
+        </Container2>
+        <Container3>
+          <TextWrapper1>
+            <Text1>면접 방식</Text1>
+          </TextWrapper1>
+          <ButtonsContainer>
+            <Button
+              $isSelected={selectedInterviewType === "video"}
+              onClick={() => handleInterviewTypeClick("video")}
+            >
+              화상 면접
+            </Button>
+            <Button
+              $isSelected={selectedInterviewType === "voice"}
+              onClick={() => handleInterviewTypeClick("voice")}
+            >
+              음성 면접
+            </Button>
+          </ButtonsContainer>
+        </Container3>
+        <Container4>
+          <TextWrapper2>
+            <Text1>이력서</Text1>
+            {resumeList.length === 0 ? (
+              <Text33>등록된 이력서가 없습니다.</Text33>
+            ) : null}
+          </TextWrapper2>
+          <ResumeContainer>
+            <ScrollContainer $len={resumeList.length}>
+              {resumeList.map((item, idx) => (
+                <ResumeBox
+                  key={idx}
+                  $pre_image_url={item.pre_image_url}
+                  $isResumeSelected={selectedResume !== null}
+                  $isSelected={selectedResume === item.id}
+                  onClick={() => handleResumeSelect(item.id)}
+                >
+                  <BlackBox />
+                  <Text6>{item.title}</Text6>
+                  <Text3>
+                    <br />
+                    {item.created_at.slice(0, 10)}에 등록한
+                    <br />
+                    이력서 입니다.
+                    <br />
+                  </Text3>
+                </ResumeBox>
+              ))}
+            </ScrollContainer>
+          </ResumeContainer>
+        </Container4>
+        <Container4>
+          <TextWrapper2>
+            <Text1>Github repositories</Text1>
+            <Text33>복수 선택이 가능합니다.</Text33>
+          </TextWrapper2>
+          <RepoContainer>
+            {repoList.length !== 0 ? (
+              repoList.map((repo, idx) => {
+                if (repo.language) {
+                  return (
+                    <Repo
+                      key={idx}
+                      $isSelected={selectedRepos.includes(repo.repo_name)}
+                      onClick={() => handleRepoSelect(repo.repo_name)}
+                      language={repo.language}
+                    >
+                      <Reponame>{repo.repo_name}</Reponame>
+                      <LanguageWrapper>
+                        <Circle />
+                        <Language>{repo.language}</Language>
+                      </LanguageWrapper>
+                    </Repo>
+                  );
+                }
+              })
+            ) : (
+              <Repo $isSelected={false}>
+                <Reponame>repository가 없습니다.</Reponame>
+              </Repo>
+            )}
+          </RepoContainer>
+        </Container4>
+        <Start $startClicked={startClicked} onClick={createInterview}>
+          선택 완료
+        </Start>
+        {isLoading ? <LoadingModal /> : null}
+        {/* </All> */}
       </Suspense>
     </>
   );

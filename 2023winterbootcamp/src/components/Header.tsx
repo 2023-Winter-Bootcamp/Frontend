@@ -14,7 +14,9 @@ import {
 import logo from "../images/logo.png";
 
 const HeaderContainer = styled.div`
-  position: fixed;
+  /* position: fixed; */
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -201,7 +203,7 @@ function Header() {
   return (
     <HeaderContainer onContextMenu={handleSelectStart}>
       <Logo
-        to="/"
+        to='/'
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2 }}
@@ -211,7 +213,7 @@ function Header() {
           <>
             <ActiveBox $isActive={_interviewHeaderPoint}>
               <MotionNavItem
-                to="/choose"
+                to='/choose'
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.7 }}
@@ -221,7 +223,7 @@ function Header() {
             </ActiveBox>
             <ActiveBox $isActive={_mypageHeaderPoint}>
               <MotionNavItem
-                to="/mypage"
+                to='/mypage'
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.8 }}
@@ -231,7 +233,7 @@ function Header() {
             </ActiveBox>
             <ActiveBox $isActive={false}>
               <MotionNavItem
-                to="/"
+                to='/'
                 onClick={handleLogout}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -243,7 +245,7 @@ function Header() {
           </>
         ) : (
           <MotionNavItem
-            to="/"
+            to='/'
             onClick={handleGithubLogin}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
