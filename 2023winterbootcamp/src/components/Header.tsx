@@ -38,35 +38,25 @@ const Logo = styled(motion(Link))`
   background: url(${logo}) no-repeat;
   background-size: contain;
   width: 150px;
-  height: 38px;
+  height: 32px;
   align-items: center;
-  @media screen and (max-width: 768px) {
-    margin-left: 14%;
-  }
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    margin-left: 18%;
-  }
-  @media screen and (min-width: 1024px) {
-    margin-left: 16.1%;
-  }
+  margin-left: 8%;
 `;
 
 const Navigationbar = styled.div`
   align-items: center;
+  margin-right: 5%;
   @media screen and (max-width: 768px) {
     display: flex;
     gap: 20px;
-    margin-right: 10%;
   }
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     display: flex;
     gap: 20px;
-    margin-right: 12%;
   }
   @media screen and (min-width: 1024px) {
     display: flex;
     gap: 20px;
-    margin-right: 14%;
   }
 `;
 
