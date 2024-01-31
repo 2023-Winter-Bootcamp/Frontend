@@ -94,7 +94,7 @@ const ScrollContent = styled.div`
 const Text1 = styled.div`
   font-weight: bold;
   font-size: 60px;
-  margin-top: 140px;
+  margin-top: 110px;
   color: #1a1a1a;
   margin-bottom: 20px;
   text-align: center;

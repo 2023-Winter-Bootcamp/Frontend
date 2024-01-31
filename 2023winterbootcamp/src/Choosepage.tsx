@@ -27,17 +27,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const All = styled.div`
-  margin-top: 40px;
-`;
-
 const Container = styled.div`
   user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 40px;
-  //margin-top: 40px;
+  margin-top: 20px;
 `;
 
 const TextWrapper = styled.div`
@@ -1409,12 +1405,11 @@ function Choose() {
     <>
       <GlobalStyle />
       <Suspense fallback={<div>Loading...</div>}>
-        {/* <All> */}
         <Container>
           <TextWrapper>
             <Text1>면접 제목</Text1>
           </TextWrapper>
-          <Input placeholder='' maxLength={30} onChange={handleChange}></Input>
+          <Input placeholder="" maxLength={30} onChange={handleChange}></Input>
         </Container>
         <Container1>
           <TextWrapper1>
