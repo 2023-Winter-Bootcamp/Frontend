@@ -651,7 +651,7 @@ function Main() {
       navigate("/choose");
     }
     const response = await api.get("resumes/", { withCredentials: true });
-    if(response.data.length === 0){
+    if (response.data.length === 0) {
       window.alert("이력서 등록이 필요합니다.");
       return;
     }
@@ -830,12 +830,18 @@ function Main() {
                   >
                     <Button onClick={handleAIInterviewClick}>AI 면접</Button>
                   </motion.div>
-                  <ResumeButton
-                    id={githubInfo.id}
-                    getRootProps={getRootProps}
-                    getInputProps={getInputProps}
-                    handleModalClose={handleModalClose}
-                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1.5 }}
+                  >
+                    <ResumeButton
+                      id={githubInfo.id}
+                      getRootProps={getRootProps}
+                      getInputProps={getInputProps}
+                      handleModalClose={handleModalClose}
+                    />
+                  </motion.div>
                   {isModalOpen && (
                     <Modal
                       ref={modalRef}
@@ -944,30 +950,6 @@ const ResumeButton = (props: ResumeModalProps) => {
     return (
       <div {...props.getRootProps()}>
         <input {...props.getInputProps()} />
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5 }}
-        >
-          <Button onClick={props.handleModalClose}>
-            <ButtonContent>
-              <ButtonImage
-                src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
-                alt="Document Icon"
-              />
-              이력서 업로드
-            </ButtonContent>
-          </Button>
-        </motion.div>
-      </div>
-    );
-  } else {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1 }}
-      >
         <Button onClick={props.handleModalClose}>
           <ButtonContent>
             <ButtonImage
@@ -977,7 +959,19 @@ const ResumeButton = (props: ResumeModalProps) => {
             이력서 업로드
           </ButtonContent>
         </Button>
-      </motion.div>
+      </div>
+    );
+  } else {
+    return (
+      <Button onClick={props.handleModalClose}>
+        <ButtonContent>
+          <ButtonImage
+            src="https://i.postimg.cc/ZRQBcYtj/2024-01-03-8-44-26.png"
+            alt="Document Icon"
+          />
+          이력서 업로드
+        </ButtonContent>
+      </Button>
     );
   }
 };
