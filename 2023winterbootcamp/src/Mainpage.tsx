@@ -634,7 +634,7 @@ function Main() {
       file.append("title", title);
 
       try {
-        const response = await api.post("resumes/create", file);
+        const response = await api.post("resumes", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
         navigate("/mypage");
@@ -756,7 +756,7 @@ function Main() {
       startTransition(() => {
         const fetchData = async () => {
           try {
-            const response = await api.get("users/", {
+            const response = await api.get("users", {
               withCredentials: true,
             });
             console.log(response.data);

@@ -183,7 +183,7 @@ function Header() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await api.get("users/status/", {
+        const response = await api.get("users/status", {
           withCredentials: true,
         });
         if (response.data.status === "logged_in") {
@@ -220,7 +220,7 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await api.get("users/logout/", {
+      const response = await api.get("users/logout", {
         withCredentials: true,
       });
       console.log(response.status);

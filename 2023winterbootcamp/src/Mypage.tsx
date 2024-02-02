@@ -424,7 +424,7 @@ function Mypage() {
 
   const handleInterviewClick = async (id: number) => {
     try {
-      const response = await api.get(`interviews/${id}/`, {
+      const response = await api.get(`interviews/${id}`, {
         withCredentials: true,
       });
       navigate(`/result/${id}`); // 해당 페이지로 이동
@@ -443,7 +443,7 @@ function Mypage() {
       file.append("title", title);
 
       try {
-        const response = await api.post("resumes/create", file);
+        const response = await api.post("resumes", file);
         console.log("File uploaded successfully!", response.data);
         setIsModalOpen(false);
         window.location.href = "/mypage";
@@ -476,7 +476,7 @@ function Mypage() {
 
   const getInterviewList = async () => {
     try {
-      const response = await api.get("interviews/", { withCredentials: true });
+      const response = await api.get("interviews", { withCredentials: true });
       const sortedData = response.data.sort((a: Interview, b: Interview) =>
         b.created_at.localeCompare(a.created_at)
       );
@@ -489,7 +489,7 @@ function Mypage() {
 
   const getResumes = async () => {
     try {
-      const response = await api.get("resumes/", { withCredentials: true });
+      const response = await api.get("resumes", { withCredentials: true });
       const sortedData = response.data.sort((a: Resume, b: Resume) =>
         b.created_at.localeCompare(a.created_at)
       );
@@ -545,8 +545,8 @@ function Mypage() {
     const fetchData = async () => {
       try {
         const [resumeResponse, interviewResponse] = await Promise.all([
-          api.get("resumes/", { withCredentials: true }),
-          api.get("interviews/", { withCredentials: true }),
+          api.get("resumes", { withCredentials: true }),
+          api.get("interviews", { withCredentials: true }),
         ]);
 
         const sortedResumeData = resumeResponse.data.sort(
