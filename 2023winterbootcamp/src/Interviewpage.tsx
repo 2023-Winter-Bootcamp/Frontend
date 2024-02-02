@@ -266,7 +266,7 @@ function Interviewpage() {
   const fetchCommonQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`, {
+        const response = await api.get(`interviews/${id}/questions`, {
           withCredentials: true,
         });
         console.log(response.data.questions);
@@ -428,7 +428,7 @@ function Interviewpage() {
       //음성파일 보내는 기능
       const response = await api
         .post(
-          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          `interviews/${parseInt(id)}/questions/${questionId}/process`,
           file
         )
         .then((response) =>
@@ -515,7 +515,7 @@ function Interviewpage() {
   const fetchLastQuestion = async () => {
     if (id) {
       try {
-        const response = await api.get(`interviews/${id}/questions/`, {
+        const response = await api.get(`interviews/${id}/questions`, {
           withCredentials: true,
         });
         console.log(response.data.questions);
@@ -541,7 +541,7 @@ function Interviewpage() {
     try {
       await api
         .post(
-          `interviews/${parseInt(id)}/questions/${questionId}/process/`,
+          `interviews/${parseInt(id)}/questions/${questionId}/process`,
           file
         )
         .then((response) =>
@@ -551,7 +551,7 @@ function Interviewpage() {
       // 면접 결과 조회 API
       const setInterviewResult = async () => {
         try {
-          const response = await api.get(`interviews/${id}/`, {
+          const response = await api.get(`interviews/${id}`, {
             withCredentials: true,
           });
           setInterviewData(response.data);

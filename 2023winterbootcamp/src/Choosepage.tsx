@@ -1317,7 +1317,7 @@ function Choose() {
       const total = project + cs + personality;
       setTotalQuestionCountState(total);
 
-      const response = await api.post("interviews/create/", {
+      const response = await api.post("interviews", {
         user: githubLoginInfo.id,
         title: title,
         position: selectedPosition,
@@ -1344,7 +1344,7 @@ function Choose() {
     window.scrollTo(0, 0);
     const getResumes = async () => {
       try {
-        const response = await api.get("resumes/", { withCredentials: true });
+        const response = await api.get("resumes", { withCredentials: true });
         const sortedData = response.data.sort((a: Resume, b: Resume) =>
           b.created_at.localeCompare(a.created_at)
         );

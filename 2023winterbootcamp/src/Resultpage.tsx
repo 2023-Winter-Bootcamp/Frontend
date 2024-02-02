@@ -436,7 +436,7 @@ const Resultpage = () => {
   //면접 결과 get 함수
   const getResultInfo = async () => {
     try {
-      const response = await api.get(`interviews/${id}/`, {
+      const response = await api.get(`interviews/${id}`, {
         withCredentials: true,
       });
       setInterviewResult(response.data);
